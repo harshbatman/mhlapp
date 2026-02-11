@@ -25,6 +25,7 @@ const INDIAN_DEVELOPERS = [
     'Piramal Realty', 'Runwal Group', 'K Raheja Corp', 'Radiance Realty', 'Aparna Constructions',
     'Phoenix Mills', 'Goyal & Co', 'Salarpuria Sattva', 'Casagrand', 'My Home Constructions'
 ].sort();
+INDIAN_DEVELOPERS.push('Other');
 
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
@@ -70,6 +71,7 @@ export default function ApplyScreen() {
         tenure: '',
         propertyValue: '',
         developerName: '',
+        otherDeveloperName: '',
         societyName: '',
         // Step 5: Docs
         docs: {
@@ -231,14 +233,19 @@ export default function ApplyScreen() {
                 onChangeText={(text) => {
                     setFormData({ ...formData, [key]: text });
                     if (key === 'developerName') {
-                        if (text.length > 1) {
+                        if (text.length > 0) {
                             const filtered = INDIAN_DEVELOPERS.filter(d =>
                                 d.toLowerCase().includes(text.toLowerCase())
                             );
                             setDeveloperSuggestions(filtered);
                         } else {
-                            setDeveloperSuggestions([]);
+                            setDeveloperSuggestions(INDIAN_DEVELOPERS);
                         }
+                    }
+                }}
+                onFocus={() => {
+                    if (key === 'developerName') {
+                        setDeveloperSuggestions(INDIAN_DEVELOPERS);
                     }
                 }}
                 placeholder={placeholder}
@@ -247,19 +254,23 @@ export default function ApplyScreen() {
                 maxLength={maxLength}
             />
             {key === 'developerName' && developerSuggestions.length > 0 && (
-                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
-                    {developerSuggestions.slice(0, 5).map((dev) => (
-                        <TouchableOpacity
-                            key={dev}
-                            style={styles.suggestionItem}
-                            onPress={() => {
-                                setFormData({ ...formData, developerName: dev });
-                                setDeveloperSuggestions([]);
-                            }}
-                        >
-                            <ThemedText>{dev}</ThemedText>
-                        </TouchableOpacity>
-                    ))}
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 250, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {developerSuggestions.map((dev) => (
+                            <TouchableOpacity
+                                key={dev}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, developerName: dev });
+                                    setDeveloperSuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: dev === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: dev === 'Other' ? '700' : '400' }}>
+                                    {dev}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
                 </View>
             )}
         </View>
@@ -512,7 +523,12 @@ export default function ApplyScreen() {
 
             {(formData.loanType === 'Flat Buying' || formData.loanType === 'flat-buying') && (
                 <Animated.View entering={FadeInRight}>
-                    {renderInput('Developer Name', formData.developerName, 'developerName', 'e.g. Godrej Properties')}
+                    {renderInput('Developer Name', formData.developerName, 'developerName', 'Select developer')}
+                    {formData.developerName === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Developer Name', formData.otherDeveloperName, 'otherDeveloperName', 'Enter developer name')}
+                        </Animated.View>
+                    )}
                     {renderInput('Society Name', formData.societyName, 'societyName', 'e.g. Godrej Woods')}
                 </Animated.View>
             )}
