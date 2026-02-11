@@ -54,7 +54,7 @@ export default function ProfileScreen() {
                     text: 'Yes',
                     style: 'destructive',
                     onPress: async () => {
-                        await AuthService.clearSession();
+                        await AuthService.logout();
                         router.replace('/');
                     }
                 }
