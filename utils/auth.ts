@@ -1,4 +1,3 @@
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import {
@@ -10,6 +9,26 @@ import {
     signOut
 } from 'firebase/auth';
 import { auth } from './firebase';
+// import { GoogleSignin } from '@react-native-google-signin/google-signin';
+
+// Placeholder for GoogleSignin when in Expo Go
+let GoogleSignin: any;
+if (Constants.appOwnership !== 'expo') {
+    try {
+        GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
+    } catch (e) {
+        console.warn('Google Signin native module not linked', e);
+    }
+} else {
+    GoogleSignin = {
+        configure: (config: any) => { console.log('GoogleSignin Mock: configuring', config) },
+        hasPlayServices: async () => true,
+        signIn: async () => {
+            console.log('GoogleSignin Mock: simulate sign in');
+            return { data: { idToken: 'mock-token' } };
+        }
+    };
+}
 
 const AUTH_KEY = 'user_session';
 
