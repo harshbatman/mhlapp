@@ -176,6 +176,8 @@ export default function RegisterScreen() {
                         >
                             <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
+
+                        <View style={{ height: 60 }} />
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
