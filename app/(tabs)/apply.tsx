@@ -492,14 +492,14 @@ export default function ApplyScreen() {
                             key={type}
                             style={[
                                 styles.chip,
-                                formData.loanType.includes(type) && styles.chipSelected,
+                                (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipSelected,
                                 { borderColor: Colors[colorScheme].border }
                             ]}
                             onPress={() => setFormData({ ...formData, loanType: type })}
                         >
                             <ThemedText style={[
                                 styles.chipText,
-                                formData.loanType.includes(type) && styles.chipTextSelected
+                                (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipTextSelected
                             ]}>{type}</ThemedText>
                         </TouchableOpacity>
                     ))}
@@ -510,7 +510,7 @@ export default function ApplyScreen() {
             {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
             {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'Approx value', 'numeric')}
 
-            {formData.loanType === 'Flat Buying' && (
+            {(formData.loanType === 'Flat Buying' || formData.loanType === 'flat-buying') && (
                 <Animated.View entering={FadeInRight}>
                     {renderInput('Developer Name', formData.developerName, 'developerName', 'e.g. Godrej Properties')}
                     {renderInput('Society Name', formData.societyName, 'societyName', 'e.g. Godrej Woods')}
