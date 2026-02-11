@@ -1,9 +1,10 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -20,6 +21,7 @@ export default function ApplyScreen() {
 
     const [step, setStep] = useState(1);
     const totalSteps = 5;
+    const [loadingLocation, setLoadingLocation] = useState(false);
 
     const [formData, setFormData] = useState({
         // Step 1: Personal
@@ -100,6 +102,41 @@ export default function ApplyScreen() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
+    const fetchLocation = async () => {
+        try {
+            setLoadingLocation(true);
+            let { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission Denied', 'Please allow location access to use this feature.');
+                return;
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            let [addressResponse] = await Location.reverseGeocodeAsync({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude
+            });
+
+            if (addressResponse) {
+                const formattedAddress = [
+                    addressResponse.name,
+                    addressResponse.street,
+                    addressResponse.district,
+                    addressResponse.city,
+                    addressResponse.region,
+                    addressResponse.postalCode
+                ].filter(Boolean).join(', ');
+
+                setFormData(prev => ({ ...prev, address: formattedAddress }));
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Could not fetch your location. Please type manually.');
+        } finally {
+            setLoadingLocation(false);
+        }
+    };
+
     const renderInput = (label: string, value: string, key: string, placeholder: string, keyboardType: any = 'default', maxLength?: number) => (
         <View style={styles.inputContainer}>
             <ThemedText style={styles.label}>{label}</ThemedText>
@@ -154,7 +191,43 @@ export default function ApplyScreen() {
             {renderInput('Email Address', formData.email, 'email', 'example@mahto.in', 'email-address')}
             {renderInput('Phone Number', formData.phone, 'phone', '10-digit number', 'phone-pad', 10)}
             {renderInput('Alternate Phone', formData.altPhone, 'altPhone', 'Optional', 'phone-pad', 10)}
-            {renderInput('Current Residential Address', formData.address, 'address', 'House No, Street, Landmark, Pincode')}
+
+            <View style={styles.inputContainer}>
+                <View style={styles.labelRow}>
+                    <ThemedText style={styles.label}>Current Residential Address</ThemedText>
+                    <TouchableOpacity
+                        style={styles.locationBtn}
+                        onPress={fetchLocation}
+                        disabled={loadingLocation}
+                    >
+                        {loadingLocation ? (
+                            <ActivityIndicator size="small" color="#D4AF37" />
+                        ) : (
+                            <>
+                                <Ionicons name="location" size={14} color="#D4AF37" />
+                                <ThemedText style={styles.locationBtnText}>Use Current</ThemedText>
+                            </>
+                        )}
+                    </TouchableOpacity>
+                </View>
+                <TextInput
+                    style={[
+                        styles.input,
+                        {
+                            backgroundColor: Colors[colorScheme].surface,
+                            color: Colors[colorScheme].text,
+                            borderColor: Colors[colorScheme].border,
+                            height: 100,
+                            paddingTop: 15,
+                        }
+                    ]}
+                    value={formData.address}
+                    onChangeText={(text) => setFormData({ ...formData, address: text })}
+                    placeholder="House No, Street, Landmark, Pincode"
+                    placeholderTextColor="#999"
+                    multiline
+                />
+            </View>
 
             <TouchableOpacity
                 style={styles.checkboxRow}
@@ -533,5 +606,25 @@ const styles = StyleSheet.create({
         fontSize: 13,
         opacity: 0.5,
         marginTop: 4,
+    },
+    labelRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 8,
+    },
+    locationBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingVertical: 4,
+        paddingHorizontal: 10,
+        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        borderRadius: 8,
+    },
+    locationBtnText: {
+        fontSize: 12,
+        fontWeight: '700',
+        color: '#D4AF37',
     },
 });
