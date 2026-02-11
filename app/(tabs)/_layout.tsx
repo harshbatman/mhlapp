@@ -38,13 +38,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="apply"
-        options={{
-          title: t('apply'),
-          tabBarIcon: ({ color }) => <Ionicons size={24} name="document-text" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="calculator"
         options={{
           title: t('calculator'),

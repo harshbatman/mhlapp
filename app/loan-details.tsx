@@ -107,7 +107,7 @@ export default function LoanDetailsScreen() {
                     <TouchableOpacity
                         style={styles.applyBtn}
                         onPress={() => router.push({
-                            pathname: '/(tabs)/apply',
+                            pathname: '/apply',
                             params: { type: details.title }
                         })}
                     >
