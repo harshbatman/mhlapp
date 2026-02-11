@@ -5,27 +5,41 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const tintColorLight = '#002D62';
+const tintColorDark = '#D4AF37';
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
+    text: '#1A1A1A',
+    background: '#FFFFFF',
     tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
+    icon: '#4A4A4A',
+    tabIconDefault: '#9BA1A6',
     tabIconSelected: tintColorLight,
+    surface: '#F8F9FA',
+    border: '#E9ECEF',
+    primary: '#002D62',
+    secondary: '#D4AF37',
+    success: '#28A745',
+    error: '#DC3545',
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
+    text: '#F8F9FA',
+    background: '#0F172A',
     tint: tintColorDark,
     icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
+    tabIconDefault: '#4A5568',
     tabIconSelected: tintColorDark,
+    surface: '#1E293B',
+    border: '#334155',
+    primary: '#38BDF8',
+    secondary: '#FACC15',
+    success: '#4ADE80',
+    error: '#F87171',
   },
 };
+
+export type ThemeType = 'light' | 'dark';
 
 export const Fonts = Platform.select({
   ios: {
