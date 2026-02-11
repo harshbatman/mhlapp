@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -55,10 +56,10 @@ export default function ApplyScreen() {
         propertyValue: '',
         // Step 5: Docs
         docs: {
-            pan: false,
-            aadhaar: false,
-            income: false,
-            property: false
+            pan: null as string | null,
+            aadhaar: null as string | null,
+            income: null as string | null,
+            property: null as string | null
         }
     });
 
@@ -101,12 +102,36 @@ export default function ApplyScreen() {
         );
     };
 
-    const toggleDoc = (key: keyof typeof formData.docs) => {
-        setFormData({
-            ...formData,
-            docs: { ...formData.docs, [key]: !formData.docs[key] }
-        });
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const pickImage = async (key: keyof typeof formData.docs) => {
+        try {
+            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert('Permission Needed', 'We need access to your gallery to upload documents.');
+                return;
+            }
+
+            const result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                quality: 0.8,
+            });
+
+            if (!result.canceled) {
+                setFormData(prev => ({
+                    ...prev,
+                    docs: { ...prev.docs, [key]: result.assets[0].uri }
+                }));
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            }
+        } catch (error) {
+            Alert.alert('Error', 'Failed to pick image. Please try again.');
+        }
+    };
+
+    const getFileName = (uri: string | null) => {
+        if (!uri) return null;
+        const parts = uri.split('/');
+        return parts[parts.length - 1];
     };
 
     const fetchLocation = async (field: 'address' | 'permanentAddress' = 'address') => {
@@ -372,50 +397,78 @@ export default function ApplyScreen() {
     const renderStep5 = () => (
         <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
             <ThemedText style={styles.sectionTitle}>Required Documents</ThemedText>
-            <ThemedText style={styles.stepSubTitle}>Select documents to simulate attachment</ThemedText>
+            <ThemedText style={styles.stepSubTitle}>Upload clear copies of your documents</ThemedText>
 
             <TouchableOpacity
                 style={[styles.uploadBox, formData.docs.pan && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => toggleDoc('pan')}
+                onPress={() => pickImage('pan')}
             >
-                <Ionicons name={formData.docs.pan ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.pan ? "#D4AF37" : "#999"} />
-                <View>
+                {formData.docs.pan ? (
+                    <Image source={{ uri: formData.docs.pan }} style={styles.docPreview} />
+                ) : (
+                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
+                )}
+                <View style={styles.uploadTextWrapper}>
                     <ThemedText style={styles.uploadTitle}>PAN Card</ThemedText>
-                    <ThemedText style={styles.uploadDesc}>{formData.docs.pan ? 'pancard_front.jpg' : 'Identity proof (Mandatory)'}</ThemedText>
+                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
+                        {formData.docs.pan ? getFileName(formData.docs.pan) : 'Identity proof (Mandatory)'}
+                    </ThemedText>
                 </View>
+                {formData.docs.pan && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={[styles.uploadBox, formData.docs.aadhaar && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => toggleDoc('aadhaar')}
+                onPress={() => pickImage('aadhaar')}
             >
-                <Ionicons name={formData.docs.aadhaar ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.aadhaar ? "#D4AF37" : "#999"} />
-                <View>
+                {formData.docs.aadhaar ? (
+                    <Image source={{ uri: formData.docs.aadhaar }} style={styles.docPreview} />
+                ) : (
+                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
+                )}
+                <View style={styles.uploadTextWrapper}>
                     <ThemedText style={styles.uploadTitle}>Aadhaar Card</ThemedText>
-                    <ThemedText style={styles.uploadDesc}>{formData.docs.aadhaar ? 'aadhaar_v2.pdf' : 'Address proof (Mandatory)'}</ThemedText>
+                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
+                        {formData.docs.aadhaar ? getFileName(formData.docs.aadhaar) : 'Address proof (Mandatory)'}
+                    </ThemedText>
                 </View>
+                {formData.docs.aadhaar && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={[styles.uploadBox, formData.docs.income && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => toggleDoc('income')}
+                onPress={() => pickImage('income')}
             >
-                <Ionicons name={formData.docs.income ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.income ? "#D4AF37" : "#999"} />
-                <View>
+                {formData.docs.income ? (
+                    <Image source={{ uri: formData.docs.income }} style={styles.docPreview} />
+                ) : (
+                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
+                )}
+                <View style={styles.uploadTextWrapper}>
                     <ThemedText style={styles.uploadTitle}>Income Proof</ThemedText>
-                    <ThemedText style={styles.uploadDesc}>{formData.docs.income ? 'salary_slips.zip' : 'Last 3 months salary slips'}</ThemedText>
+                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
+                        {formData.docs.income ? getFileName(formData.docs.income) : 'Last 3 months salary slips'}
+                    </ThemedText>
                 </View>
+                {formData.docs.income && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
             </TouchableOpacity>
 
             <TouchableOpacity
                 style={[styles.uploadBox, formData.docs.property && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => toggleDoc('property')}
+                onPress={() => pickImage('property')}
             >
-                <Ionicons name={formData.docs.property ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.property ? "#D4AF37" : "#999"} />
-                <View>
+                {formData.docs.property ? (
+                    <Image source={{ uri: formData.docs.property }} style={styles.docPreview} />
+                ) : (
+                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
+                )}
+                <View style={styles.uploadTextWrapper}>
                     <ThemedText style={styles.uploadTitle}>Property Documents</ThemedText>
-                    <ThemedText style={styles.uploadDesc}>{formData.docs.property ? 'property_papers.pdf' : 'Registry/Sale Deed copy'}</ThemedText>
+                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
+                        {formData.docs.property ? getFileName(formData.docs.property) : 'Registry/Sale Deed copy'}
+                    </ThemedText>
                 </View>
+                {formData.docs.property && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
             </TouchableOpacity>
         </Animated.View>
     );
@@ -695,5 +748,15 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontWeight: '700',
         color: '#D4AF37',
+    },
+    docPreview: {
+        width: 50,
+        height: 50,
+        borderRadius: 8,
+        backgroundColor: '#F0F0F0',
+    },
+    uploadTextWrapper: {
+        flex: 1,
+        gap: 2,
     },
 });
