@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -36,6 +36,7 @@ export default function ApplyScreen() {
     const totalSteps = 5;
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     const [formData, setFormData] = useState({
         // Step 1: Personal
@@ -88,6 +89,14 @@ export default function ApplyScreen() {
         if (params.type) {
             setFormData(prev => ({ ...prev, loanType: params.type as string }));
         }
+
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+
+        return () => {
+            keyboardDidShowListener.remove();
+            keyboardDidHideListener.remove();
+        };
     }, [params.type]);
 
     const handleNext = () => {
@@ -603,7 +612,10 @@ export default function ApplyScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+            <KeyboardAvoidingView
+                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                style={{ flex: 1 }}
+            >
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                     <LinearGradient
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
@@ -636,22 +648,24 @@ export default function ApplyScreen() {
                         {step === 4 && renderStep4()}
                         {step === 5 && renderStep5()}
 
-                        <View style={styles.buttonRow}>
-                            {step > 1 && (
-                                <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
-                                    <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
+                        {!isKeyboardVisible && (
+                            <View style={styles.buttonRow}>
+                                {step > 1 && (
+                                    <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
+                                        <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
+                                    onPress={handleNext}
+                                >
+                                    <ThemedText style={styles.primaryBtnText}>
+                                        {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                    </ThemedText>
+                                    <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
                                 </TouchableOpacity>
-                            )}
-                            <TouchableOpacity
-                                style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
-                                onPress={handleNext}
-                            >
-                                <ThemedText style={styles.primaryBtnText}>
-                                    {step === totalSteps ? 'Submit Application' : 'Next Step'}
-                                </ThemedText>
-                                <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        )}
 
                         {step === totalSteps && (
                             <ThemedText style={styles.disclaimer}>
