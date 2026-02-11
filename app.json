@@ -3,7 +3,7 @@
     "name": "HMAHTO Home Loans",
     "slug": "mahto-home-loans",
     "owner": "mahtobuild",
-    "version": "1.1.5",
+    "version": "1.1.7",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mahto-home-loans",
@@ -11,11 +11,11 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "5"
+      "buildNumber": "7"
     },
     "android": {
       "package": "com.mahto.homeloans",
-      "versionCode": 5,
+      "versionCode": 7,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -36,7 +36,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff",
+          "backgroundColor": "#000000",
           "dark": {
             "backgroundColor": "#000000"
           }
