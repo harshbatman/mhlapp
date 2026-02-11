@@ -46,17 +46,7 @@ export default function RegisterScreen() {
         }
     };
 
-    const handleGoogleRegister = async () => {
-        try {
-            setLoading(true);
-            await AuthService.loginWithGoogle();
-            router.replace('/home');
-        } catch (error: any) {
-            alert(error.message || 'We encountered an issue with Google signup. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+
 
     return (
         <ThemedView style={styles.container}>
@@ -152,7 +142,7 @@ export default function RegisterScreen() {
                             {loading ? (
                                 <ActivityIndicator color="#D4AF37" />
                             ) : (
-                                <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
+                                <ThemedText style={styles.registerBtnText}>Continue with MAHTO ID</ThemedText>
                             )}
                         </TouchableOpacity>
 
@@ -162,20 +152,6 @@ export default function RegisterScreen() {
                                 <ThemedText style={styles.linkText}>Login</ThemedText>
                             </TouchableOpacity>
                         </View>
-
-                        <View style={styles.dividerContainer}>
-                            <View style={styles.dividerLine} />
-                            <ThemedText style={styles.dividerText}>or</ThemedText>
-                            <View style={styles.dividerLine} />
-                        </View>
-
-                        <TouchableOpacity
-                            style={[styles.googleBtn, loading && { opacity: 0.7 }]}
-                            onPress={handleGoogleRegister}
-                            disabled={loading}
-                        >
-                            <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
-                        </TouchableOpacity>
 
                         <View style={{ height: 60 }} />
                     </View>
@@ -284,7 +260,7 @@ const styles = StyleSheet.create({
     },
     registerBtnText: {
         color: '#D4AF37',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '700',
     },
     footer: {

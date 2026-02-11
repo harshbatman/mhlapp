@@ -46,17 +46,7 @@ export default function LoginScreen() {
         }
     };
 
-    const handleGoogleLogin = async () => {
-        try {
-            setLoading(true);
-            await AuthService.loginWithGoogle();
-            router.replace('/home');
-        } catch (error: any) {
-            alert(error.message || 'We encountered an issue with Google login. Please try again.');
-        } finally {
-            setLoading(false);
-        }
-    };
+
 
     return (
         <ThemedView style={styles.container}>
@@ -125,22 +115,8 @@ export default function LoginScreen() {
                             {loading ? (
                                 <ActivityIndicator color="#D4AF37" />
                             ) : (
-                                <ThemedText style={styles.loginBtnText}>Login</ThemedText>
+                                <ThemedText style={styles.loginBtnText}>Continue with MAHTO ID</ThemedText>
                             )}
-                        </TouchableOpacity>
-
-                        <View style={styles.dividerContainer}>
-                            <View style={styles.dividerLine} />
-                            <ThemedText style={styles.dividerText}>or</ThemedText>
-                            <View style={styles.dividerLine} />
-                        </View>
-
-                        <TouchableOpacity
-                            style={[styles.googleBtn, loading && { opacity: 0.7 }]}
-                            onPress={handleGoogleLogin}
-                            disabled={loading}
-                        >
-                            <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
 
                         <View style={styles.footer}>
@@ -290,7 +266,7 @@ const styles = StyleSheet.create({
     },
     loginBtnText: {
         color: '#D4AF37',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: '700',
     },
     footer: {
