@@ -3,24 +3,54 @@ import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+const { width } = Dimensions.get('window');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
     const params = useLocalSearchParams<{ type?: string }>();
 
+    const [step, setStep] = useState(1);
+    const totalSteps = 5;
+
     const [formData, setFormData] = useState({
+        // Step 1: Personal
         name: '',
-        phone: '',
+        dob: '',
+        gender: '',
+        pan: '',
+        aadhaar: '',
+        // Step 2: Contact
         email: '',
-        loanAmount: '',
+        phone: '',
+        address: '',
+        isSameAddress: true,
+        altPhone: '',
+        // Step 3: Income
+        occupation: 'Salaried',
+        monthlyIncome: '',
+        company: '',
+        experience: '',
+        // Step 4: Loan
         loanType: params.type || 'Construction',
+        loanAmount: '',
+        tenure: '',
+        propertyValue: '',
+        // Step 5: Docs
+        docs: {
+            pan: false,
+            aadhaar: false,
+            income: false,
+            property: false
+        }
     });
 
     useEffect(() => {
@@ -29,18 +59,48 @@ export default function ApplyScreen() {
         }
     }, [params.type]);
 
-    const handleSubmit = () => {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        if (!formData.name || !formData.phone || !formData.loanAmount) {
-            Alert.alert('Missing Fields', 'Please fill in all required fields.');
-            return;
+    const handleNext = () => {
+        if (step < totalSteps) {
+            setStep(step + 1);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        } else {
+            handleSubmit();
         }
-        Alert.alert('Success', 'Your application has been submitted. Our agent will contact you shortly.', [
-            { text: 'OK', onPress: () => router.push('/') }
-        ]);
     };
 
-    const renderInput = (label: string, value: string, onChangeText: (text: string) => void, placeholder: string, keyboardType: any = 'default', maxLength?: number) => (
+    const handleBack = () => {
+        if (step > 1) {
+            setStep(step - 1);
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } else {
+            router.back();
+        }
+    };
+
+    const handleSubmit = () => {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+
+        if (!formData.docs.pan || !formData.docs.aadhaar) {
+            Alert.alert('Missing Documents', 'Please select PAN and Aadhaar cards to simulate upload.');
+            return;
+        }
+
+        Alert.alert(
+            'Application Submitted!',
+            'Our verification team will review your details and contact you within 24 hours.',
+            [{ text: 'Great!', onPress: () => router.replace('/') }]
+        );
+    };
+
+    const toggleDoc = (key: keyof typeof formData.docs) => {
+        setFormData({
+            ...formData,
+            docs: { ...formData.docs, [key]: !formData.docs[key] }
+        });
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    };
+
+    const renderInput = (label: string, value: string, key: string, placeholder: string, keyboardType: any = 'default', maxLength?: number) => (
         <View style={styles.inputContainer}>
             <ThemedText style={styles.label}>{label}</ThemedText>
             <TextInput
@@ -53,7 +113,7 @@ export default function ApplyScreen() {
                     }
                 ]}
                 value={value}
-                onChangeText={onChangeText}
+                onChangeText={(text) => setFormData({ ...formData, [key]: text })}
                 placeholder={placeholder}
                 placeholderTextColor="#999"
                 keyboardType={keyboardType}
@@ -62,66 +122,219 @@ export default function ApplyScreen() {
         </View>
     );
 
+    const renderStep1 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Personal Details</ThemedText>
+            {renderInput('Full Name (as per PAN)', formData.name, 'name', 'Enter your name')}
+            {renderInput('Date of Birth', formData.dob, 'dob', 'DD/MM/YYYY')}
+
+            <View style={styles.inputContainer}>
+                <ThemedText style={styles.label}>Gender</ThemedText>
+                <View style={styles.row}>
+                    {['Male', 'Female', 'Other'].map((g) => (
+                        <TouchableOpacity
+                            key={g}
+                            style={[styles.chip, formData.gender === g && styles.chipSelected, { borderColor: Colors[colorScheme].border }]}
+                            onPress={() => setFormData({ ...formData, gender: g })}
+                        >
+                            <ThemedText style={[styles.chipText, formData.gender === g && styles.chipTextSelected]}>{g}</ThemedText>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {renderInput('PAN Card Number', formData.pan, 'pan', 'ABCDE1234F', 'default', 10)}
+            {renderInput('Aadhaar Number', formData.aadhaar, 'aadhaar', '1234 5678 9012', 'numeric', 12)}
+        </Animated.View>
+    );
+
+    const renderStep2 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Contact Information</ThemedText>
+            {renderInput('Email Address', formData.email, 'email', 'example@mahto.in', 'email-address')}
+            {renderInput('Phone Number', formData.phone, 'phone', '10-digit number', 'phone-pad', 10)}
+            {renderInput('Alternate Phone', formData.altPhone, 'altPhone', 'Optional', 'phone-pad', 10)}
+            {renderInput('Current Residential Address', formData.address, 'address', 'House No, Street, Landmark, Pincode')}
+
+            <TouchableOpacity
+                style={styles.checkboxRow}
+                onPress={() => setFormData({ ...formData, isSameAddress: !formData.isSameAddress })}
+            >
+                <Ionicons
+                    name={formData.isSameAddress ? "checkbox" : "square-outline"}
+                    size={24}
+                    color={formData.isSameAddress ? "#D4AF37" : "#999"}
+                />
+                <ThemedText style={styles.checkboxLabel}>Permanent address is same as current</ThemedText>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+
+    const renderStep3 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Employment & Income</ThemedText>
+
+            <View style={styles.inputContainer}>
+                <ThemedText style={styles.label}>Occupation Type</ThemedText>
+                <View style={styles.row}>
+                    {['Salaried', 'Self-Employed', 'Business'].map((o) => (
+                        <TouchableOpacity
+                            key={o}
+                            style={[styles.chip, formData.occupation === o && styles.chipSelected, { borderColor: Colors[colorScheme].border }]}
+                            onPress={() => setFormData({ ...formData, occupation: o })}
+                        >
+                            <ThemedText style={[styles.chipText, formData.occupation === o && styles.chipTextSelected]}>{o}</ThemedText>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {renderInput('Employer / Company Name', formData.company, 'company', 'e.g. Tata Motors')}
+            {renderInput('Monthly Net Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter amount', 'numeric')}
+            {renderInput('Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
+        </Animated.View>
+    );
+
+    const renderStep4 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Loan Details</ThemedText>
+
+            <View style={styles.inputContainer}>
+                <ThemedText style={styles.label}>Selected Loan Type</ThemedText>
+                <View style={styles.rowWrap}>
+                    {['Construction', 'Renovation', 'Flat Buying', 'LAP'].map((type) => (
+                        <TouchableOpacity
+                            key={type}
+                            style={[
+                                styles.chip,
+                                formData.loanType.includes(type) && styles.chipSelected,
+                                { borderColor: Colors[colorScheme].border }
+                            ]}
+                            onPress={() => setFormData({ ...formData, loanType: type })}
+                        >
+                            <ThemedText style={[
+                                styles.chipText,
+                                formData.loanType.includes(type) && styles.chipTextSelected
+                            ]}>{type}</ThemedText>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
+            {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 2500000', 'numeric')}
+            {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
+            {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'Approx value', 'numeric')}
+        </Animated.View>
+    );
+
+    const renderStep5 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Required Documents</ThemedText>
+            <ThemedText style={styles.stepSubTitle}>Select documents to simulate attachment</ThemedText>
+
+            <TouchableOpacity
+                style={[styles.uploadBox, formData.docs.pan && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
+                onPress={() => toggleDoc('pan')}
+            >
+                <Ionicons name={formData.docs.pan ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.pan ? "#D4AF37" : "#999"} />
+                <View>
+                    <ThemedText style={styles.uploadTitle}>PAN Card</ThemedText>
+                    <ThemedText style={styles.uploadDesc}>{formData.docs.pan ? 'pancard_front.jpg' : 'Identity proof (Mandatory)'}</ThemedText>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={[styles.uploadBox, formData.docs.aadhaar && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
+                onPress={() => toggleDoc('aadhaar')}
+            >
+                <Ionicons name={formData.docs.aadhaar ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.aadhaar ? "#D4AF37" : "#999"} />
+                <View>
+                    <ThemedText style={styles.uploadTitle}>Aadhaar Card</ThemedText>
+                    <ThemedText style={styles.uploadDesc}>{formData.docs.aadhaar ? 'aadhaar_v2.pdf' : 'Address proof (Mandatory)'}</ThemedText>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={[styles.uploadBox, formData.docs.income && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
+                onPress={() => toggleDoc('income')}
+            >
+                <Ionicons name={formData.docs.income ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.income ? "#D4AF37" : "#999"} />
+                <View>
+                    <ThemedText style={styles.uploadTitle}>Income Proof</ThemedText>
+                    <ThemedText style={styles.uploadDesc}>{formData.docs.income ? 'salary_slips.zip' : 'Last 3 months salary slips'}</ThemedText>
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={[styles.uploadBox, formData.docs.property && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
+                onPress={() => toggleDoc('property')}
+            >
+                <Ionicons name={formData.docs.property ? "checkmark-circle" : "cloud-upload-outline"} size={32} color={formData.docs.property ? "#D4AF37" : "#999"} />
+                <View>
+                    <ThemedText style={styles.uploadTitle}>Property Documents</ThemedText>
+                    <ThemedText style={styles.uploadDesc}>{formData.docs.property ? 'property_papers.pdf' : 'Registry/Sale Deed copy'}</ThemedText>
+                </View>
+            </TouchableOpacity>
+        </Animated.View>
+    );
+
     return (
         <ThemedView style={styles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                style={{ flex: 1 }}
-            >
-                <ScrollView showsVerticalScrollIndicator={false}>
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
+                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
                     <LinearGradient
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
                         style={styles.header}
                     >
                         <View style={styles.headerTopRow}>
-                            {router.canGoBack() && (
-                                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                                </TouchableOpacity>
-                            )}
-                            <ThemedText style={styles.headerTitle}>
-                                {formData.loanType ? `${formData.loanType} Application` : 'Loan Application'}
-                            </ThemedText>
+                            <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
+                                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                            </TouchableOpacity>
+                            <ThemedText style={styles.headerTitle}>Apply for Loan</ThemedText>
                         </View>
-                        <ThemedText style={styles.headerSubtitle}>Enter your details to get started</ThemedText>
+
+                        <View style={styles.progressContainer}>
+                            <View style={styles.progressBar}>
+                                <Animated.View
+                                    style={[
+                                        styles.progressFill,
+                                        { width: `${(step / totalSteps) * 100}%` }
+                                    ]}
+                                />
+                            </View>
+                            <ThemedText style={styles.progressText}>Step {step} of {totalSteps}</ThemedText>
+                        </View>
                     </LinearGradient>
 
-                    <View style={styles.formCard}>
-                        {renderInput('Full Name', formData.name, (text) => setFormData({ ...formData, name: text }), 'Enter your full name')}
-                        {renderInput('Phone Number', formData.phone, (text) => setFormData({ ...formData, phone: text.replace(/[^0-9]/g, '') }), 'Enter your 10 digit number', 'phone-pad', 10)}
-                        {renderInput('Email Address', formData.email, (text) => setFormData({ ...formData, email: text }), 'Enter your email', 'email-address')}
-                        {renderInput('Requested Loan Amount (₹)', formData.loanAmount, (text) => setFormData({ ...formData, loanAmount: text }), 'e.g. 50 Lakh or 1.5 Cr', 'default')}
+                    <View style={styles.formContent}>
+                        {step === 1 && renderStep1()}
+                        {step === 2 && renderStep2()}
+                        {step === 3 && renderStep3()}
+                        {step === 4 && renderStep4()}
+                        {step === 5 && renderStep5()}
 
-                        <View style={styles.inputContainer}>
-                            <ThemedText style={styles.label}>Loan Type</ThemedText>
-                            <View style={styles.loanTypeGrid}>
-                                {['Construction', 'Renovation', 'Flat Buying', 'LAP'].map((type) => (
-                                    <TouchableOpacity
-                                        key={type}
-                                        style={[
-                                            styles.typeOption,
-                                            formData.loanType.includes(type) && styles.typeOptionSelected,
-                                            { borderColor: Colors[colorScheme].border }
-                                        ]}
-                                        onPress={() => setFormData({ ...formData, loanType: type })}
-                                    >
-                                        <ThemedText style={[
-                                            styles.typeOptionText,
-                                            formData.loanType.includes(type) && styles.typeOptionTextSelected
-                                        ]}>{type}</ThemedText>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
+                        <View style={styles.buttonRow}>
+                            {step > 1 && (
+                                <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
+                                    <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
+                                </TouchableOpacity>
+                            )}
+                            <TouchableOpacity
+                                style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
+                                onPress={handleNext}
+                            >
+                                <ThemedText style={styles.primaryBtnText}>
+                                    {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                </ThemedText>
+                                <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                            </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-                            <ThemedText style={styles.submitBtnText}>Submit Application</ThemedText>
-                            <Ionicons name="arrow-forward" size={20} color="#002D62" />
-                        </TouchableOpacity>
-
-                        <ThemedText style={styles.disclaimer}>
-                            By submitting, you agree to our Terms & Conditions and Privacy Policy. Our representative will call you for verification.
-                        </ThemedText>
+                        {step === totalSteps && (
+                            <ThemedText style={styles.disclaimer}>
+                                By submitting, you authorize MAHTO Home Loans to access your credit report and contact you for verification.
+                            </ThemedText>
+                        )}
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -135,105 +348,190 @@ const styles = StyleSheet.create({
     },
     header: {
         paddingTop: 60,
-        paddingHorizontal: 20,
-        paddingBottom: 40,
+        paddingHorizontal: 24,
+        paddingBottom: 30,
         borderBottomLeftRadius: 32,
         borderBottomRightRadius: 32,
-    },
-    headerTitle: {
-        color: '#FFFFFF',
-        fontSize: 24,
-        fontWeight: '800',
-        flex: 1,
     },
     headerTopRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 12,
+        gap: 16,
+        marginBottom: 24,
     },
     backBtn: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
+        width: 44,
+        height: 44,
+        borderRadius: 22,
         backgroundColor: 'rgba(255,255,255,0.2)',
         justifyContent: 'center',
         alignItems: 'center',
     },
-    headerSubtitle: {
-        color: '#E0E0E0',
-        fontSize: 16,
-        marginTop: 8,
+    headerTitle: {
+        color: '#FFFFFF',
+        fontSize: 24,
+        fontWeight: '900',
     },
-    formCard: {
-        marginTop: -20,
-        marginHorizontal: 20,
+    progressContainer: {
+        gap: 10,
+    },
+    progressBar: {
+        height: 6,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 3,
+        overflow: 'hidden',
+    },
+    progressFill: {
+        height: '100%',
+        backgroundColor: '#D4AF37',
+    },
+    progressText: {
+        color: '#FFFFFF',
+        fontSize: 12,
+        fontWeight: '700',
+        opacity: 0.8,
+    },
+    formContent: {
         padding: 24,
-        backgroundColor: 'transparent',
+    },
+    stepContainer: {
+        width: '100%',
+    },
+    sectionTitle: {
+        fontSize: 20,
+        fontWeight: '800',
+        marginBottom: 24,
+        color: '#D4AF37',
     },
     inputContainer: {
         marginBottom: 20,
     },
     label: {
         fontSize: 14,
-        fontWeight: '600',
+        fontWeight: '700',
         marginBottom: 8,
-        opacity: 0.8,
+        opacity: 0.6,
     },
     input: {
-        height: 56,
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        borderWidth: 1,
+        height: 60,
+        borderRadius: 16,
+        paddingHorizontal: 20,
+        borderWidth: 1.5,
         fontSize: 16,
+        fontWeight: '600',
     },
-    loanTypeGrid: {
+    row: {
+        flexDirection: 'row',
+        gap: 12,
+    },
+    rowWrap: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 10,
+        gap: 12,
     },
-    typeOption: {
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        borderRadius: 10,
-        borderWidth: 1,
+    chip: {
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        borderWidth: 1.5,
     },
-    typeOptionSelected: {
+    chipSelected: {
         backgroundColor: '#D4AF37',
         borderColor: '#D4AF37',
     },
-    typeOptionText: {
+    chipText: {
         fontSize: 14,
-        fontWeight: '500',
+        fontWeight: '600',
     },
-    typeOptionTextSelected: {
+    chipTextSelected: {
         color: '#002D62',
-        fontWeight: '700',
+        fontWeight: '800',
     },
-    submitBtn: {
-        backgroundColor: '#D4AF37',
-        height: 56,
-        borderRadius: 16,
+    checkboxRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 12,
+        marginTop: 10,
+        marginBottom: 20,
+    },
+    checkboxLabel: {
+        fontSize: 14,
+        fontWeight: '600',
+        opacity: 0.7,
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        gap: 16,
+        marginTop: 20,
+    },
+    navBtn: {
+        height: 64,
+        borderRadius: 20,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 20,
-        gap: 8,
+        gap: 12,
+    },
+    primaryBtn: {
+        flex: 2,
+        backgroundColor: '#D4AF37',
         shadowColor: '#D4AF37',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
-        elevation: 4,
+        elevation: 5,
     },
-    submitBtnText: {
+    secondaryBtn: {
+        flex: 1,
+        backgroundColor: '#F0F0F0',
+        borderWidth: 1,
+        borderColor: '#DDD',
+    },
+    primaryBtnText: {
         color: '#002D62',
+        fontSize: 18,
+        fontWeight: '800',
+    },
+    secondaryBtnText: {
+        color: '#666',
         fontSize: 18,
         fontWeight: '700',
     },
     disclaimer: {
-        marginTop: 20,
+        marginTop: 30,
         fontSize: 12,
         textAlign: 'center',
-        opacity: 0.5,
+        opacity: 0.4,
         lineHeight: 18,
+    },
+    stepSubTitle: {
+        fontSize: 14,
+        opacity: 0.6,
+        marginTop: -16,
+        marginBottom: 24,
+    },
+    uploadBox: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 20,
+        padding: 20,
+        borderRadius: 20,
+        borderWidth: 1.5,
+        borderStyle: 'dashed',
+        marginBottom: 16,
+    },
+    uploadBoxActive: {
+        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        borderColor: '#D4AF37',
+        borderStyle: 'solid',
+    },
+    uploadTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    uploadDesc: {
+        fontSize: 13,
+        opacity: 0.5,
+        marginTop: 4,
     },
 });
