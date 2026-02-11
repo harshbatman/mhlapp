@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -56,8 +57,10 @@ export default function ApplyScreen() {
         propertyValue: '',
         // Step 5: Docs
         docs: {
-            pan: null as string | null,
-            aadhaar: null as string | null,
+            panFront: null as string | null,
+            panBack: null as string | null,
+            aadhaarFront: null as string | null,
+            aadhaarBack: null as string | null,
             income: null as string | null,
             property: null as string | null
         }
@@ -90,8 +93,9 @@ export default function ApplyScreen() {
     const handleSubmit = () => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
 
-        if (!formData.docs.pan || !formData.docs.aadhaar) {
-            Alert.alert('Missing Documents', 'Please select PAN and Aadhaar cards to simulate upload.');
+        const { docs } = formData;
+        if (!docs.panFront || !docs.panBack || !docs.aadhaarFront || !docs.aadhaarBack) {
+            Alert.alert('Missing Documents', 'Please upload both Front and Back sides of your PAN and Aadhaar cards.');
             return;
         }
 
@@ -102,29 +106,55 @@ export default function ApplyScreen() {
         );
     };
 
-    const pickImage = async (key: keyof typeof formData.docs) => {
+    const pickDocument = async (key: keyof typeof formData.docs) => {
         try {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-            if (status !== 'granted') {
-                Alert.alert('Permission Needed', 'We need access to your gallery to upload documents.');
-                return;
-            }
-
-            const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                allowsEditing: true,
-                quality: 0.8,
-            });
-
-            if (!result.canceled) {
-                setFormData(prev => ({
-                    ...prev,
-                    docs: { ...prev.docs, [key]: result.assets[0].uri }
-                }));
-                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            }
+            Alert.alert(
+                'Upload Document',
+                'Choose your upload method',
+                [
+                    {
+                        text: 'Camera / Gallery',
+                        onPress: async () => {
+                            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                            if (status !== 'granted') {
+                                Alert.alert('Permission Needed', 'We need access to your gallery to upload documents.');
+                                return;
+                            }
+                            const result = await ImagePicker.launchImageLibraryAsync({
+                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                                allowsEditing: true,
+                                quality: 0.8,
+                            });
+                            if (!result.canceled) {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    docs: { ...prev.docs, [key]: result.assets[0].uri }
+                                }));
+                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                            }
+                        }
+                    },
+                    {
+                        text: 'PDF Document',
+                        onPress: async () => {
+                            const result = await DocumentPicker.getDocumentAsync({
+                                type: 'application/pdf',
+                                copyToCacheDirectory: true,
+                            });
+                            if (!result.canceled) {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    docs: { ...prev.docs, [key]: result.assets[0].uri }
+                                }));
+                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                            }
+                        }
+                    },
+                    { text: 'Cancel', style: 'cancel' }
+                ]
+            );
         } catch (error) {
-            Alert.alert('Error', 'Failed to pick image. Please try again.');
+            Alert.alert('Error', 'Failed to pick document. Please try again.');
         }
     };
 
@@ -394,84 +424,71 @@ export default function ApplyScreen() {
         </Animated.View>
     );
 
-    const renderStep5 = () => (
-        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
-            <ThemedText style={styles.sectionTitle}>Required Documents</ThemedText>
-            <ThemedText style={styles.stepSubTitle}>Upload clear copies of your documents</ThemedText>
+    const renderStep5 = () => {
+        const renderUploadButton = (key: keyof typeof formData.docs, title: string, subtitle: string, isFullWidth = true) => {
+            const uri = formData.docs[key];
+            const isPdf = uri?.toLowerCase().endsWith('.pdf');
 
-            <TouchableOpacity
-                style={[styles.uploadBox, formData.docs.pan && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => pickImage('pan')}
-            >
-                {formData.docs.pan ? (
-                    <Image source={{ uri: formData.docs.pan }} style={styles.docPreview} />
-                ) : (
-                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
-                )}
-                <View style={styles.uploadTextWrapper}>
-                    <ThemedText style={styles.uploadTitle}>PAN Card</ThemedText>
-                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
-                        {formData.docs.pan ? getFileName(formData.docs.pan) : 'Identity proof (Mandatory)'}
-                    </ThemedText>
-                </View>
-                {formData.docs.pan && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
-            </TouchableOpacity>
+            return (
+                <TouchableOpacity
+                    style={[
+                        styles.uploadBox,
+                        uri && styles.uploadBoxActive,
+                        { borderColor: Colors[colorScheme].border, flex: isFullWidth ? 0 : 1 }
+                    ]}
+                    onPress={() => pickDocument(key)}
+                >
+                    {uri ? (
+                        isPdf ? (
+                            <View style={[styles.docPreview, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#FEE2E2' }]}>
+                                <Ionicons name="document-text" size={30} color="#DC2626" />
+                            </View>
+                        ) : (
+                            <Image source={{ uri }} style={styles.docPreview} />
+                        )
+                    ) : (
+                        <Ionicons name="cloud-upload-outline" size={32} color="#999" />
+                    )}
+                    <View style={styles.uploadTextWrapper}>
+                        <ThemedText style={styles.uploadTitle}>{title}</ThemedText>
+                        <ThemedText style={styles.uploadDesc} numberOfLines={1}>
+                            {uri ? getFileName(uri) : subtitle}
+                        </ThemedText>
+                    </View>
+                    {uri && <Ionicons name="checkmark-circle" size={20} color="#D4AF37" />}
+                </TouchableOpacity>
+            );
+        };
 
-            <TouchableOpacity
-                style={[styles.uploadBox, formData.docs.aadhaar && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => pickImage('aadhaar')}
-            >
-                {formData.docs.aadhaar ? (
-                    <Image source={{ uri: formData.docs.aadhaar }} style={styles.docPreview} />
-                ) : (
-                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
-                )}
-                <View style={styles.uploadTextWrapper}>
-                    <ThemedText style={styles.uploadTitle}>Aadhaar Card</ThemedText>
-                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
-                        {formData.docs.aadhaar ? getFileName(formData.docs.aadhaar) : 'Address proof (Mandatory)'}
-                    </ThemedText>
-                </View>
-                {formData.docs.aadhaar && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
-            </TouchableOpacity>
+        return (
+            <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+                <ThemedText style={styles.sectionTitle}>Required Documents</ThemedText>
+                <ThemedText style={styles.stepSubTitle}>Upload clear copies of your documents (Images or PDF)</ThemedText>
 
-            <TouchableOpacity
-                style={[styles.uploadBox, formData.docs.income && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => pickImage('income')}
-            >
-                {formData.docs.income ? (
-                    <Image source={{ uri: formData.docs.income }} style={styles.docPreview} />
-                ) : (
-                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
-                )}
-                <View style={styles.uploadTextWrapper}>
-                    <ThemedText style={styles.uploadTitle}>Income Proof</ThemedText>
-                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
-                        {formData.docs.income ? getFileName(formData.docs.income) : 'Last 3 months salary slips'}
-                    </ThemedText>
+                <View style={styles.docGroup}>
+                    <ThemedText style={styles.groupLabel}>PAN Card</ThemedText>
+                    <View style={styles.dualUploadRow}>
+                        {renderUploadButton('panFront', 'Front Side', 'Identity front', false)}
+                        {renderUploadButton('panBack', 'Back Side', 'Identity back', false)}
+                    </View>
                 </View>
-                {formData.docs.income && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
-            </TouchableOpacity>
 
-            <TouchableOpacity
-                style={[styles.uploadBox, formData.docs.property && styles.uploadBoxActive, { borderColor: Colors[colorScheme].border }]}
-                onPress={() => pickImage('property')}
-            >
-                {formData.docs.property ? (
-                    <Image source={{ uri: formData.docs.property }} style={styles.docPreview} />
-                ) : (
-                    <Ionicons name="cloud-upload-outline" size={32} color="#999" />
-                )}
-                <View style={styles.uploadTextWrapper}>
-                    <ThemedText style={styles.uploadTitle}>Property Documents</ThemedText>
-                    <ThemedText style={styles.uploadDesc} numberOfLines={1}>
-                        {formData.docs.property ? getFileName(formData.docs.property) : 'Registry/Sale Deed copy'}
-                    </ThemedText>
+                <View style={styles.docGroup}>
+                    <ThemedText style={styles.groupLabel}>Aadhaar Card</ThemedText>
+                    <View style={styles.dualUploadRow}>
+                        {renderUploadButton('aadhaarFront', 'Front Side', 'Address front', false)}
+                        {renderUploadButton('aadhaarBack', 'Back Side', 'Address back', false)}
+                    </View>
                 </View>
-                {formData.docs.property && <Ionicons name="checkmark-circle" size={24} color="#D4AF37" />}
-            </TouchableOpacity>
-        </Animated.View>
-    );
+
+                <View style={styles.docGroup}>
+                    <ThemedText style={styles.groupLabel}>Financial & Property</ThemedText>
+                    {renderUploadButton('income', 'Income Proof', 'Last 3 months salary slips')}
+                    {renderUploadButton('property', 'Property Documents', 'Registry/Sale Deed copy')}
+                </View>
+            </Animated.View>
+        );
+    };
 
     return (
         <ThemedView style={styles.container}>
@@ -758,5 +775,20 @@ const styles = StyleSheet.create({
     uploadTextWrapper: {
         flex: 1,
         gap: 2,
+    },
+    docGroup: {
+        marginBottom: 24,
+    },
+    groupLabel: {
+        fontSize: 14,
+        fontWeight: '700',
+        opacity: 0.6,
+        marginBottom: 12,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+    },
+    dualUploadRow: {
+        flexDirection: 'row',
+        gap: 12,
     },
 });
