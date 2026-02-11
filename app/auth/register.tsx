@@ -300,4 +300,35 @@ const styles = StyleSheet.create({
         color: '#002D62',
         fontWeight: '700',
     },
+    googleBtn: {
+        backgroundColor: '#000000',
+        height: 60,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        flexDirection: 'row',
+        elevation: 2,
+    },
+    googleBtnText: {
+        color: '#FFFFFF',
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 24,
+        opacity: 0.6,
+    },
+    dividerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#CCC',
+    },
+    dividerText: {
+        marginHorizontal: 16,
+        fontSize: 14,
+        fontWeight: '500',
+    },
 });
