@@ -146,18 +146,15 @@ export default function RegisterScreen() {
                             )}
                         </TouchableOpacity>
 
-                        <View style={styles.footer}>
-                            <ThemedText style={styles.footerText}>Already have an account? </ThemedText>
-                            <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                                <ThemedText style={styles.linkText}>Login</ThemedText>
-                            </TouchableOpacity>
-                        </View>
-
                         <View style={styles.dividerContainer}>
                             <View style={styles.dividerLine} />
                             <ThemedText style={styles.dividerText}>or</ThemedText>
                             <View style={styles.dividerLine} />
                         </View>
+
+                        <ThemedText style={[styles.footerText, { textAlign: 'center', marginBottom: 15 }]}>
+                            Already have an account?
+                        </ThemedText>
 
                         <TouchableOpacity
                             style={styles.googleBtn}
