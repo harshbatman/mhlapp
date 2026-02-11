@@ -10,7 +10,7 @@ import { auth } from './firebase';
 const AUTH_KEY = 'user_session';
 
 // Helper to convert phone to a Firebase-compatible email
-const phoneToEmail = (phone: string) => `${phone}@mahto.id`;
+const phoneToEmail = (phone: string) => `${phone}@mahto.app`;
 
 export const AuthService = {
     async login(phone: string, password: string) {
