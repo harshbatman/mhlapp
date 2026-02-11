@@ -156,6 +156,13 @@ export default function RegisterScreen() {
                             )}
                         </TouchableOpacity>
 
+                        <View style={styles.footer}>
+                            <ThemedText style={styles.footerText}>Already have an account? </ThemedText>
+                            <TouchableOpacity onPress={() => router.push('/auth/login')}>
+                                <ThemedText style={styles.linkText}>Login</ThemedText>
+                            </TouchableOpacity>
+                        </View>
+
                         <View style={styles.dividerContainer}>
                             <View style={styles.dividerLine} />
                             <ThemedText style={styles.dividerText}>or</ThemedText>
@@ -169,13 +176,6 @@ export default function RegisterScreen() {
                         >
                             <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
-
-                        <View style={styles.footer}>
-                            <ThemedText style={styles.footerText}>Already have an account? </ThemedText>
-                            <TouchableOpacity onPress={() => router.push('/auth/login')}>
-                                <ThemedText style={styles.linkText}>Login</ThemedText>
-                            </TouchableOpacity>
-                        </View>
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
