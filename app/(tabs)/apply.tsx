@@ -42,6 +42,12 @@ export default function ApplyScreen() {
         monthlyIncome: '',
         company: '',
         experience: '',
+        industry: '',
+        profession: '',
+        businessNature: '',
+        annualTurnover: '',
+        gstNumber: '',
+        yearsInBusiness: '',
         // Step 4: Loan
         loanType: params.type || 'Construction',
         loanAmount: '',
@@ -302,9 +308,32 @@ export default function ApplyScreen() {
                 </View>
             </View>
 
-            {renderInput('Employer / Company Name', formData.company, 'company', 'e.g. Tata Motors')}
-            {renderInput('Monthly Net Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter amount', 'numeric')}
-            {renderInput('Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
+            {formData.occupation === 'Salaried' && (
+                <Animated.View entering={FadeInRight}>
+                    {renderInput('Employer / Company Name', formData.company, 'company', 'e.g. Tata Motors')}
+                    {renderInput('Industry', formData.industry, 'industry', 'e.g. IT, Healthcare, Banking')}
+                    {renderInput('Monthly Net Salary (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter net take-home salary', 'numeric')}
+                    {renderInput('Total Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
+                </Animated.View>
+            )}
+
+            {formData.occupation === 'Self-Employed' && (
+                <Animated.View entering={FadeInRight}>
+                    {renderInput('Profession', formData.profession, 'profession', 'e.g. Doctor, CA, Architect')}
+                    {renderInput('Monthly Average Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter average monthly income', 'numeric')}
+                    {renderInput('Years in Profession', formData.experience, 'experience', 'e.g. 10', 'numeric')}
+                </Animated.View>
+            )}
+
+            {formData.occupation === 'Business' && (
+                <Animated.View entering={FadeInRight}>
+                    {renderInput('Business Name', formData.company, 'company', 'Enter registered business name')}
+                    {renderInput('Nature of Business', formData.businessNature, 'businessNature', 'e.g. Trading, Manufacturing')}
+                    {renderInput('Annual Turnover (₹)', formData.annualTurnover, 'annualTurnover', 'Enter yearly turnover', 'numeric')}
+                    {renderInput('Years in Business', formData.yearsInBusiness, 'yearsInBusiness', 'e.g. 3', 'numeric')}
+                    {renderInput('GST Number (Optional)', formData.gstNumber, 'gstNumber', 'Enter GSTIN if applicable')}
+                </Animated.View>
+            )}
         </Animated.View>
     );
 
