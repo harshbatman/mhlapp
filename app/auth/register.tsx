@@ -30,7 +30,7 @@ export default function RegisterScreen() {
 
         // Save session
         await AuthService.setSession({ phone, name, email });
-        router.replace('/(tabs)');
+        router.replace('/home');
     };
 
     return (

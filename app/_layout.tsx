@@ -37,13 +37,15 @@ export default function RootLayout() {
       const loggedIn = await AuthService.isLoggedIn();
       const isRoot = segments.length < 1;
       const isAuthGroup = segments[0] === 'auth';
-      const isTabsGroup = segments[0] === '(tabs)';
+
+      const protectedScreens = ['home', 'calculator', 'apply', 'profile', 'edit-profile', 'track-status'];
+      const isProtected = protectedScreens.includes(segments[0]);
 
       if (loggedIn && (isRoot || isAuthGroup)) {
-        // Redirect to tabs if logged in and on welcome/auth screens
-        router.replace('/(tabs)');
-      } else if (!loggedIn && segments[0] === '(tabs)') {
-        // Redirect to welcome if not logged in and trying to access tabs
+        // Redirect to home if logged in and on welcome/auth screens
+        router.replace('/home');
+      } else if (!loggedIn && isProtected) {
+        // Redirect to welcome if not logged in and trying to access protected screens
         router.replace('/');
       }
     };
@@ -63,7 +65,8 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ animation: 'fade' }} />
           <Stack.Screen name="auth/login" options={{ animation: 'slide_from_bottom' }} />
           <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="(tabs)" options={{ gestureEnabled: false, headerShown: false }} />
+          <Stack.Screen name="home" options={{ gestureEnabled: false, headerShown: false }} />
+          <Stack.Screen name="calculator" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="loan-details" options={{ presentation: 'card', headerShown: false }} />
           <Stack.Screen name="profile" options={{ presentation: 'card', animation: 'slide_from_right' }} />
           <Stack.Screen name="edit-profile" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />

@@ -132,7 +132,7 @@ export default function ApplyScreen() {
         Alert.alert(
             'Application Submitted!',
             'Our verification team will review your details and contact you within 24 hours.',
-            [{ text: 'Great!', onPress: () => router.replace('/') }]
+            [{ text: 'Great!', onPress: () => router.replace('/home') }]
         );
     };
 

@@ -32,7 +32,7 @@ export default function LoginScreen() {
         // Demo credentials check
         if (phone === '9876543210' && password === 'password123') {
             await AuthService.setSession({ phone, name: 'Harsh Mahto' });
-            router.replace('/(tabs)');
+            router.replace('/home');
         } else {
             alert('Invalid credentials. Use demo: 9876543210 / password123');
         }

@@ -120,7 +120,7 @@ export default function HomeScreen() {
           <View style={styles.quickActionsGrid}>
             <TouchableOpacity
               style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface }]}
-              onPress={() => router.push('/(tabs)/calculator')}
+              onPress={() => router.push('/calculator')}
             >
               <Ionicons name="calculator-outline" size={32} color={Colors[colorScheme].tint} />
               <ThemedText style={styles.actionLabel}>{t('emiCalc')}</ThemedText>
