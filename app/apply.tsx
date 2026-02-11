@@ -13,6 +13,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -30,6 +31,7 @@ INDIAN_DEVELOPERS.push('Other');
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
+    const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ type?: string }>();
 
     const [step, setStep] = useState(1);
@@ -266,8 +268,8 @@ export default function ApplyScreen() {
                 maxLength={maxLength}
             />
             {key === 'developerName' && developerSuggestions.length > 0 && (
-                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 250, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
                         {developerSuggestions.map((dev) => (
                             <TouchableOpacity
                                 key={dev}
@@ -619,7 +621,11 @@ export default function ApplyScreen() {
                 behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                 style={{ flex: 1 }}
             >
-                <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    keyboardShouldPersistTaps="handled"
+                >
                     <LinearGradient
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
                         style={styles.header}
@@ -644,41 +650,41 @@ export default function ApplyScreen() {
                         </View>
                     </LinearGradient>
 
-                    <View style={[styles.formContent, { paddingBottom: isKeyboardVisible ? 40 : 120 }]}>
-                        {step === 1 && renderStep1()}
-                        {step === 2 && renderStep2()}
-                        {step === 3 && renderStep3()}
-                        {step === 4 && renderStep4()}
-                        {step === 5 && renderStep5()}
+                    <View style={styles.formContent}>
+                        <View style={{ flex: 1 }}>
+                            {step === 1 && renderStep1()}
+                            {step === 2 && renderStep2()}
+                            {step === 3 && renderStep3()}
+                            {step === 4 && renderStep4()}
+                            {step === 5 && renderStep5()}
 
-                        {step === totalSteps && (
-                            <ThemedText style={styles.disclaimer}>
-                                By submitting, you authorize MAHTO Home Loans to access your credit report and contact you for verification.
-                            </ThemedText>
-                        )}
-                    </View>
-                </ScrollView>
-
-                {!isKeyboardVisible && (
-                    <View style={styles.fixedFooter}>
-                        <View style={styles.buttonRow}>
-                            {step > 1 && (
-                                <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
-                                    <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
-                                </TouchableOpacity>
-                            )}
-                            <TouchableOpacity
-                                style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
-                                onPress={handleNext}
-                            >
-                                <ThemedText style={styles.primaryBtnText}>
-                                    {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                            {step === totalSteps && (
+                                <ThemedText style={styles.disclaimer}>
+                                    By submitting, you authorize MAHTO Home Loans to access your credit report and contact you for verification.
                                 </ThemedText>
-                                <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
-                            </TouchableOpacity>
+                            )}
+                        </View>
+
+                        <View style={[styles.buttonContainer, { paddingBottom: Math.max(insets.bottom, 24) }]}>
+                            <View style={styles.buttonRow}>
+                                {step > 1 && (
+                                    <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
+                                        <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
+                                    </TouchableOpacity>
+                                )}
+                                <TouchableOpacity
+                                    style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
+                                    onPress={handleNext}
+                                >
+                                    <ThemedText style={styles.primaryBtnText}>
+                                        {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                    </ThemedText>
+                                    <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                                </TouchableOpacity>
+                            </View>
                         </View>
                     </View>
-                )}
+                </ScrollView>
             </KeyboardAvoidingView>
         </ThemedView>
     );
@@ -735,9 +741,11 @@ const styles = StyleSheet.create({
     },
     formContent: {
         padding: 24,
+        flex: 1,
     },
     stepContainer: {
         width: '100%',
+        zIndex: 10, // Ensure dropdowns inside steps are above buttons
     },
     sectionTitle: {
         fontSize: 20,
@@ -801,17 +809,10 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         opacity: 0.7,
     },
-    fixedFooter: {
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        backgroundColor: 'rgba(255,255,255,0.9)',
-        paddingHorizontal: 24,
+    buttonContainer: {
+        marginTop: 32,
         paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-        paddingTop: 16,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(0,0,0,0.05)',
+        zIndex: 1, // Stay below dropdowns
     },
     buttonRow: {
         flexDirection: 'row',
