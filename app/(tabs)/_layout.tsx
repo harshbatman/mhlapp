@@ -20,6 +20,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           height: Platform.OS === 'ios' ? 88 : 72 + insets.bottom,
           paddingBottom: Platform.OS === 'ios' ? insets.bottom : insets.bottom + 8,
