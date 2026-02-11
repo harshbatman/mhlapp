@@ -50,6 +50,9 @@ export default function ApplyScreen() {
         annualTurnover: '',
         gstNumber: '',
         yearsInBusiness: '',
+        hasExistingLoan: false,
+        existingLoanTypes: [] as string[],
+        totalExistingEMI: '',
         // Step 4: Loan
         loanType: params.type || 'Construction',
         loanAmount: '',
@@ -389,6 +392,50 @@ export default function ApplyScreen() {
                     {renderInput('GST Number (Optional)', formData.gstNumber, 'gstNumber', 'Enter GSTIN if applicable')}
                 </Animated.View>
             )}
+
+            <View style={[styles.inputContainer, { marginTop: 24, paddingTop: 24, borderTopWidth: 1, borderTopColor: Colors[colorScheme].border + '40' }]}>
+                <ThemedText style={{ fontSize: 18, fontWeight: '700', marginBottom: 16 }}>Financial Obligations</ThemedText>
+
+                <TouchableOpacity
+                    style={styles.checkboxRow}
+                    onPress={() => setFormData({ ...formData, hasExistingLoan: !formData.hasExistingLoan })}
+                >
+                    <Ionicons
+                        name={formData.hasExistingLoan ? "checkbox" : "square-outline"}
+                        size={24}
+                        color={formData.hasExistingLoan ? "#D4AF37" : "#999"}
+                    />
+                    <ThemedText style={styles.checkboxLabel}>Do you have any existing loans?</ThemedText>
+                </TouchableOpacity>
+
+                {formData.hasExistingLoan && (
+                    <Animated.View entering={FadeInRight}>
+                        <ThemedText style={[styles.label, { marginBottom: 12 }]}>Select Loan Types</ThemedText>
+                        <View style={styles.rowWrap}>
+                            {['Car Loan', 'Personal Loan', 'Gold Loan', 'Home Loan', 'Other'].map((type) => {
+                                const isSelected = formData.existingLoanTypes.includes(type);
+                                return (
+                                    <TouchableOpacity
+                                        key={type}
+                                        style={[styles.chip, isSelected && styles.chipSelected, { borderColor: Colors[colorScheme].border }]}
+                                        onPress={() => {
+                                            const newTypes = isSelected
+                                                ? formData.existingLoanTypes.filter(t => t !== type)
+                                                : [...formData.existingLoanTypes, type];
+                                            setFormData({ ...formData, existingLoanTypes: newTypes });
+                                        }}
+                                    >
+                                        <ThemedText style={[styles.chipText, isSelected && styles.chipTextSelected]}>{type}</ThemedText>
+                                    </TouchableOpacity>
+                                );
+                            })}
+                        </View>
+                        <View style={{ marginTop: 20 }}>
+                            {renderInput('Total Monthly EMI (₹)', formData.totalExistingEMI, 'totalExistingEMI', 'Enter combined EMI amount', 'numeric')}
+                        </View>
+                    </Animated.View>
+                )}
+            </View>
         </Animated.View>
     );
 
