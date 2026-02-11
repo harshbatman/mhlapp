@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal';
 
 import { ThemedText } from '@/components/themed-text';
@@ -22,15 +22,28 @@ export default function RegisterScreen() {
     const [countryCode, setCountryCode] = useState<CountryCode>('IN');
     const [callingCode, setCallingCode] = useState('91');
 
+    const [loading, setLoading] = useState(false);
+
     const handleRegister = async () => {
-        if (!name || phone.length !== 10) {
-            alert('Please enter your name and a valid 10-digit phone number');
+        if (!name || phone.length < 10) {
+            alert('Please enter your name and a valid phone number');
+            return;
+        }
+        if (!password || password.length < 6) {
+            alert('Password must be at least 6 characters');
             return;
         }
 
-        // Save session
-        await AuthService.setSession({ phone, name, email });
-        router.replace('/home');
+        try {
+            setLoading(true);
+            const fullPhone = callingCode + phone;
+            await AuthService.register(fullPhone, password, { name, email });
+            router.replace('/home');
+        } catch (error: any) {
+            alert('Registration failed: ' + (error.message || 'Please try again'));
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -119,8 +132,16 @@ export default function RegisterScreen() {
                             </View>
                         </View>
 
-                        <TouchableOpacity style={styles.registerBtn} onPress={handleRegister}>
-                            <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
+                        <TouchableOpacity
+                            style={[styles.registerBtn, loading && { opacity: 0.7 }]}
+                            onPress={handleRegister}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <ActivityIndicator color="#D4AF37" />
+                            ) : (
+                                <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
+                            )}
                         </TouchableOpacity>
 
                         <View style={styles.footer}>

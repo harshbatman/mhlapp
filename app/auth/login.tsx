@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
-import { Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal';
 
 import { ThemedText } from '@/components/themed-text';
@@ -22,19 +22,27 @@ export default function LoginScreen() {
     const [countryCode, setCountryCode] = useState<CountryCode>('IN');
     const [callingCode, setCallingCode] = useState('91');
 
+    const [loading, setLoading] = useState(false);
+
     const handleLogin = async () => {
-        // Basic validation
-        if (phone.length !== 10) {
-            alert('Please enter a valid 10-digit phone number');
+        if (phone.length < 10) {
+            alert('Please enter a valid phone number');
+            return;
+        }
+        if (!password) {
+            alert('Please enter your password');
             return;
         }
 
-        // Demo credentials check
-        if (phone === '9876543210' && password === 'password123') {
-            await AuthService.setSession({ phone, name: 'Harsh Mahto' });
+        try {
+            setLoading(true);
+            const fullPhone = callingCode + phone;
+            await AuthService.login(fullPhone, password);
             router.replace('/home');
-        } else {
-            alert('Invalid credentials. Use demo: 9876543210 / password123');
+        } catch (error: any) {
+            alert('Login failed: ' + (error.message || 'Check your credentials'));
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -97,8 +105,16 @@ export default function LoginScreen() {
                             </View>
                         </View>
 
-                        <TouchableOpacity style={styles.loginBtn} onPress={handleLogin}>
-                            <ThemedText style={styles.loginBtnText}>Login</ThemedText>
+                        <TouchableOpacity
+                            style={[styles.loginBtn, loading && { opacity: 0.7 }]}
+                            onPress={handleLogin}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <ActivityIndicator color="#D4AF37" />
+                            ) : (
+                                <ThemedText style={styles.loginBtnText}>Login</ThemedText>
+                            )}
                         </TouchableOpacity>
 
                         <View style={styles.footer}>
