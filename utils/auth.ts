@@ -1,4 +1,5 @@
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Constants from 'expo-constants';
 import * as SecureStore from 'expo-secure-store';
 import {
     createUserWithEmailAndPassword,
@@ -12,16 +13,28 @@ import { auth } from './firebase';
 
 const AUTH_KEY = 'user_session';
 
-// Configure Google Sign-In
-GoogleSignin.configure({
-    webClientId: '94425344059-bkb1nnbp3a5tpf65uggohvlqhov7kt4q.apps.googleusercontent.com', // From google-services.json
-});
+// Configure Google Sign-In (Only for non-Expo Go environments)
+if (Constants.appOwnership !== 'expo') {
+    try {
+        GoogleSignin.configure({
+            webClientId: '94425344059-bkb1nnbp3a5tpf65uggohvlqhov7kt4q.apps.googleusercontent.com', // From google-services.json
+        });
+    } catch (e) {
+        console.warn('Google Signin configure error (likely in Expo Go)', e);
+    }
+}
 
 // Helper to convert phone to a Firebase-compatible email
 const phoneToEmail = (phone: string) => `${phone}@mahto.app`;
 
 export const AuthService = {
     async loginWithGoogle() {
+        // Prevent crash in Expo Go
+        if (Constants.appOwnership === 'expo') {
+            alert('Google Login is not supported in Expo Go. Please create a Development Build to test this feature.');
+            return null;
+        }
+
         try {
             await GoogleSignin.hasPlayServices();
             const { data } = await GoogleSignin.signIn();
