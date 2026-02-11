@@ -17,8 +17,7 @@
         "backgroundColor": "#000000"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
-      "softwareKeyboardLayoutMode": "adjustPan"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "output": "static",

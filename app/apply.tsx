@@ -90,8 +90,11 @@ export default function ApplyScreen() {
             setFormData(prev => ({ ...prev, loanType: params.type as string }));
         }
 
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+        const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+        const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+        const keyboardDidShowListener = Keyboard.addListener(showEvent, () => setKeyboardVisible(true));
+        const keyboardDidHideListener = Keyboard.addListener(hideEvent, () => setKeyboardVisible(false));
 
         return () => {
             keyboardDidShowListener.remove();
@@ -641,31 +644,12 @@ export default function ApplyScreen() {
                         </View>
                     </LinearGradient>
 
-                    <View style={styles.formContent}>
+                    <View style={[styles.formContent, { paddingBottom: isKeyboardVisible ? 40 : 120 }]}>
                         {step === 1 && renderStep1()}
                         {step === 2 && renderStep2()}
                         {step === 3 && renderStep3()}
                         {step === 4 && renderStep4()}
                         {step === 5 && renderStep5()}
-
-                        {!isKeyboardVisible && (
-                            <View style={styles.buttonRow}>
-                                {step > 1 && (
-                                    <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
-                                        <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
-                                    </TouchableOpacity>
-                                )}
-                                <TouchableOpacity
-                                    style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
-                                    onPress={handleNext}
-                                >
-                                    <ThemedText style={styles.primaryBtnText}>
-                                        {step === totalSteps ? 'Submit Application' : 'Next Step'}
-                                    </ThemedText>
-                                    <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
-                                </TouchableOpacity>
-                            </View>
-                        )}
 
                         {step === totalSteps && (
                             <ThemedText style={styles.disclaimer}>
@@ -674,6 +658,27 @@ export default function ApplyScreen() {
                         )}
                     </View>
                 </ScrollView>
+
+                {!isKeyboardVisible && (
+                    <View style={styles.fixedFooter}>
+                        <View style={styles.buttonRow}>
+                            {step > 1 && (
+                                <TouchableOpacity style={[styles.navBtn, styles.secondaryBtn]} onPress={handleBack}>
+                                    <ThemedText style={styles.secondaryBtnText}>Back</ThemedText>
+                                </TouchableOpacity>
+                            )}
+                            <TouchableOpacity
+                                style={[styles.navBtn, styles.primaryBtn, step === 1 && { width: '100%' }]}
+                                onPress={handleNext}
+                            >
+                                <ThemedText style={styles.primaryBtnText}>
+                                    {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                </ThemedText>
+                                <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
             </KeyboardAvoidingView>
         </ThemedView>
     );
@@ -796,10 +801,21 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         opacity: 0.7,
     },
+    fixedFooter: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: 'rgba(255,255,255,0.9)',
+        paddingHorizontal: 24,
+        paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+        paddingTop: 16,
+        borderTopWidth: 1,
+        borderTopColor: 'rgba(0,0,0,0.05)',
+    },
     buttonRow: {
         flexDirection: 'row',
         gap: 16,
-        marginTop: 20,
     },
     navBtn: {
         height: 64,
