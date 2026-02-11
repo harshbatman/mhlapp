@@ -7,6 +7,7 @@ import { Alert, Dimensions, Image, Platform, ScrollView, StyleSheet, TouchableOp
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
+import { useTranslation } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthService } from '@/utils/auth';
 
@@ -30,6 +31,7 @@ const ProfileOption = ({ icon, title, onPress, color, showArrow = true }: { icon
 export default function ProfileScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
+    const { t } = useTranslation();
     const [userData, setUserData] = useState<any>(null);
 
     useFocusEffect(
@@ -44,7 +46,7 @@ export default function ProfileScreen() {
 
     const handleLogout = () => {
         Alert.alert(
-            'Logout',
+            t('logout'),
             'Are you sure you want to logout?',
             [
                 { text: 'No', style: 'cancel' },
@@ -71,7 +73,7 @@ export default function ProfileScreen() {
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
                             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                         </TouchableOpacity>
-                        <ThemedText style={styles.headerTitle}>My Profile</ThemedText>
+                        <ThemedText style={styles.headerTitle}>{t('profile')}</ThemedText>
                         <View style={{ width: 40 }} />
                     </View>
 
@@ -91,19 +93,19 @@ export default function ProfileScreen() {
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Account Settings</ThemedText>
                     <View style={[styles.card, { backgroundColor: Colors[colorScheme].surface }]}>
-                        <ProfileOption icon="person-outline" title="Edit Profile" onPress={() => router.push('/edit-profile')} />
-                        <ProfileOption icon="language-outline" title="Language" onPress={() => { }} />
-                        <ProfileOption icon="notifications-outline" title="Notification Settings" onPress={() => { }} />
+                        <ProfileOption icon="person-outline" title={t('editProfile')} onPress={() => router.push('/edit-profile')} />
+                        <ProfileOption icon="language-outline" title={t('language')} onPress={() => router.push('/language')} />
+                        <ProfileOption icon="notifications-outline" title="Notification Settings" onPress={() => router.push('/notifications')} />
                     </View>
                 </View>
 
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Information</ThemedText>
                     <View style={[styles.card, { backgroundColor: Colors[colorScheme].surface }]}>
-                        <ProfileOption icon="information-circle-outline" title="About Us" onPress={() => { }} />
-                        <ProfileOption icon="document-text-outline" title="Terms & Conditions" onPress={() => { }} />
-                        <ProfileOption icon="shield-checkmark-outline" title="Privacy Policy" onPress={() => { }} />
-                        <ProfileOption icon="refresh-circle-outline" title="Refund Policy" onPress={() => { }} />
+                        <ProfileOption icon="information-circle-outline" title="About Us" onPress={() => router.push('/about')} />
+                        <ProfileOption icon="document-text-outline" title="Terms & Conditions" onPress={() => router.push('/terms')} />
+                        <ProfileOption icon="shield-checkmark-outline" title="Privacy Policy" onPress={() => router.push('/privacy')} />
+                        <ProfileOption icon="refresh-circle-outline" title="Refund Policy" onPress={() => router.push('/refund')} />
                     </View>
                 </View>
 
@@ -111,7 +113,7 @@ export default function ProfileScreen() {
                     <ThemedText style={styles.sectionTitle}>Help & Support</ThemedText>
                     <View style={[styles.card, { backgroundColor: Colors[colorScheme].surface }]}>
                         <ProfileOption icon="headset-outline" title="Help Center / FAQ" onPress={() => { }} />
-                        <ProfileOption icon="mail-outline" title="Contact Us" onPress={() => { }} />
+                        <ProfileOption icon="mail-outline" title="Contact Us" onPress={() => router.push('/contact')} />
                         <ProfileOption icon="star-outline" title="Rate Us" onPress={() => { }} />
                     </View>
                 </View>

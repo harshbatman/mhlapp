@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HapticTab } from '@/components/haptic-tab';
 import { Colors } from '@/constants/theme';
+import { useTranslation } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme() ?? 'light';
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   return (
     <Tabs
@@ -30,21 +32,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: t('home'),
           tabBarIcon: ({ color }) => <Ionicons size={24} name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="apply"
         options={{
-          title: 'Apply',
+          title: t('apply'),
           tabBarIcon: ({ color }) => <Ionicons size={24} name="document-text" color={color} />,
         }}
       />
       <Tabs.Screen
         name="calculator"
         options={{
-          title: 'Calculator',
+          title: t('calculator'),
           tabBarIcon: ({ color }) => <Ionicons size={24} name="calculator" color={color} />,
         }}
       />

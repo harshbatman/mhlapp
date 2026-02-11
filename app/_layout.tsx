@@ -17,6 +17,7 @@ if (!__DEV__) {
   });
 }
 
+import { LanguageProvider } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export const unstable_settings = {
@@ -34,9 +35,9 @@ export default function RootLayout() {
 
     const syncAuth = async () => {
       const loggedIn = await AuthService.isLoggedIn();
-      // segments.length === 0 means we are on the root index page
-      const isRoot = segments.length === 0;
+      const isRoot = segments.length < 1;
       const isAuthGroup = segments[0] === 'auth';
+      const isTabsGroup = segments[0] === '(tabs)';
 
       if (loggedIn && (isRoot || isAuthGroup)) {
         // Redirect to tabs if logged in and on welcome/auth screens
@@ -56,19 +57,28 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" options={{ animation: 'fade' }} />
-        <Stack.Screen name="auth/login" options={{ animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
-        <Stack.Screen name="(tabs)" options={{ gestureEnabled: false, headerShown: false }} />
-        <Stack.Screen name="loan-details" options={{ presentation: 'card', headerShown: false }} />
-        <Stack.Screen name="profile" options={{ presentation: 'card', animation: 'slide_from_right' }} />
-        <Stack.Screen name="edit-profile" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
-        <Stack.Screen name="track-status" options={{ animation: 'slide_from_right' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <LanguageProvider>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" options={{ animation: 'fade' }} />
+          <Stack.Screen name="auth/login" options={{ animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="(tabs)" options={{ gestureEnabled: false, headerShown: false }} />
+          <Stack.Screen name="loan-details" options={{ presentation: 'card', headerShown: false }} />
+          <Stack.Screen name="profile" options={{ presentation: 'card', animation: 'slide_from_right' }} />
+          <Stack.Screen name="edit-profile" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="track-status" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="language" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+          <Stack.Screen name="notifications" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="about" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="terms" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="privacy" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="refund" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="contact" options={{ animation: 'slide_from_right' }} />
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </LanguageProvider>
   );
 }

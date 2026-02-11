@@ -8,42 +8,44 @@ import { LoanCard } from '@/components/LoanCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors } from '@/constants/theme';
+import { useTranslation } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthService } from '@/utils/auth';
 
 const { width } = Dimensions.get('window');
 
-const LOAN_TYPES = [
-  {
-    id: 'construction',
-    title: 'Construction Loan',
-    description: 'Build your dream home from ground up with easy installments.',
-    icon: 'construct-outline' as const,
-  },
-  {
-    id: 'lap',
-    title: 'LAP (Loan Against Property)',
-    description: 'Unlock the value of your property for your financial needs.',
-    icon: 'business-outline' as const,
-  },
-  {
-    id: 'renovation',
-    title: 'Renovation Loan',
-    description: 'Give your home a fresh look with our flexible renovation plans.',
-    icon: 'color-fill-outline' as const,
-  },
-  {
-    id: 'flat-buying',
-    title: 'Flat Buying Loan',
-    description: 'Own your perfect apartment with competitive interest rates.',
-    icon: 'home-outline' as const,
-  },
-];
-
 export default function HomeScreen() {
   const colorScheme = useColorScheme() ?? 'light';
   const router = useRouter();
+  const { t } = useTranslation();
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
+
+  const LOAN_TYPES = [
+    {
+      id: 'construction',
+      title: t('construction'),
+      description: 'Build your dream home from ground up with easy installments.',
+      icon: 'construct-outline' as const,
+    },
+    {
+      id: 'lap',
+      title: t('lap'),
+      description: 'Unlock the value of your property for your financial needs.',
+      icon: 'business-outline' as const,
+    },
+    {
+      id: 'renovation',
+      title: t('renovation'),
+      description: 'Give your home a fresh look with our flexible renovation plans.',
+      icon: 'color-fill-outline' as const,
+    },
+    {
+      id: 'flat-buying',
+      title: t('flatBuying'),
+      description: 'Own your perfect apartment with competitive interest rates.',
+      icon: 'home-outline' as const,
+    },
+  ];
 
   useFocusEffect(
     useCallback(() => {
@@ -67,7 +69,7 @@ export default function HomeScreen() {
         >
           <View style={styles.headerContent}>
             <View>
-              <ThemedText style={styles.welcomeText}>Welcome to</ThemedText>
+              <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
               <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
             </View>
             <View style={styles.headerActions}>
@@ -82,20 +84,20 @@ export default function HomeScreen() {
           </View>
 
           <View style={styles.promoCard}>
-            <ThemedText style={styles.promoTitle}>Lowest Interest Rates</ThemedText>
-            <ThemedText style={styles.promoRate}>Starting at 8.40% p.a.*</ThemedText>
+            <ThemedText style={styles.promoTitle}>{t('lowestRates')}</ThemedText>
+            <ThemedText style={styles.promoRate}>{t('startingAt')}</ThemedText>
             <TouchableOpacity
               style={styles.applyNowBtn}
               onPress={() => router.push('/(tabs)/apply')}
             >
-              <ThemedText style={styles.applyNowText}>Apply Now</ThemedText>
+              <ThemedText style={styles.applyNowText}>{t('applyNow')}</ThemedText>
             </TouchableOpacity>
           </View>
         </LinearGradient>
 
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
-            <ThemedText type="subtitle" style={styles.sectionTitle}>Our Loan Products</ThemedText>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>{t('loanProducts')}</ThemedText>
           </View>
 
           {LOAN_TYPES.map((loan) => (
@@ -112,7 +114,7 @@ export default function HomeScreen() {
           ))}
 
           <View style={styles.sectionHeader}>
-            <ThemedText type="subtitle" style={styles.sectionTitle}>Quick Actions</ThemedText>
+            <ThemedText type="subtitle" style={styles.sectionTitle}>{t('quickActions')}</ThemedText>
           </View>
 
           <View style={styles.quickActionsGrid}>
@@ -121,7 +123,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/(tabs)/calculator')}
             >
               <Ionicons name="calculator-outline" size={32} color={Colors[colorScheme].tint} />
-              <ThemedText style={styles.actionLabel}>EMI Calc</ThemedText>
+              <ThemedText style={styles.actionLabel}>{t('emiCalc')}</ThemedText>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -129,7 +131,7 @@ export default function HomeScreen() {
               onPress={() => router.push('/track-status')}
             >
               <Ionicons name="document-text-outline" size={32} color={Colors[colorScheme].tint} />
-              <ThemedText style={styles.actionLabel}>Track Status</ThemedText>
+              <ThemedText style={styles.actionLabel}>{t('trackStatus')}</ThemedText>
             </TouchableOpacity>
           </View>
         </View>

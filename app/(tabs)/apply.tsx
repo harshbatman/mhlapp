@@ -20,7 +20,7 @@ export default function ApplyScreen() {
         phone: '',
         email: '',
         loanAmount: '',
-        loanType: params.type || 'Construction Loan',
+        loanType: params.type || 'Construction',
     });
 
     useEffect(() => {
@@ -79,7 +79,9 @@ export default function ApplyScreen() {
                                     <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                                 </TouchableOpacity>
                             )}
-                            <ThemedText style={styles.headerTitle}>Loan Application</ThemedText>
+                            <ThemedText style={styles.headerTitle}>
+                                {formData.loanType ? `${formData.loanType} Application` : 'Loan Application'}
+                            </ThemedText>
                         </View>
                         <ThemedText style={styles.headerSubtitle}>Enter your details to get started</ThemedText>
                     </LinearGradient>
@@ -101,7 +103,7 @@ export default function ApplyScreen() {
                                             formData.loanType.includes(type) && styles.typeOptionSelected,
                                             { borderColor: Colors[colorScheme].border }
                                         ]}
-                                        onPress={() => setFormData({ ...formData, loanType: type + ' Loan' })}
+                                        onPress={() => setFormData({ ...formData, loanType: type })}
                                     >
                                         <ThemedText style={[
                                             styles.typeOptionText,
@@ -140,8 +142,9 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         color: '#FFFFFF',
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: '800',
+        flex: 1,
     },
     headerTopRow: {
         flexDirection: 'row',
