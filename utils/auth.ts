@@ -46,6 +46,35 @@ if (Constants.appOwnership !== 'expo') {
 // Helper to convert phone to a Firebase-compatible email
 const phoneToEmail = (phone: string) => `${phone}@mahto.app`;
 
+// Helper: Convert Firebase Error Codes to Friendly Messages
+const getFriendlyErrorMessage = (error: any) => {
+    const code = error.code || error.message;
+    if (!code) return 'We are experiencing some technical difficulties. Please try again in a few moments.';
+
+    switch (code) {
+        case 'auth/invalid-credential':
+        case 'auth/user-not-found':
+        case 'auth/wrong-password':
+            return 'Incorrect phone number or password. Please verify your details.';
+        case 'auth/email-already-in-use':
+            return 'An account with this phone number already exists. Please login.';
+        case 'auth/weak-password':
+            return 'For your security, please use a stronger password (at least 6 characters).';
+        case 'auth/network-request-failed':
+            return 'Connection error. Please check your internet and try again.';
+        case 'auth/too-many-requests':
+            return 'Too many attempts. For your security, this account has been temporarily disabled. Please try again later.';
+        case 'auth/invalid-email':
+            return 'The phone number format appears to be incorrect.';
+        case 'auth/user-disabled':
+            return 'This account has been disabled. Please contact support.';
+        case 'auth/operation-not-allowed':
+            return 'This sign-in method is currently unavailable.';
+        default:
+            return 'We encountered an issue processing your request. Please try again shortly.';
+    }
+};
+
 export const AuthService = {
     async loginWithGoogle() {
         // Prevent crash in Expo Go
@@ -76,7 +105,7 @@ export const AuthService = {
             return sessionData;
         } catch (error: any) {
             console.error('Google Sign-In Error', error);
-            throw new Error(error.message || 'Google Sign-In failed');
+            throw new Error(getFriendlyErrorMessage(error));
         }
     },
 
@@ -95,7 +124,7 @@ export const AuthService = {
             await this.setSession(sessionData);
             return sessionData;
         } catch (error: any) {
-            throw new Error(error.message || 'Login failed');
+            throw new Error(getFriendlyErrorMessage(error));
         }
     },
 
@@ -114,7 +143,7 @@ export const AuthService = {
             await this.setSession(sessionData);
             return sessionData;
         } catch (error: any) {
-            throw new Error(error.message || 'Registration failed');
+            throw new Error(getFriendlyErrorMessage(error));
         }
     },
 

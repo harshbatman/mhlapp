@@ -40,7 +40,7 @@ export default function LoginScreen() {
             await AuthService.login(fullPhone, password);
             router.replace('/home');
         } catch (error: any) {
-            alert('Login failed: ' + (error.message || 'Check your credentials'));
+            alert(error.message || 'We encountered an issue during login. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -52,7 +52,7 @@ export default function LoginScreen() {
             await AuthService.loginWithGoogle();
             router.replace('/home');
         } catch (error: any) {
-            alert('Google Login failed: ' + (error.message || 'Please try again'));
+            alert(error.message || 'We encountered an issue with Google login. Please try again.');
         } finally {
             setLoading(false);
         }

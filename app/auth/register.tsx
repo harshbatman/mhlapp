@@ -40,7 +40,7 @@ export default function RegisterScreen() {
             await AuthService.register(fullPhone, password, { name, email });
             router.replace('/home');
         } catch (error: any) {
-            alert('Registration failed: ' + (error.message || 'Please try again'));
+            alert(error.message || 'We encountered an issue during registration. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -52,7 +52,7 @@ export default function RegisterScreen() {
             await AuthService.loginWithGoogle();
             router.replace('/home');
         } catch (error: any) {
-            alert('Google Signup failed: ' + (error.message || 'Please try again'));
+            alert(error.message || 'We encountered an issue with Google signup. Please try again.');
         } finally {
             setLoading(false);
         }

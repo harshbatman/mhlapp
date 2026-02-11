@@ -54,8 +54,12 @@ export default function ProfileScreen() {
                     text: 'Yes',
                     style: 'destructive',
                     onPress: async () => {
-                        await AuthService.logout();
-                        router.replace('/');
+                        try {
+                            await AuthService.logout();
+                            router.replace('/');
+                        } catch (error: any) {
+                            alert('We encountered an issue during logout. Please try again.');
+                        }
                     }
                 }
             ]
