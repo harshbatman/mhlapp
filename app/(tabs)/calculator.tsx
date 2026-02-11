@@ -4,10 +4,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     runOnJS,
-    useAnimatedGestureHandler,
     useAnimatedStyle,
     useSharedValue,
     withSpring
@@ -35,6 +34,7 @@ interface AnimatedSliderProps {
 const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, suffix }: AnimatedSliderProps) => {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const translateX = useSharedValue(0);
+    const startX = useSharedValue(0);
     const isPressed = useSharedValue(false);
 
     // Initialize position based on current value
@@ -43,13 +43,13 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
         translateX.value = initialPos;
     }, []);
 
-    const gestureHandler = useAnimatedGestureHandler({
-        onStart: (_, ctx: any) => {
-            ctx.startX = translateX.value;
+    const panGesture = Gesture.Pan()
+        .onBegin(() => {
+            startX.value = translateX.value;
             isPressed.value = true;
-        },
-        onActive: (event, ctx: any) => {
-            let nextX = ctx.startX + event.translationX;
+        })
+        .onUpdate((event) => {
+            let nextX = startX.value + event.translationX;
             nextX = Math.max(0, Math.min(nextX, SLIDER_WIDTH));
             translateX.value = nextX;
 
@@ -57,12 +57,11 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
             const rawValue = min + percentage * (max - min);
             const steppedValue = Math.round(rawValue / step) * step;
             runOnJS(onChange)(steppedValue);
-        },
-        onEnd: () => {
+        })
+        .onEnd(() => {
             isPressed.value = false;
             runOnJS(Haptics.impactAsync)(Haptics.ImpactFeedbackStyle.Light);
-        },
-    });
+        });
 
     const thumbStyle = useAnimatedStyle(() => {
         return {
@@ -103,9 +102,9 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
 
             <View style={[styles.track, { backgroundColor: Colors[colorScheme].border }]}>
                 <Animated.View style={[styles.progress, progressStyle]} />
-                <PanGestureHandler onGestureEvent={gestureHandler}>
+                <GestureDetector gesture={panGesture}>
                     <Animated.View style={[styles.thumb, thumbStyle]} />
-                </PanGestureHandler>
+                </GestureDetector>
             </View>
 
             <View style={styles.rangeLabels}>
@@ -163,95 +162,97 @@ export default function CalculatorScreen() {
     };
 
     return (
-        <ThemedView style={styles.container}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <LinearGradient
-                    colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={styles.header}
-                >
-                    <View style={styles.headerTopRow}>
-                        {router.canGoBack() && (
-                            <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                            </TouchableOpacity>
-                        )}
-                        <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
-                    </View>
-                    <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
-                </LinearGradient>
-
-                <View style={styles.content}>
-                    <View style={[styles.resultCard, { backgroundColor: Colors[colorScheme].surface }]}>
-                        <View style={styles.emiHighlight}>
-                            <ThemedText style={styles.resultLabel}>Monthly EMI</ThemedText>
-                            <Animated.Text style={[styles.emiValue, { color: '#D4AF37' }]}>
-                                ₹ {emi.toLocaleString('en-IN')}
-                            </Animated.Text>
-                        </View>
-
-                        <View style={styles.divider} />
-
-                        <View style={styles.statsRow}>
-                            <View>
-                                <ThemedText style={styles.statLabel}>Total Interest</ThemedText>
-                                <ThemedText style={styles.statValue}>₹ {totalInterest.toLocaleString('en-IN')}</ThemedText>
-                            </View>
-                            <View style={styles.statDivider} />
-                            <View>
-                                <ThemedText style={styles.statLabel}>Total Payment</ThemedText>
-                                <ThemedText style={styles.statValue}>₹ {totalPayment.toLocaleString('en-IN')}</ThemedText>
-                            </View>
-                        </View>
-                    </View>
-
-                    <View style={styles.form}>
-                        <AnimatedSlider
-                            label="Loan Amount"
-                            value={loanAmount}
-                            min={100000}
-                            max={100000000}
-                            step={100000}
-                            onChange={setLoanAmount}
-                            formatValue={(v) => formatCurrency(v).replace('₹ ', '')}
-                            suffix="INR"
-                        />
-
-                        <AnimatedSlider
-                            label="Interest Rate"
-                            value={interestRate}
-                            min={5}
-                            max={20}
-                            step={0.1}
-                            onChange={setInterestRate}
-                            formatValue={(v) => v.toFixed(1)}
-                            suffix="% p.a."
-                        />
-
-                        <AnimatedSlider
-                            label="Tenure"
-                            value={tenureMonths}
-                            min={12}
-                            max={360}
-                            step={1}
-                            onChange={setTenureMonths}
-                            formatValue={formatMonths}
-                            suffix=""
-                        />
-                    </View>
-
-                    <TouchableOpacity
-                        style={styles.applyBtn}
-                        onPress={() => router.push({
-                            pathname: '/(tabs)/apply',
-                            params: { type: 'Loan' }
-                        })}
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <ThemedView style={styles.container}>
+                <ScrollView showsVerticalScrollIndicator={false}>
+                    <LinearGradient
+                        colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
+                        style={styles.header}
                     >
-                        <ThemedText style={styles.applyBtnText}>Apply Now</ThemedText>
-                        <Ionicons name="arrow-forward" size={18} color="#002D62" />
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
-        </ThemedView>
+                        <View style={styles.headerTopRow}>
+                            {router.canGoBack() && (
+                                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+                                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                                </TouchableOpacity>
+                            )}
+                            <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
+                        </View>
+                        <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
+                    </LinearGradient>
+
+                    <View style={styles.content}>
+                        <View style={[styles.resultCard, { backgroundColor: Colors[colorScheme].surface }]}>
+                            <View style={styles.emiHighlight}>
+                                <ThemedText style={styles.resultLabel}>Monthly EMI</ThemedText>
+                                <Animated.Text style={[styles.emiValue, { color: '#D4AF37' }]}>
+                                    ₹ {emi.toLocaleString('en-IN')}
+                                </Animated.Text>
+                            </View>
+
+                            <View style={styles.divider} />
+
+                            <View style={styles.statsRow}>
+                                <View>
+                                    <ThemedText style={styles.statLabel}>Total Interest</ThemedText>
+                                    <ThemedText style={styles.statValue}>₹ {totalInterest.toLocaleString('en-IN')}</ThemedText>
+                                </View>
+                                <View style={styles.statDivider} />
+                                <View>
+                                    <ThemedText style={styles.statLabel}>Total Payment</ThemedText>
+                                    <ThemedText style={styles.statValue}>₹ {totalPayment.toLocaleString('en-IN')}</ThemedText>
+                                </View>
+                            </View>
+                        </View>
+
+                        <View style={styles.form}>
+                            <AnimatedSlider
+                                label="Loan Amount"
+                                value={loanAmount}
+                                min={100000}
+                                max={100000000}
+                                step={100000}
+                                onChange={setLoanAmount}
+                                formatValue={(v) => formatCurrency(v).replace('₹ ', '')}
+                                suffix="INR"
+                            />
+
+                            <AnimatedSlider
+                                label="Interest Rate"
+                                value={interestRate}
+                                min={5}
+                                max={20}
+                                step={0.1}
+                                onChange={setInterestRate}
+                                formatValue={(v) => v.toFixed(1)}
+                                suffix="% p.a."
+                            />
+
+                            <AnimatedSlider
+                                label="Tenure"
+                                value={tenureMonths}
+                                min={12}
+                                max={360}
+                                step={1}
+                                onChange={setTenureMonths}
+                                formatValue={formatMonths}
+                                suffix=""
+                            />
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.applyBtn}
+                            onPress={() => router.push({
+                                pathname: '/(tabs)/apply',
+                                params: { type: 'Loan' }
+                            })}
+                        >
+                            <ThemedText style={styles.applyBtnText}>Apply Now</ThemedText>
+                            <Ionicons name="arrow-forward" size={18} color="#002D62" />
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            </ThemedView>
+        </GestureHandlerRootView>
     );
 }
 
