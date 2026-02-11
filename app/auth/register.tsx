@@ -46,6 +46,18 @@ export default function RegisterScreen() {
         }
     };
 
+    const handleGoogleRegister = async () => {
+        try {
+            setLoading(true);
+            await AuthService.loginWithGoogle();
+            router.replace('/home');
+        } catch (error: any) {
+            alert('Google Signup failed: ' + (error.message || 'Please try again'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <ThemedView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -142,6 +154,20 @@ export default function RegisterScreen() {
                             ) : (
                                 <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
                             )}
+                        </TouchableOpacity>
+
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.dividerLine} />
+                            <ThemedText style={styles.dividerText}>or</ThemedText>
+                            <View style={styles.dividerLine} />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.googleBtn, loading && { opacity: 0.7 }]}
+                            onPress={handleGoogleRegister}
+                            disabled={loading}
+                        >
+                            <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
 
                         <View style={styles.footer}>

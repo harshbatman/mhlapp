@@ -140,7 +140,6 @@ export default function LoginScreen() {
                             onPress={handleGoogleLogin}
                             disabled={loading}
                         >
-                            <Ionicons name="logo-google" size={20} color="#002D62" style={styles.googleIcon} />
                             <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
 
@@ -255,22 +254,21 @@ const styles = StyleSheet.create({
         elevation: 4,
     },
     googleBtn: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: '#000000',
         height: 60,
         borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
         flexDirection: 'row',
-        borderWidth: 1,
-        borderColor: '#E0E0E0',
         elevation: 2,
     },
     googleIcon: {
         marginRight: 10,
+        display: 'none',
     },
     googleBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '700',
     },
