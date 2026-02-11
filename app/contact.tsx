@@ -29,18 +29,31 @@ export default function ContactScreen() {
             <View style={styles.content}>
                 <View style={styles.infoCard}>
                     <Ionicons name="mail" size={40} color="#D4AF37" />
-                    <ThemedText style={styles.infoTitle}>Email Support</ThemedText>
-                    <ThemedText style={styles.infoSubtitle}>Our team typically responds within 24 hours.</ThemedText>
+                    <ThemedText style={styles.infoTitle}>General Support</ThemedText>
+                    <ThemedText style={styles.infoSubtitle}>For bugs, feature requests, or general queries.</ThemedText>
 
                     <TouchableOpacity style={styles.emailBtn} onPress={handleEmail}>
-                        <ThemedText style={styles.emailText}>support@mahtoji.tech</ThemedText>
+                        <ThemedText style={styles.emailText}>Contact Support</ThemedText>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={[styles.infoCard, { backgroundColor: '#0F172A', marginTop: 20 }]}>
+                    <Ionicons name="ribbon" size={40} color="#D4AF37" />
+                    <ThemedText style={styles.infoTitle}>CEO's Office</ThemedText>
+                    <ThemedText style={styles.infoSubtitle}>For critical escalations or leadership inquiries.</ThemedText>
+
+                    <TouchableOpacity
+                        style={[styles.emailBtn, { borderColor: '#D4AF37' }]}
+                        onPress={() => Linking.openURL('mailto:harshkumarceo@mahtoji.tech')}
+                    >
+                        <ThemedText style={[styles.emailText, { color: '#D4AF37' }]}>Contact CEO Office</ThemedText>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.noteBox}>
                     <Ionicons name="information-circle-outline" size={20} color={Colors[colorScheme].tint} />
                     <ThemedText style={styles.noteText}>
-                        For loan related queries, please mention your Application ID in the email subject.
+                        Response Time: 24-48 Hours. Please attach images to clarify problems.
                     </ThemedText>
                 </View>
             </View>

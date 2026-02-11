@@ -76,6 +76,7 @@ export default function RootLayout() {
           <Stack.Screen name="privacy" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="refund" options={{ animation: 'slide_from_right' }} />
           <Stack.Screen name="contact" options={{ animation: 'slide_from_right' }} />
+          <Stack.Screen name="help" options={{ animation: 'slide_from_right' }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

@@ -95,7 +95,7 @@ export default function ApplyScreen() {
                         <View style={styles.inputContainer}>
                             <ThemedText style={styles.label}>Loan Type</ThemedText>
                             <View style={styles.loanTypeGrid}>
-                                {['Construction', 'LAP', 'Renovation', 'Flat Buying'].map((type) => (
+                                {['Construction', 'Renovation', 'Flat Buying', 'LAP'].map((type) => (
                                     <TouchableOpacity
                                         key={type}
                                         style={[

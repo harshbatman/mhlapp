@@ -112,7 +112,7 @@ export default function ProfileScreen() {
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Help & Support</ThemedText>
                     <View style={[styles.card, { backgroundColor: Colors[colorScheme].surface }]}>
-                        <ProfileOption icon="headset-outline" title="Help Center / FAQ" onPress={() => { }} />
+                        <ProfileOption icon="headset-outline" title="Help Center / FAQ" onPress={() => router.push('/help')} />
                         <ProfileOption icon="mail-outline" title="Contact Us" onPress={() => router.push('/contact')} />
                         <ProfileOption icon="star-outline" title="Rate Us" onPress={() => { }} />
                     </View>

@@ -28,12 +28,6 @@ export default function HomeScreen() {
       icon: 'construct-outline' as const,
     },
     {
-      id: 'lap',
-      title: t('lap'),
-      description: 'Unlock the value of your property for your financial needs.',
-      icon: 'business-outline' as const,
-    },
-    {
       id: 'renovation',
       title: t('renovation'),
       description: 'Give your home a fresh look with our flexible renovation plans.',
@@ -44,6 +38,12 @@ export default function HomeScreen() {
       title: t('flatBuying'),
       description: 'Own your perfect apartment with competitive interest rates.',
       icon: 'home-outline' as const,
+    },
+    {
+      id: 'lap',
+      title: t('lap'),
+      description: 'Unlock the value of your property for your financial needs.',
+      icon: 'business-outline' as const,
     },
   ];
 
