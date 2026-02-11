@@ -142,7 +142,7 @@ export default function RegisterScreen() {
                             {loading ? (
                                 <ActivityIndicator color="#D4AF37" />
                             ) : (
-                                <ThemedText style={styles.registerBtnText}>Continue with MAHTO ID</ThemedText>
+                                <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
                             )}
                         </TouchableOpacity>
 
@@ -152,6 +152,19 @@ export default function RegisterScreen() {
                                 <ThemedText style={styles.linkText}>Login</ThemedText>
                             </TouchableOpacity>
                         </View>
+
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.dividerLine} />
+                            <ThemedText style={styles.dividerText}>or</ThemedText>
+                            <View style={styles.dividerLine} />
+                        </View>
+
+                        <TouchableOpacity
+                            style={styles.googleBtn}
+                            onPress={() => router.push('/auth/login')}
+                        >
+                            <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
+                        </TouchableOpacity>
 
                         <View style={{ height: 60 }} />
                     </View>
