@@ -70,7 +70,11 @@ export default function HomeScreen() {
           <View style={styles.headerContent}>
             <View>
               <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
-              <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
+              <Image
+                source={require('../assets/images/home-logo.png')}
+                style={styles.logoImage}
+                resizeMode="contain"
+              />
             </View>
             <View style={styles.headerActions}>
               <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/profile')}>
@@ -161,10 +165,10 @@ const styles = StyleSheet.create({
     color: '#E0E0E0',
     fontSize: 16,
   },
-  brandName: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '800',
+  logoImage: {
+    width: 150,
+    height: 40,
+    marginTop: 5,
   },
   headerActions: {
     flexDirection: 'row',
