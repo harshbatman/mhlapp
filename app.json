@@ -2,17 +2,20 @@
   "expo": {
     "name": "HMAHTO Home Loans",
     "slug": "mahto-home-loans",
-    "version": "1.0.0",
+    "owner": "mahtobuild",
+    "version": "1.1.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mahto-home-loans",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "5"
     },
     "android": {
       "package": "com.mahto.homeloans",
+      "versionCode": 5,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
@@ -49,7 +52,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "c168c9c0-8021-43e6-891e-006d9c08e2c2"
+        "projectId": "60d079de-5df4-4813-b943-437ae47f8991"
       }
     }
   }
