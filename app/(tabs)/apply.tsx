@@ -34,6 +34,7 @@ export default function ApplyScreen() {
         email: '',
         phone: '',
         address: '',
+        permanentAddress: '',
         isSameAddress: true,
         altPhone: '',
         // Step 3: Income
@@ -102,7 +103,7 @@ export default function ApplyScreen() {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
-    const fetchLocation = async () => {
+    const fetchLocation = async (field: 'address' | 'permanentAddress' = 'address') => {
         try {
             setLoadingLocation(true);
             let { status } = await Location.requestForegroundPermissionsAsync();
@@ -127,7 +128,7 @@ export default function ApplyScreen() {
                     addressResponse.postalCode
                 ].filter(Boolean).join(', ');
 
-                setFormData(prev => ({ ...prev, address: formattedAddress }));
+                setFormData(prev => ({ ...prev, [field]: formattedAddress }));
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             }
         } catch (error) {
@@ -197,7 +198,7 @@ export default function ApplyScreen() {
                     <ThemedText style={styles.label}>Current Residential Address</ThemedText>
                     <TouchableOpacity
                         style={styles.locationBtn}
-                        onPress={fetchLocation}
+                        onPress={() => fetchLocation('address')}
                         disabled={loadingLocation}
                     >
                         {loadingLocation ? (
@@ -240,6 +241,45 @@ export default function ApplyScreen() {
                 />
                 <ThemedText style={styles.checkboxLabel}>Permanent address is same as current</ThemedText>
             </TouchableOpacity>
+
+            {!formData.isSameAddress && (
+                <Animated.View entering={FadeInRight} style={[styles.inputContainer, { marginTop: 10 }]}>
+                    <View style={styles.labelRow}>
+                        <ThemedText style={styles.label}>Permanent Address</ThemedText>
+                        <TouchableOpacity
+                            style={styles.locationBtn}
+                            onPress={() => fetchLocation('permanentAddress')}
+                            disabled={loadingLocation}
+                        >
+                            {loadingLocation ? (
+                                <ActivityIndicator size="small" color="#D4AF37" />
+                            ) : (
+                                <>
+                                    <Ionicons name="location" size={14} color="#D4AF37" />
+                                    <ThemedText style={styles.locationBtnText}>Use Current</ThemedText>
+                                </>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={[
+                            styles.input,
+                            {
+                                backgroundColor: Colors[colorScheme].surface,
+                                color: Colors[colorScheme].text,
+                                borderColor: Colors[colorScheme].border,
+                                height: 100,
+                                paddingTop: 15,
+                            }
+                        ]}
+                        value={formData.permanentAddress}
+                        onChangeText={(text) => setFormData({ ...formData, permanentAddress: text })}
+                        placeholder="House No, Street, Landmark, Pincode"
+                        placeholderTextColor="#999"
+                        multiline
+                    />
+                </Animated.View>
+            )}
         </Animated.View>
     );
 
