@@ -46,6 +46,18 @@ export default function LoginScreen() {
         }
     };
 
+    const handleGoogleLogin = async () => {
+        try {
+            setLoading(true);
+            await AuthService.loginWithGoogle();
+            router.replace('/home');
+        } catch (error: any) {
+            alert('Google Login failed: ' + (error.message || 'Please try again'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <ThemedView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
@@ -115,6 +127,21 @@ export default function LoginScreen() {
                             ) : (
                                 <ThemedText style={styles.loginBtnText}>Login</ThemedText>
                             )}
+                        </TouchableOpacity>
+
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.dividerLine} />
+                            <ThemedText style={styles.dividerText}>or</ThemedText>
+                            <View style={styles.dividerLine} />
+                        </View>
+
+                        <TouchableOpacity
+                            style={[styles.googleBtn, loading && { opacity: 0.7 }]}
+                            onPress={handleGoogleLogin}
+                            disabled={loading}
+                        >
+                            <Ionicons name="logo-google" size={20} color="#002D62" style={styles.googleIcon} />
+                            <ThemedText style={styles.googleBtnText}>Continue with MAHTO ID</ThemedText>
                         </TouchableOpacity>
 
                         <View style={styles.footer}>
@@ -226,6 +253,42 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
+    },
+    googleBtn: {
+        backgroundColor: '#FFFFFF',
+        height: 60,
+        borderRadius: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 20,
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: '#E0E0E0',
+        elevation: 2,
+    },
+    googleIcon: {
+        marginRight: 10,
+    },
+    googleBtnText: {
+        color: '#002D62',
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 24,
+        opacity: 0.6,
+    },
+    dividerLine: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#CCC',
+    },
+    dividerText: {
+        marginHorizontal: 16,
+        fontSize: 14,
+        fontWeight: '500',
     },
     loginBtnText: {
         color: '#D4AF37',
