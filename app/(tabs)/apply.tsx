@@ -58,6 +58,8 @@ export default function ApplyScreen() {
         loanAmount: '',
         tenure: '',
         propertyValue: '',
+        developerName: '',
+        societyName: '',
         // Step 5: Docs
         docs: {
             panFront: null as string | null,
@@ -468,6 +470,13 @@ export default function ApplyScreen() {
             {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 2500000', 'numeric')}
             {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
             {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'Approx value', 'numeric')}
+
+            {formData.loanType === 'Flat Buying' && (
+                <Animated.View entering={FadeInRight}>
+                    {renderInput('Developer Name', formData.developerName, 'developerName', 'e.g. Godrej Properties')}
+                    {renderInput('Society Name', formData.societyName, 'societyName', 'e.g. Godrej Woods')}
+                </Animated.View>
+            )}
         </Animated.View>
     );
 
