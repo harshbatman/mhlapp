@@ -16,6 +16,16 @@ import { useColorScheme } from '@/hooks/use-color-scheme';
 
 const { width } = Dimensions.get('window');
 
+const INDIAN_DEVELOPERS = [
+    'Godrej Properties', 'DLF', 'Prestige Group', 'Lodha (Macrotech)', 'Sobha',
+    'Brigade Group', 'Tata Housing', 'Oberoi Realty', 'Hiranandani Group',
+    'Shapoorji Pallonji', 'Mahindra Lifespaces', 'ATS Homekraft', 'Gaurs Group',
+    'Supertech', 'Amrapali (NBCC)', 'Kalpataru', 'Puravankara', 'Sunteck Realty',
+    'Indiabulls Real Estate', 'Omaxe', 'Kolte-Patil', 'M3M India', 'Emaar India',
+    'Piramal Realty', 'Runwal Group', 'K Raheja Corp', 'Radiance Realty', 'Aparna Constructions',
+    'Phoenix Mills', 'Goyal & Co', 'Salarpuria Sattva', 'Casagrand', 'My Home Constructions'
+].sort();
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -24,6 +34,7 @@ export default function ApplyScreen() {
     const [step, setStep] = useState(1);
     const totalSteps = 5;
     const [loadingLocation, setLoadingLocation] = useState(false);
+    const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
 
     const [formData, setFormData] = useState({
         // Step 1: Personal
@@ -217,12 +228,40 @@ export default function ApplyScreen() {
                     }
                 ]}
                 value={value}
-                onChangeText={(text) => setFormData({ ...formData, [key]: text })}
+                onChangeText={(text) => {
+                    setFormData({ ...formData, [key]: text });
+                    if (key === 'developerName') {
+                        if (text.length > 1) {
+                            const filtered = INDIAN_DEVELOPERS.filter(d =>
+                                d.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setDeveloperSuggestions(filtered);
+                        } else {
+                            setDeveloperSuggestions([]);
+                        }
+                    }
+                }}
                 placeholder={placeholder}
                 placeholderTextColor="#999"
                 keyboardType={keyboardType}
                 maxLength={maxLength}
             />
+            {key === 'developerName' && developerSuggestions.length > 0 && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    {developerSuggestions.slice(0, 5).map((dev) => (
+                        <TouchableOpacity
+                            key={dev}
+                            style={styles.suggestionItem}
+                            onPress={() => {
+                                setFormData({ ...formData, developerName: dev });
+                                setDeveloperSuggestions([]);
+                            }}
+                        >
+                            <ThemedText>{dev}</ThemedText>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            )}
         </View>
     );
 
@@ -846,5 +885,26 @@ const styles = StyleSheet.create({
     dualUploadRow: {
         flexDirection: 'row',
         gap: 12,
+    },
+    suggestionsContainer: {
+        borderWidth: 1,
+        borderRadius: 12,
+        marginTop: 4,
+        overflow: 'hidden',
+        position: 'absolute',
+        top: '100%',
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        elevation: 5,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    suggestionItem: {
+        padding: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.05)',
     },
 });
