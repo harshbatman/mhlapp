@@ -322,17 +322,33 @@ export default function ApplyScreen() {
                     styles.input,
                     {
                         backgroundColor: Colors[colorScheme].surface,
-                        color: (key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                        color: ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
+                            (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
                             ? '#FF3B30'
                             : Colors[colorScheme].text,
-                        borderColor: (key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                        borderColor: ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
+                            (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
                             ? '#FF3B30'
                             : Colors[colorScheme].border
                     }
                 ]}
                 value={value}
                 onChangeText={(text) => {
-                    let finalValue = key === 'pan' ? text.toUpperCase().replace(/[^A-Z0-9]/g, '') : text;
+                    let finalValue = text;
+                    if (key === 'pan') {
+                        finalValue = text.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                    } else if (key === 'aadhaar') {
+                        // Keep only numbers and format as 1234 5678 9012
+                        let cleaned = text.replace(/[^0-9]/g, '');
+                        if (cleaned.length > 12) cleaned = cleaned.slice(0, 12);
+
+                        let formatted = '';
+                        for (let i = 0; i < cleaned.length; i++) {
+                            if (i > 0 && i % 4 === 0) formatted += ' ';
+                            formatted += cleaned[i];
+                        }
+                        finalValue = formatted;
+                    }
                     setFormData({ ...formData, [key]: finalValue });
                     if (key === 'developerName') {
                         if (text.length > 0) {
@@ -359,6 +375,11 @@ export default function ApplyScreen() {
             {key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
                 <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
                     Invalid PAN format (e.g. ABCDE1234F)
+                </ThemedText>
+            )}
+            {key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, '')) && (
+                <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
+                    Invalid Aadhaar format (12 digits required)
                 </ThemedText>
             )}
             {key === 'developerName' && developerSuggestions.length > 0 && (
@@ -447,7 +468,7 @@ export default function ApplyScreen() {
             </View>
 
             {renderInput('PAN Card Number', formData.pan, 'pan', 'ABCDE1234F', 'default', 10)}
-            {renderInput('Aadhaar Number', formData.aadhaar, 'aadhaar', '1234 5678 9012', 'numeric', 12)}
+            {renderInput('Aadhaar Number', formData.aadhaar, 'aadhaar', '1234 5678 9012', 'numeric', 14)}
         </Animated.View>
     );
 
