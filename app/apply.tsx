@@ -1497,7 +1497,7 @@ export default function ApplyScreen() {
             <ThemedText style={styles.sectionTitle}>Review Your Application</ThemedText>
             <ThemedText style={[styles.label, { marginBottom: 20, color: '#999' }]}>Please review all details before submitting</ThemedText>
 
-            <ScrollView style={{ maxHeight: 500 }} showsVerticalScrollIndicator={false}>
+            <ScrollView style={{ maxHeight: 500 }} showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
                 {/* Personal Details */}
                 <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
                     <View style={styles.reviewSectionHeader}>
@@ -1696,7 +1696,8 @@ export default function ApplyScreen() {
                 <ScrollView
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{ flexGrow: 1 }}
-                    keyboardShouldPersistTaps="handled"
+                    keyboardShouldPersistTaps="always"
+                    nestedScrollEnabled={true}
                 >
                     <LinearGradient
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
