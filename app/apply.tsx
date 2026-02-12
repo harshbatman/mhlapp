@@ -165,7 +165,6 @@ export default function ApplyScreen() {
                     ...prev,
                     name: session.name || prev.name,
                     phone: session.phone || prev.phone,
-                    email: session.email || prev.email,
                     address: session.address || prev.address,
                 }));
             }
@@ -192,7 +191,8 @@ export default function ApplyScreen() {
         if (step < totalSteps) {
             // Save as draft when moving to next step
             try {
-                await AsyncStorage.setItem('loan_application_draft', JSON.stringify(formData));
+                const { email, ...draftData } = formData;
+                await AsyncStorage.setItem('loan_application_draft', JSON.stringify(draftData));
             } catch (err) {
                 console.error('Failed to save draft:', err);
             }
