@@ -3,6 +3,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -29,13 +30,14 @@ const EcosystemItem = ({ number, title, description }: { number: string, title: 
 export default function AboutScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
+    const insets = useSafeAreaInsets();
 
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <LinearGradient
                     colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={styles.header}
+                    style={[styles.header, { paddingTop: insets.top + 10 }]}
                 >
                     <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
                         <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
@@ -111,7 +113,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        paddingTop: 60,
+        paddingTop: 16,
         paddingHorizontal: 24,
         paddingBottom: 40,
         borderBottomLeftRadius: 40,

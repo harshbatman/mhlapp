@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     runOnJS,
@@ -119,6 +119,7 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
 export default function CalculatorScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
+    const insets = useSafeAreaInsets();
 
     const [loanAmount, setLoanAmount] = useState(5000000);
     const [interestRate, setInterestRate] = useState(8.4);
@@ -168,19 +169,17 @@ export default function CalculatorScreen() {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <LinearGradient
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                        style={styles.header}
+                        style={[styles.header, { paddingTop: insets.top + 10 }]}
                     >
-                        <SafeAreaView edges={['top']}>
-                            <View style={styles.headerTopRow}>
-                                {router.canGoBack() && (
-                                    <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                                    </TouchableOpacity>
-                                )}
-                                <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
-                            </View>
-                            <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
-                        </SafeAreaView>
+                        <View style={styles.headerTopRow}>
+                            {router.canGoBack() && (
+                                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+                                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                                </TouchableOpacity>
+                            )}
+                            <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
+                        </View>
+                        <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
                     </LinearGradient>
 
                     <View style={styles.content}>

@@ -4,6 +4,7 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import 'react-native-reanimated';
 
 // Global error handler to remove Expo/Firebase references
@@ -59,30 +60,32 @@ export default function RootLayout() {
   }, []);
 
   return (
-    <LanguageProvider>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" options={{ animation: 'fade' }} />
-          <Stack.Screen name="auth/login" options={{ animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="home" options={{ gestureEnabled: false, headerShown: false }} />
-          <Stack.Screen name="calculator" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="loan-details" options={{ presentation: 'card', headerShown: false }} />
-          <Stack.Screen name="profile" options={{ presentation: 'card', animation: 'slide_from_right' }} />
-          <Stack.Screen name="edit-profile" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
-          <Stack.Screen name="track-status" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="language" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
-          <Stack.Screen name="notifications" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="about" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="terms" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="privacy" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="refund" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="contact" options={{ animation: 'slide_from_right' }} />
-          <Stack.Screen name="help" options={{ animation: 'slide_from_right' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
-    </LanguageProvider>
+    <SafeAreaProvider>
+      <LanguageProvider>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" options={{ animation: 'fade' }} />
+            <Stack.Screen name="auth/login" options={{ animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="auth/register" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="home" options={{ gestureEnabled: false, headerShown: false }} />
+            <Stack.Screen name="calculator" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="loan-details" options={{ presentation: 'card', headerShown: false }} />
+            <Stack.Screen name="profile" options={{ presentation: 'card', animation: 'slide_from_right' }} />
+            <Stack.Screen name="edit-profile" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="delete-account" options={{ presentation: 'modal' }} />
+            <Stack.Screen name="track-status" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="language" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
+            <Stack.Screen name="notifications" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="about" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="terms" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="privacy" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="refund" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="contact" options={{ animation: 'slide_from_right' }} />
+            <Stack.Screen name="help" options={{ animation: 'slide_from_right' }} />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
+      </LanguageProvider>
+    </SafeAreaProvider>
   );
 }
