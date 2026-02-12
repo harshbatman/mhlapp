@@ -758,6 +758,23 @@ export default function ApplyScreen() {
                         ))}
                     </View>
                     {renderInput('Total Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 10 }]}>
+                        {[
+                            { label: '< 1 Year', value: '0' },
+                            { label: '2+ Year', value: '2' },
+                            { label: '5 Year', value: '5' },
+                            { label: '5-10 Year', value: '8' },
+                            { label: '10+ Year', value: '11' }
+                        ].map((exp) => (
+                            <TouchableOpacity
+                                key={exp.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 10, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                                onPress={() => setFormData({ ...formData, experience: exp.value })}
+                            >
+                                <ThemedText style={{ fontSize: 10, fontWeight: '700', color: Colors[colorScheme].tint }}>{exp.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </Animated.View>
             )}
 
@@ -783,6 +800,23 @@ export default function ApplyScreen() {
                         ))}
                     </View>
                     {renderInput('Years in Profession', formData.experience, 'experience', 'e.g. 10', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 10 }]}>
+                        {[
+                            { label: '< 1 Year', value: '0' },
+                            { label: '2+ Year', value: '2' },
+                            { label: '5 Year', value: '5' },
+                            { label: '5-10 Year', value: '8' },
+                            { label: '10+ Year', value: '11' }
+                        ].map((exp) => (
+                            <TouchableOpacity
+                                key={exp.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 10, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                                onPress={() => setFormData({ ...formData, experience: exp.value })}
+                            >
+                                <ThemedText style={{ fontSize: 10, fontWeight: '700', color: Colors[colorScheme].tint }}>{exp.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </Animated.View>
             )}
 
@@ -792,6 +826,23 @@ export default function ApplyScreen() {
                     {renderInput('Nature of Business', formData.businessNature, 'businessNature', 'e.g. Trading, Manufacturing')}
                     {renderInput('Annual Turnover (₹)', formData.annualTurnover, 'annualTurnover', 'Enter yearly turnover', 'numeric')}
                     {renderInput('Years in Business', formData.yearsInBusiness, 'yearsInBusiness', 'e.g. 3', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 10 }]}>
+                        {[
+                            { label: '< 1 Year', value: '0' },
+                            { label: '2+ Year', value: '2' },
+                            { label: '5 Year', value: '5' },
+                            { label: '5-10 Year', value: '8' },
+                            { label: '10+ Year', value: '11' }
+                        ].map((exp) => (
+                            <TouchableOpacity
+                                key={exp.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 10, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                                onPress={() => setFormData({ ...formData, yearsInBusiness: exp.value })}
+                            >
+                                <ThemedText style={{ fontSize: 10, fontWeight: '700', color: Colors[colorScheme].tint }}>{exp.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                     {renderInput('GST Number (Optional)', formData.gstNumber, 'gstNumber', 'Enter GSTIN if applicable')}
                 </Animated.View>
             )}
