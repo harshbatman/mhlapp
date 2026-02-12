@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
@@ -90,7 +91,20 @@ export default function ApplyScreen() {
             property: null as string | null
         }
     });
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    const [dateValue, setDateValue] = useState(new Date());
 
+    const handleDateChange = (event: any, selectedDate?: Date) => {
+        setShowDatePicker(Platform.OS === 'ios');
+        if (selectedDate) {
+            setDateValue(selectedDate);
+            const day = String(selectedDate.getDate()).padStart(2, '0');
+            const month = String(selectedDate.getMonth() + 1).padStart(2, '0');
+            const year = selectedDate.getFullYear();
+            const formattedDate = `${day}/${month}/${year}`;
+            setFormData({ ...formData, dob: formattedDate });
+        }
+    };
     useEffect(() => {
         const loadInitialData = async () => {
             const session = await AuthService.getSession();
@@ -363,7 +377,48 @@ export default function ApplyScreen() {
         <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
             <ThemedText style={styles.sectionTitle}>Personal Details</ThemedText>
             {renderInput('Full Name (as per PAN)', formData.name, 'name', 'Enter your name')}
-            {renderInput('Date of Birth', formData.dob, 'dob', 'DD/MM/YYYY')}
+
+            <View style={styles.inputContainer}>
+                <ThemedText style={styles.label}>Date of Birth</ThemedText>
+                <View style={[styles.inputWrapper, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, flexDirection: 'row', alignItems: 'center' }]}>
+                    <TextInput
+                        style={[styles.input, { color: Colors[colorScheme].text, flex: 1, height: '100%' }]}
+                        placeholder="DD/MM/YYYY"
+                        placeholderTextColor="#999"
+                        keyboardType="numeric"
+                        value={formData.dob}
+                        onChangeText={(text) => {
+                            // Basic auto-formatting for DD/MM/YYYY
+                            let cleaned = text.replace(/[^0-9]/g, '');
+                            if (cleaned.length > 8) cleaned = cleaned.slice(0, 8);
+
+                            let formatted = cleaned;
+                            if (cleaned.length > 4) {
+                                formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}/${cleaned.slice(4)}`;
+                            } else if (cleaned.length > 2) {
+                                formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2)}`;
+                            }
+                            setFormData({ ...formData, dob: formatted });
+                        }}
+                        maxLength={10}
+                    />
+                    <TouchableOpacity
+                        onPress={() => setShowDatePicker(true)}
+                        style={{ padding: 10 }}
+                    >
+                        <Ionicons name="calendar-outline" size={20} color={Colors[colorScheme].tint} />
+                    </TouchableOpacity>
+                </View>
+                {showDatePicker && (
+                    <DateTimePicker
+                        value={dateValue}
+                        mode="date"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        onChange={handleDateChange}
+                        maximumDate={new Date()} // DOB cannot be in future
+                    />
+                )}
+            </View>
 
             <View style={styles.inputContainer}>
                 <ThemedText style={styles.label}>Gender</ThemedText>
@@ -834,6 +889,11 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         marginBottom: 8,
         opacity: 0.6,
+    },
+    inputWrapper: {
+        borderRadius: 16,
+        borderWidth: 1.5,
+        overflow: 'hidden',
     },
     input: {
         height: 60,
