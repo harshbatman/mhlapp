@@ -990,6 +990,25 @@ export default function ApplyScreen() {
                         </Animated.View>
                     )}
                     {renderInput('Annual Turnover (₹)', formData.annualTurnover, 'annualTurnover', 'Enter yearly turnover', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                        {[
+                            { label: '< 10L', value: '< 10 Lakh' },
+                            { label: '10L+', value: '10 Lakh+' },
+                            { label: '50L+', value: '50 Lakh+' },
+                            { label: '1Cr+', value: '1 Crore+' },
+                            { label: '5Cr+', value: '5 Crore+' },
+                            { label: '10Cr+', value: '10 Crore+' },
+                            { label: '50Cr+', value: '50 Crore+' }
+                        ].map((t) => (
+                            <TouchableOpacity
+                                key={t.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border, marginBottom: 8 }]}
+                                onPress={() => setFormData({ ...formData, annualTurnover: t.value })}
+                            >
+                                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{t.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                     {renderInput('Years in Business', formData.yearsInBusiness, 'yearsInBusiness', 'e.g. 3', 'numeric')}
                     <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 10 }]}>
                         {[
