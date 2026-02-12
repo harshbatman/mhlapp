@@ -932,6 +932,17 @@ export default function ApplyScreen() {
                 ))}
             </View>
             {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
+            <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                {['5 Yr', '10 Yr', '15 Yr', '20 Yr', '25 Yr', '30 Yr'].map((val) => (
+                    <TouchableOpacity
+                        key={val}
+                        style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                        onPress={() => setFormData({ ...formData, tenure: val.split(' ')[0] })}
+                    >
+                        <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{val}</ThemedText>
+                    </TouchableOpacity>
+                ))}
+            </View>
             {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'e.g. 50L or 5000000', 'default')}
             <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
                 {['25L', '50L', '80L', '1.5 Cr', '3 Cr+'].map((val) => (
