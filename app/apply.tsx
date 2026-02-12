@@ -1193,25 +1193,52 @@ export default function ApplyScreen() {
             <ThemedText style={styles.sectionTitle}>Loan Details</ThemedText>
 
             <View style={styles.inputContainer}>
-                <ThemedText style={styles.label}>Selected Loan Type</ThemedText>
-                <View style={styles.rowWrap}>
-                    {['Construction', 'Renovation', 'Flat Buying', 'LAP'].map((type) => (
-                        <TouchableOpacity
-                            key={type}
-                            style={[
-                                styles.chip,
-                                (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipSelected,
-                                { borderColor: Colors[colorScheme].border }
-                            ]}
-                            onPress={() => setFormData({ ...formData, loanType: type })}
-                        >
-                            <ThemedText style={[
-                                styles.chipText,
-                                (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipTextSelected
-                            ]}>{type}</ThemedText>
-                        </TouchableOpacity>
-                    ))}
-                </View>
+                <ThemedText style={styles.label}>
+                    {params.type ? 'Loan Type (Pre-selected)' : 'Select Loan Type'}
+                </ThemedText>
+                {params.type ? (
+                    // Show read-only selected loan type with info
+                    <View style={[
+                        styles.input,
+                        {
+                            backgroundColor: Colors[colorScheme].surface,
+                            borderColor: Colors[colorScheme].tint,
+                            borderWidth: 1.5,
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            paddingVertical: 16
+                        }
+                    ]}>
+                        <ThemedText style={{ fontSize: 16, fontWeight: '600', color: Colors[colorScheme].tint }}>
+                            {formData.loanType === 'flat-buying' ? 'Flat Buying' : formData.loanType}
+                        </ThemedText>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                            <Ionicons name="checkmark-circle" size={20} color={Colors[colorScheme].tint} />
+                            <ThemedText style={{ fontSize: 12, color: '#999', fontStyle: 'italic' }}>Selected from home</ThemedText>
+                        </View>
+                    </View>
+                ) : (
+                    // Show selectable loan type options
+                    <View style={styles.rowWrap}>
+                        {['Construction', 'Renovation', 'Flat Buying', 'LAP'].map((type) => (
+                            <TouchableOpacity
+                                key={type}
+                                style={[
+                                    styles.chip,
+                                    (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipSelected,
+                                    { borderColor: Colors[colorScheme].border }
+                                ]}
+                                onPress={() => setFormData({ ...formData, loanType: type })}
+                            >
+                                <ThemedText style={[
+                                    styles.chipText,
+                                    (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipTextSelected
+                                ]}>{type}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
             </View>
 
             {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 25L or 2500000', 'default')}
