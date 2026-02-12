@@ -322,13 +322,18 @@ export default function ApplyScreen() {
                     styles.input,
                     {
                         backgroundColor: Colors[colorScheme].surface,
-                        color: Colors[colorScheme].text,
-                        borderColor: Colors[colorScheme].border
+                        color: (key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                            ? '#FF3B30'
+                            : Colors[colorScheme].text,
+                        borderColor: (key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                            ? '#FF3B30'
+                            : Colors[colorScheme].border
                     }
                 ]}
                 value={value}
                 onChangeText={(text) => {
-                    setFormData({ ...formData, [key]: text });
+                    let finalValue = key === 'pan' ? text.toUpperCase().replace(/[^A-Z0-9]/g, '') : text;
+                    setFormData({ ...formData, [key]: finalValue });
                     if (key === 'developerName') {
                         if (text.length > 0) {
                             const filtered = INDIAN_DEVELOPERS.filter(d =>
@@ -349,7 +354,13 @@ export default function ApplyScreen() {
                 placeholderTextColor="#999"
                 keyboardType={keyboardType}
                 maxLength={maxLength}
+                autoCapitalize={key === 'pan' ? 'characters' : 'none'}
             />
+            {key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
+                <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
+                    Invalid PAN format (e.g. ABCDE1234F)
+                </ThemedText>
+            )}
             {key === 'developerName' && developerSuggestions.length > 0 && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
                     <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
