@@ -1713,7 +1713,7 @@ export default function ApplyScreen() {
             >
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ flexGrow: 1 }}
+                    contentContainerStyle={{ flexGrow: 1, paddingBottom: 300 }}
                     keyboardShouldPersistTaps="always"
                     nestedScrollEnabled={true}
                 >
