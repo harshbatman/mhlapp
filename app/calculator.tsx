@@ -3,7 +3,8 @@ import * as Haptics from 'expo-haptics';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     runOnJS,
@@ -169,15 +170,17 @@ export default function CalculatorScreen() {
                         colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
                         style={styles.header}
                     >
-                        <View style={styles.headerTopRow}>
-                            {router.canGoBack() && (
-                                <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-                                </TouchableOpacity>
-                            )}
-                            <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
-                        </View>
-                        <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
+                        <SafeAreaView edges={['top']}>
+                            <View style={styles.headerTopRow}>
+                                {router.canGoBack() && (
+                                    <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+                                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                                    </TouchableOpacity>
+                                )}
+                                <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
+                            </View>
+                            <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
+                        </SafeAreaView>
                     </LinearGradient>
 
                     <View style={styles.content}>
@@ -261,7 +264,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
-        paddingTop: 60,
+        paddingTop: 16,
         paddingHorizontal: 24,
         paddingBottom: 50,
         borderBottomLeftRadius: 40,
