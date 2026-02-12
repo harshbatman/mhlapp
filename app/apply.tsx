@@ -482,23 +482,23 @@ export default function ApplyScreen() {
                             setIndustrySuggestions(INDIAN_INDUSTRIES);
                         }
                     }
-                },
-                    onFocus = {() => {
+                }}
+                onFocus={() => {
                     if (key === 'developerName') {
-                setDeveloperSuggestions(INDIAN_DEVELOPERS);
+                        setDeveloperSuggestions(INDIAN_DEVELOPERS);
                     }
-            if (key === 'company' && formData.occupation === 'Salaried') {
-                setCompanySuggestions(INDIAN_COMPANIES);
+                    if (key === 'company' && formData.occupation === 'Salaried') {
+                        setCompanySuggestions(INDIAN_COMPANIES);
                     }
-            if (key === 'industry' && formData.occupation === 'Salaried') {
-                setIndustrySuggestions(INDIAN_INDUSTRIES);
+                    if (key === 'industry' && formData.occupation === 'Salaried') {
+                        setIndustrySuggestions(INDIAN_INDUSTRIES);
                     }
                 }}
-            placeholder={placeholder}
-            placeholderTextColor="#999"
-            keyboardType={keyboardType}
-            maxLength={maxLength}
-            autoCapitalize={key === 'pan' ? 'characters' : 'none'}
+                placeholder={placeholder}
+                placeholderTextColor="#999"
+                keyboardType={keyboardType}
+                maxLength={maxLength}
+                autoCapitalize={key === 'pan' ? 'characters' : 'none'}
             />
             {key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
                 <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
