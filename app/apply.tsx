@@ -530,17 +530,25 @@ export default function ApplyScreen() {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
 
         try {
-            const uploadedUrls: any = {};
             const docKeys = Object.keys(formData.docs) as Array<keyof typeof formData.docs>;
 
-            for (const key of docKeys) {
+            const uploadPromises = docKeys.map(async (key) => {
                 const uri = formData.docs[key];
-                if (uri) {
-                    const fileName = `${user.uid}_${key}_${Date.now()}`;
-                    const path = `applications/${user.uid}/${fileName}`;
-                    uploadedUrls[key] = await uploadFile(uri, path);
+                if (!uri) return null;
+                const fileName = `${user.uid}_${key}_${Date.now()}`;
+                const path = `applications/${user.uid}/${fileName}`;
+                const url = await uploadFile(uri, path);
+                return { key, url };
+            });
+
+            const results = await Promise.all(uploadPromises);
+
+            const uploadedUrls = results.reduce((acc, result) => {
+                if (result) {
+                    acc[result.key] = result.url;
                 }
-            }
+                return acc;
+            }, {} as any);
 
             const applicationData = {
                 ...formData,
@@ -586,7 +594,7 @@ export default function ApplyScreen() {
                             const result = await ImagePicker.launchImageLibraryAsync({
                                 mediaTypes: ImagePicker.MediaTypeOptions.Images,
                                 allowsEditing: true,
-                                quality: 0.8,
+                                quality: 0.5,
                             });
                             if (!result.canceled) {
                                 setFormData(prev => ({
