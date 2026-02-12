@@ -236,34 +236,138 @@ export default function ApplyScreen() {
 
     const handleNext = async () => {
         let currentErrors: string[] = [];
+        let missingFields: string[] = [];
+
         // Step-specific validation
         if (step === 1) {
-            if (!formData.name.trim()) currentErrors.push('name');
-            if (!formData.dob.trim() || formData.dob.length < 10) currentErrors.push('dob');
-            if (!formData.gender) currentErrors.push('gender');
-            if (!formData.pan.trim() || formData.pan.length < 10) currentErrors.push('pan');
-            if (!formData.aadhaar.trim() || formData.aadhaar.replace(/ /g, '').length < 12) currentErrors.push('aadhaar');
-        } else if (step === 2) {
-            if (!formData.phone.trim() || formData.phone.length < 10) currentErrors.push('phone');
-            if (!formData.address.trim()) currentErrors.push('address');
-            if (!formData.isSameAddress && !formData.permanentAddress.trim()) currentErrors.push('permanentAddress');
-        } else if (step === 3) {
-            if (formData.occupation === 'Salaried' || formData.occupation === 'Business') {
-                if (!formData.company.trim()) currentErrors.push('company');
-            } else if (formData.occupation === 'Self-Employed') {
-                if (!formData.profession.trim()) currentErrors.push('profession');
+            if (!formData.name.trim()) {
+                currentErrors.push('name');
+                missingFields.push('Full Name');
             }
-            if (!formData.monthlyIncome.trim()) currentErrors.push('monthlyIncome');
+            if (!formData.dob.trim() || formData.dob.length < 10) {
+                currentErrors.push('dob');
+                missingFields.push('Date of Birth');
+            }
+            if (!formData.gender) {
+                currentErrors.push('gender');
+                missingFields.push('Gender');
+            }
+            if (!formData.pan.trim() || formData.pan.length < 10) {
+                currentErrors.push('pan');
+                missingFields.push('PAN Card Number');
+            }
+            if (!formData.aadhaar.trim() || formData.aadhaar.replace(/ /g, '').length < 12) {
+                currentErrors.push('aadhaar');
+                missingFields.push('Aadhaar Number');
+            }
+        } else if (step === 2) {
+            if (!formData.phone.trim() || formData.phone.length < 10) {
+                currentErrors.push('phone');
+                missingFields.push('Phone Number');
+            }
+            if (!formData.address.trim()) {
+                currentErrors.push('address');
+                missingFields.push('Current Address');
+            }
+            if (!formData.isSameAddress && !formData.permanentAddress.trim()) {
+                currentErrors.push('permanentAddress');
+                missingFields.push('Permanent Address');
+            }
+        } else if (step === 3) {
+            // Validation for Salaried occupation
+            if (formData.occupation === 'Salaried') {
+                if (!formData.company.trim()) {
+                    currentErrors.push('company');
+                    missingFields.push('Company Name');
+                }
+                if (formData.company === 'Other' && !formData.otherCompanyName.trim()) {
+                    currentErrors.push('otherCompanyName');
+                    missingFields.push('Other Company Name');
+                }
+                if (!formData.industry.trim()) {
+                    currentErrors.push('industry');
+                    missingFields.push('Industry');
+                }
+                if (formData.industry === 'Other' && !formData.otherIndustryName.trim()) {
+                    currentErrors.push('otherIndustryName');
+                    missingFields.push('Other Industry Name');
+                }
+                if (!formData.experience.trim()) {
+                    currentErrors.push('experience');
+                    missingFields.push('Work Experience');
+                }
+            }
+            // Validation for Self-Employed
+            else if (formData.occupation === 'Self-Employed') {
+                if (!formData.profession.trim()) {
+                    currentErrors.push('profession');
+                    missingFields.push('Profession');
+                }
+                if (formData.profession === 'Other' && !formData.otherProfessionName.trim()) {
+                    currentErrors.push('otherProfessionName');
+                    missingFields.push('Other Profession Name');
+                }
+                if (!formData.experience.trim()) {
+                    currentErrors.push('experience');
+                    missingFields.push('Years in Profession');
+                }
+            }
+            // Validation for Business
+            else if (formData.occupation === 'Business') {
+                if (!formData.company.trim()) {
+                    currentErrors.push('company');
+                    missingFields.push('Business Name');
+                }
+                if (!formData.businessNature.trim()) {
+                    currentErrors.push('businessNature');
+                    missingFields.push('Nature of Business');
+                }
+                if (formData.businessNature === 'Other' && !formData.otherBusinessNature.trim()) {
+                    currentErrors.push('otherBusinessNature');
+                    missingFields.push('Other Business Nature');
+                }
+                if (!formData.annualTurnover.trim()) {
+                    currentErrors.push('annualTurnover');
+                    missingFields.push('Annual Turnover');
+                }
+                if (!formData.yearsInBusiness.trim()) {
+                    currentErrors.push('yearsInBusiness');
+                    missingFields.push('Years in Business');
+                }
+            }
+            // Common validation for all occupation types
+            if (!formData.monthlyIncome.trim()) {
+                currentErrors.push('monthlyIncome');
+                missingFields.push('Monthly Income');
+            }
         } else if (step === 4) {
-            if (!formData.loanAmount.trim()) currentErrors.push('loanAmount');
-            if (!formData.tenure.trim()) currentErrors.push('tenure');
-            if (!formData.propertyValue.trim()) currentErrors.push('propertyValue');
+            if (!formData.loanAmount.trim()) {
+                currentErrors.push('loanAmount');
+                missingFields.push('Loan Amount');
+            }
+            if (!formData.tenure.trim()) {
+                currentErrors.push('tenure');
+                missingFields.push('Loan Tenure');
+            }
+            if (!formData.propertyValue.trim()) {
+                currentErrors.push('propertyValue');
+                missingFields.push('Property Value');
+            }
+            if (!formData.developerName.trim()) {
+                currentErrors.push('developerName');
+                missingFields.push('Developer Name');
+            }
+            if (formData.developerName === 'Other' && !formData.otherDeveloperName.trim()) {
+                currentErrors.push('otherDeveloperName');
+                missingFields.push('Other Developer Name');
+            }
         }
 
         if (currentErrors.length > 0) {
             setErrors(currentErrors);
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-            return Alert.alert('Attention', 'Please fill all required fields highlighted in red.');
+            const fieldsList = missingFields.join(', ');
+            return Alert.alert('Missing Information', `Please fill the following required field${missingFields.length > 1 ? 's' : ''}:\n\n${fieldsList}`);
         }
 
         setErrors([]);
