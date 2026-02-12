@@ -34,6 +34,26 @@ const INDIAN_DEVELOPERS = [
 ].sort();
 INDIAN_DEVELOPERS.push('Other');
 
+const INDIAN_COMPANIES = [
+    'Tata Consultancy Services (TCS)', 'Infosys', 'Reliance Industries', 'HDFC Bank', 'ICICI Bank',
+    'Wipro', 'HCL Technologies', 'State Bank of India (SBI)', 'Bharti Airtel', 'Larsen & Toubro',
+    'Mahindra & Mahindra', 'Axis Bank', 'Maruti Suzuki', 'ITC Limited', 'HUL', 'Bajaj Finance',
+    'Cognizant', 'Accenture', 'Tech Mahindra', 'Google India', 'Amazon India', 'Microsoft India',
+    'IBM India', 'Deloitte', 'PwC', 'KPMG', 'EY', 'Capgemini', 'Oracle India', 'Genpact India',
+    'Zensar Technologies', 'Mindtree', 'LTI', 'CGI India', 'Hexaware', 'Mphasis India', 'Sutherland',
+    'Teleperformance India', 'Lupin Limited', 'Dr Reddys Laboratories', 'Cipla', 'Sun Pharma',
+    'Aurobindo Pharma', 'Zydus Lifesciences', 'Glenmark Pharmaceuticals', 'Asian Paints', 'Berger Paints',
+    'Titan Company', 'UltraTech Cement', 'Adani Enterprises Ltd', 'Adani Green Energy', 'Adani Ports & SEZ',
+    'JSW Steel', 'Tata Steel', 'Hindalco Industries', 'Bharat Petroleum (BPCL)', 'Indian Oil (IOCL)',
+    'ONGC', 'GAIL India', 'NTPC', 'Power Grid Corp', 'Coal India', 'BHEL', 'BEL India', 'HAL India',
+    'Vedanta Limited', 'Ambuja Cements', 'ACC Limited', 'Godrej Consumer Products', 'Godrej Properties',
+    'DLF Limited', 'Oberoi Realty', 'Prestige Group', 'Sobha Limited', 'Brigade Enterprises',
+    'Phoenix Mills', 'L&T Technology Services', 'Tata Elxsi', 'Cyient', 'Happiest Minds',
+    'Zomato', 'Swiggy', 'Paytm', 'Ola Cabs', 'Uber India', 'Pine Labs', 'Razorpay', 'BYJUS',
+    'Unacademy', 'Dream11', 'Lenskart India', 'FirstCry India'
+].sort();
+INDIAN_COMPANIES.push('Other');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -44,6 +64,7 @@ export default function ApplyScreen() {
     const totalSteps = 5;
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
+    const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -64,6 +85,7 @@ export default function ApplyScreen() {
         occupation: 'Salaried',
         monthlyIncome: '',
         company: '',
+        otherCompanyName: '',
         experience: '',
         industry: '',
         profession: '',
@@ -387,10 +409,23 @@ export default function ApplyScreen() {
                             setDeveloperSuggestions(INDIAN_DEVELOPERS);
                         }
                     }
+                    if (key === 'company' && formData.occupation === 'Salaried') {
+                        if (text.length > 0) {
+                            const filtered = INDIAN_COMPANIES.filter(c =>
+                                c.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setCompanySuggestions(filtered);
+                        } else {
+                            setCompanySuggestions(INDIAN_COMPANIES);
+                        }
+                    }
                 }}
                 onFocus={() => {
                     if (key === 'developerName') {
                         setDeveloperSuggestions(INDIAN_DEVELOPERS);
+                    }
+                    if (key === 'company' && formData.occupation === 'Salaried') {
+                        setCompanySuggestions(INDIAN_COMPANIES);
                     }
                 }}
                 placeholder={placeholder}
@@ -423,6 +458,26 @@ export default function ApplyScreen() {
                             >
                                 <ThemedText style={{ color: dev === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: dev === 'Other' ? '700' : '400' }}>
                                     {dev}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            {key === 'company' && companySuggestions.length > 0 && formData.occupation === 'Salaried' && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+                        {companySuggestions.map((comp) => (
+                            <TouchableOpacity
+                                key={comp}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, company: comp });
+                                    setCompanySuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: comp === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: comp === 'Other' ? '700' : '400' }}>
+                                    {comp}
                                 </ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -626,7 +681,12 @@ export default function ApplyScreen() {
 
             {formData.occupation === 'Salaried' && (
                 <Animated.View entering={FadeInRight}>
-                    {renderInput('Employer / Company Name', formData.company, 'company', 'e.g. Tata Motors')}
+                    {renderInput('Employer / Company Name', formData.company, 'company', 'Search or select company')}
+                    {formData.company === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Company Name', formData.otherCompanyName, 'otherCompanyName', 'Type your company name')}
+                        </Animated.View>
+                    )}
                     {renderInput('Industry', formData.industry, 'industry', 'e.g. IT, Healthcare, Banking')}
                     {renderInput('Monthly Net Salary (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter net take-home salary', 'numeric')}
                     {renderInput('Total Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
