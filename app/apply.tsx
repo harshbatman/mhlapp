@@ -261,6 +261,13 @@ export default function ApplyScreen() {
                 missingFields.push('Aadhaar Number');
             }
         } else if (step === 2) {
+            if (!formData.email.trim()) {
+                currentErrors.push('email');
+                missingFields.push('Email Address');
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+                currentErrors.push('email');
+                missingFields.push('Valid Email Address');
+            }
             if (!formData.phone.trim() || formData.phone.length < 10) {
                 currentErrors.push('phone');
                 missingFields.push('Phone Number');
