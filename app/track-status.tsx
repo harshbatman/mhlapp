@@ -9,7 +9,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { auth, db } from '@/utils/firebase';
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const { width } = Dimensions.get('window');
 
@@ -33,14 +33,19 @@ export default function TrackStatusScreen() {
         try {
             const q = query(
                 collection(db, 'applications'),
-                where('userId', '==', user.uid),
-                orderBy('submittedAt', 'desc')
+                where('userId', '==', user.uid)
             );
             const querySnapshot = await getDocs(q);
             const apps = querySnapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             }));
+            // Sort by submittedAt in client-side to avoid composite index requirement
+            apps.sort((a: any, b: any) => {
+                const aTime = a.submittedAt?.toMillis?.() || 0;
+                const bTime = b.submittedAt?.toMillis?.() || 0;
+                return bTime - aTime; // desc order
+            });
             setApplications(apps);
         } catch (error) {
             console.error('Error fetching applications:', error);
