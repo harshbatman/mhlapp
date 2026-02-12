@@ -54,6 +54,17 @@ const INDIAN_COMPANIES = [
 ].sort();
 INDIAN_COMPANIES.push('Other');
 
+const INDIAN_INDUSTRIES = [
+    'Banking & Finance (BFSI)', 'IT & Software Services', 'Healthcare & Pharmaceuticals',
+    'Manufacturing & Engineering', 'Education & EdTech', 'Retail & E-commerce',
+    'Construction & Real Estate', 'Hospitality & Tourism', 'Logistics & Supply Chain',
+    'Telecommunications', 'FMCG (Fast Moving Consumer Goods)', 'Automobile & Transport',
+    'Agriculture & Allied', 'Energy & Power', 'Media & Entertainment', 'Insurance',
+    'Consulting & Professional Services', 'Infrastructure', 'Public Sector/Government',
+    'Aerospace & Defense', 'Chemicals & Mining', 'Textiles & Apparel'
+].sort();
+INDIAN_INDUSTRIES.push('Other');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -65,6 +76,7 @@ export default function ApplyScreen() {
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
     const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
+    const [industrySuggestions, setIndustrySuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -88,6 +100,7 @@ export default function ApplyScreen() {
         otherCompanyName: '',
         experience: '',
         industry: '',
+        otherIndustryName: '',
         profession: '',
         businessNature: '',
         annualTurnover: '',
@@ -419,6 +432,16 @@ export default function ApplyScreen() {
                             setCompanySuggestions(INDIAN_COMPANIES);
                         }
                     }
+                    if (key === 'industry' && formData.occupation === 'Salaried') {
+                        if (text.length > 0) {
+                            const filtered = INDIAN_INDUSTRIES.filter(i =>
+                                i.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setIndustrySuggestions(filtered);
+                        } else {
+                            setIndustrySuggestions(INDIAN_INDUSTRIES);
+                        }
+                    }
                 }}
                 onFocus={() => {
                     if (key === 'developerName') {
@@ -426,6 +449,9 @@ export default function ApplyScreen() {
                     }
                     if (key === 'company' && formData.occupation === 'Salaried') {
                         setCompanySuggestions(INDIAN_COMPANIES);
+                    }
+                    if (key === 'industry' && formData.occupation === 'Salaried') {
+                        setIndustrySuggestions(INDIAN_INDUSTRIES);
                     }
                 }}
                 placeholder={placeholder}
@@ -478,6 +504,26 @@ export default function ApplyScreen() {
                             >
                                 <ThemedText style={{ color: comp === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: comp === 'Other' ? '700' : '400' }}>
                                     {comp}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            {key === 'industry' && industrySuggestions.length > 0 && formData.occupation === 'Salaried' && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+                        {industrySuggestions.map((ind) => (
+                            <TouchableOpacity
+                                key={ind}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, industry: ind });
+                                    setIndustrySuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: ind === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: ind === 'Other' ? '700' : '400' }}>
+                                    {ind}
                                 </ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -687,7 +733,12 @@ export default function ApplyScreen() {
                             {renderInput('Specify Company Name', formData.otherCompanyName, 'otherCompanyName', 'Type your company name')}
                         </Animated.View>
                     )}
-                    {renderInput('Industry', formData.industry, 'industry', 'e.g. IT, Healthcare, Banking')}
+                    {renderInput('Industry', formData.industry, 'industry', 'Search or select industry')}
+                    {formData.industry === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Industry', formData.otherIndustryName, 'otherIndustryName', 'Type your industry')}
+                        </Animated.View>
+                    )}
                     {renderInput('Monthly Net Salary (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter net take-home salary', 'numeric')}
                     {renderInput('Total Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
                 </Animated.View>
