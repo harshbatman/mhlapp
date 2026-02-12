@@ -188,6 +188,30 @@ export default function ApplyScreen() {
     }, [params.type]);
 
     const handleNext = async () => {
+        // Step-specific validation
+        if (step === 1) {
+            if (!formData.name.trim()) return Alert.alert('Required Field', 'Please enter your Full Name');
+            if (!formData.dob.trim() || formData.dob.length < 10) return Alert.alert('Required Field', 'Please enter valid Date of Birth');
+            if (!formData.gender) return Alert.alert('Required Field', 'Please select your Gender');
+            if (!formData.pan.trim() || formData.pan.length < 10) return Alert.alert('Required Field', 'Please enter valid 10-digit PAN Number');
+            if (!formData.aadhaar.trim() || formData.aadhaar.replace(/ /g, '').length < 12) return Alert.alert('Required Field', 'Please enter valid 12-digit Aadhaar Number');
+        } else if (step === 2) {
+            if (!formData.phone.trim() || formData.phone.length < 10) return Alert.alert('Required Field', 'Please enter valid 10-digit Phone Number');
+            if (!formData.address.trim()) return Alert.alert('Required Field', 'Please enter your Current Address');
+            if (!formData.isSameAddress && !formData.permanentAddress.trim()) return Alert.alert('Required Field', 'Please enter your Permanent Address');
+        } else if (step === 3) {
+            if (formData.occupation === 'Salaried' || formData.occupation === 'Business') {
+                if (!formData.company.trim()) return Alert.alert('Required Field', 'Please enter your Company/Business Name');
+            } else if (formData.occupation === 'Self-Employed') {
+                if (!formData.profession.trim()) return Alert.alert('Required Field', 'Please enter your Profession');
+            }
+            if (!formData.monthlyIncome.trim()) return Alert.alert('Required Field', 'Please enter your Income details');
+        } else if (step === 4) {
+            if (!formData.loanAmount.trim()) return Alert.alert('Required Field', 'Please enter Requested Loan Amount');
+            if (!formData.tenure.trim()) return Alert.alert('Required Field', 'Please enter Desired Tenure');
+            if (!formData.propertyValue.trim()) return Alert.alert('Required Field', 'Please enter Market Value of Property');
+        }
+
         if (step < totalSteps) {
             // Save as draft when moving to next step
             try {
