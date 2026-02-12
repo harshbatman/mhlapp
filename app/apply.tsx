@@ -1,4 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
@@ -107,6 +108,22 @@ export default function ApplyScreen() {
     };
     useEffect(() => {
         const loadInitialData = async () => {
+            // Load draft first
+            try {
+                const draft = await AsyncStorage.getItem('loan_application_draft');
+                if (draft) {
+                    const parsedDraft = JSON.parse(draft);
+                    setFormData(prev => ({
+                        ...prev,
+                        ...parsedDraft,
+                        // Don't override docs with nulls from draft if they were just selected? 
+                        // Actually better to load everything and let user edit.
+                    }));
+                }
+            } catch (err) {
+                console.error('Failed to load draft:', err);
+            }
+
             const session = await AuthService.getSession();
             if (session) {
                 setFormData(prev => ({
@@ -136,8 +153,15 @@ export default function ApplyScreen() {
         };
     }, [params.type]);
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (step < totalSteps) {
+            // Save as draft when moving to next step
+            try {
+                await AsyncStorage.setItem('loan_application_draft', JSON.stringify(formData));
+            } catch (err) {
+                console.error('Failed to save draft:', err);
+            }
+
             setStep(step + 1);
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         } else {
@@ -206,6 +230,9 @@ export default function ApplyScreen() {
             };
 
             await addDoc(collection(db, 'applications'), applicationData);
+
+            // Clear draft on successful submission
+            await AsyncStorage.removeItem('loan_application_draft');
 
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             Alert.alert(
@@ -833,7 +860,7 @@ export default function ApplyScreen() {
                                     onPress={handleNext}
                                 >
                                     <ThemedText style={styles.primaryBtnText}>
-                                        {loadingLocation && step === totalSteps ? 'Submitting...' : step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                        {loadingLocation && step === totalSteps ? 'Submitting...' : step === totalSteps ? 'Submit Application' : 'Save & Continue'}
                                     </ThemedText>
                                     {loadingLocation && step === totalSteps ? (
                                         <ActivityIndicator size="small" color="#002D62" />
