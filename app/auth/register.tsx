@@ -210,6 +210,8 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 32,
         fontWeight: '800',
+        lineHeight: 40,
+        paddingTop: 5,
     },
     headerSubtitle: {
         color: '#E0E0E0',
