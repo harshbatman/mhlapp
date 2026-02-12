@@ -78,6 +78,7 @@ export default function ApplyScreen() {
     const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
     const [industrySuggestions, setIndustrySuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+    const [errors, setErrors] = useState<string[]>([]);
 
     const [formData, setFormData] = useState({
         // Step 1: Personal
@@ -188,30 +189,38 @@ export default function ApplyScreen() {
     }, [params.type]);
 
     const handleNext = async () => {
+        let currentErrors: string[] = [];
         // Step-specific validation
         if (step === 1) {
-            if (!formData.name.trim()) return Alert.alert('Required Field', 'Please enter your Full Name');
-            if (!formData.dob.trim() || formData.dob.length < 10) return Alert.alert('Required Field', 'Please enter valid Date of Birth');
-            if (!formData.gender) return Alert.alert('Required Field', 'Please select your Gender');
-            if (!formData.pan.trim() || formData.pan.length < 10) return Alert.alert('Required Field', 'Please enter valid 10-digit PAN Number');
-            if (!formData.aadhaar.trim() || formData.aadhaar.replace(/ /g, '').length < 12) return Alert.alert('Required Field', 'Please enter valid 12-digit Aadhaar Number');
+            if (!formData.name.trim()) currentErrors.push('name');
+            if (!formData.dob.trim() || formData.dob.length < 10) currentErrors.push('dob');
+            if (!formData.gender) currentErrors.push('gender');
+            if (!formData.pan.trim() || formData.pan.length < 10) currentErrors.push('pan');
+            if (!formData.aadhaar.trim() || formData.aadhaar.replace(/ /g, '').length < 12) currentErrors.push('aadhaar');
         } else if (step === 2) {
-            if (!formData.phone.trim() || formData.phone.length < 10) return Alert.alert('Required Field', 'Please enter valid 10-digit Phone Number');
-            if (!formData.address.trim()) return Alert.alert('Required Field', 'Please enter your Current Address');
-            if (!formData.isSameAddress && !formData.permanentAddress.trim()) return Alert.alert('Required Field', 'Please enter your Permanent Address');
+            if (!formData.phone.trim() || formData.phone.length < 10) currentErrors.push('phone');
+            if (!formData.address.trim()) currentErrors.push('address');
+            if (!formData.isSameAddress && !formData.permanentAddress.trim()) currentErrors.push('permanentAddress');
         } else if (step === 3) {
             if (formData.occupation === 'Salaried' || formData.occupation === 'Business') {
-                if (!formData.company.trim()) return Alert.alert('Required Field', 'Please enter your Company/Business Name');
+                if (!formData.company.trim()) currentErrors.push('company');
             } else if (formData.occupation === 'Self-Employed') {
-                if (!formData.profession.trim()) return Alert.alert('Required Field', 'Please enter your Profession');
+                if (!formData.profession.trim()) currentErrors.push('profession');
             }
-            if (!formData.monthlyIncome.trim()) return Alert.alert('Required Field', 'Please enter your Income details');
+            if (!formData.monthlyIncome.trim()) currentErrors.push('monthlyIncome');
         } else if (step === 4) {
-            if (!formData.loanAmount.trim()) return Alert.alert('Required Field', 'Please enter Requested Loan Amount');
-            if (!formData.tenure.trim()) return Alert.alert('Required Field', 'Please enter Desired Tenure');
-            if (!formData.propertyValue.trim()) return Alert.alert('Required Field', 'Please enter Market Value of Property');
+            if (!formData.loanAmount.trim()) currentErrors.push('loanAmount');
+            if (!formData.tenure.trim()) currentErrors.push('tenure');
+            if (!formData.propertyValue.trim()) currentErrors.push('propertyValue');
         }
 
+        if (currentErrors.length > 0) {
+            setErrors(currentErrors);
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+            return Alert.alert('Attention', 'Please fill all required fields highlighted in red.');
+        }
+
+        setErrors([]);
         if (step < totalSteps) {
             // Save as draft when moving to next step
             try {
@@ -408,12 +417,14 @@ export default function ApplyScreen() {
                     styles.input,
                     {
                         backgroundColor: Colors[colorScheme].surface,
-                        color: ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
-                            (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
+                        color: errors.includes(key) ||
+                            ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
+                                (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
                             ? '#FF3B30'
                             : Colors[colorScheme].text,
-                        borderColor: ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
-                            (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
+                        borderColor: errors.includes(key) ||
+                            ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
+                                (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
                             ? '#FF3B30'
                             : Colors[colorScheme].border
                     }
@@ -435,7 +446,12 @@ export default function ApplyScreen() {
                         }
                         finalValue = formatted;
                     }
+
+                    if (errors.includes(key)) {
+                        setErrors(errors.filter(e => e !== key));
+                    }
                     setFormData({ ...formData, [key]: finalValue });
+
                     if (key === 'developerName') {
                         if (text.length > 0) {
                             const filtered = INDIAN_DEVELOPERS.filter(d =>
@@ -466,23 +482,23 @@ export default function ApplyScreen() {
                             setIndustrySuggestions(INDIAN_INDUSTRIES);
                         }
                     }
-                }}
-                onFocus={() => {
+                },
+                    onFocus = {() => {
                     if (key === 'developerName') {
-                        setDeveloperSuggestions(INDIAN_DEVELOPERS);
+                setDeveloperSuggestions(INDIAN_DEVELOPERS);
                     }
-                    if (key === 'company' && formData.occupation === 'Salaried') {
-                        setCompanySuggestions(INDIAN_COMPANIES);
+            if (key === 'company' && formData.occupation === 'Salaried') {
+                setCompanySuggestions(INDIAN_COMPANIES);
                     }
-                    if (key === 'industry' && formData.occupation === 'Salaried') {
-                        setIndustrySuggestions(INDIAN_INDUSTRIES);
+            if (key === 'industry' && formData.occupation === 'Salaried') {
+                setIndustrySuggestions(INDIAN_INDUSTRIES);
                     }
                 }}
-                placeholder={placeholder}
-                placeholderTextColor="#999"
-                keyboardType={keyboardType}
-                maxLength={maxLength}
-                autoCapitalize={key === 'pan' ? 'characters' : 'none'}
+            placeholder={placeholder}
+            placeholderTextColor="#999"
+            keyboardType={keyboardType}
+            maxLength={maxLength}
+            autoCapitalize={key === 'pan' ? 'characters' : 'none'}
             />
             {key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
                 <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
@@ -564,7 +580,7 @@ export default function ApplyScreen() {
 
             <View style={styles.inputContainer}>
                 <ThemedText style={styles.label}>Date of Birth</ThemedText>
-                <View style={[styles.inputWrapper, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, flexDirection: 'row', alignItems: 'center' }]}>
+                <View style={[styles.inputWrapper, { borderColor: errors.includes('dob') ? '#FF3B30' : Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, flexDirection: 'row', alignItems: 'center' }]}>
                     <TextInput
                         style={[styles.input, { color: Colors[colorScheme].text, flex: 1, height: '100%' }]}
                         placeholder="DD/MM/YYYY"
@@ -619,8 +635,11 @@ export default function ApplyScreen() {
                     {['Male', 'Female', 'Other'].map((g) => (
                         <TouchableOpacity
                             key={g}
-                            style={[styles.chip, formData.gender === g && styles.chipSelected, { borderColor: Colors[colorScheme].border }]}
-                            onPress={() => setFormData({ ...formData, gender: g })}
+                            style={[styles.chip, formData.gender === g && styles.chipSelected, { borderColor: errors.includes('gender') && !formData.gender ? '#FF3B30' : Colors[colorScheme].border }]}
+                            onPress={() => {
+                                setFormData({ ...formData, gender: g });
+                                setErrors(errors.filter(e => e !== 'gender'));
+                            }}
                         >
                             <ThemedText style={[styles.chipText, formData.gender === g && styles.chipTextSelected]}>{g}</ThemedText>
                         </TouchableOpacity>
@@ -663,8 +682,8 @@ export default function ApplyScreen() {
                         styles.input,
                         {
                             backgroundColor: Colors[colorScheme].surface,
-                            color: Colors[colorScheme].text,
-                            borderColor: Colors[colorScheme].border,
+                            color: errors.includes('address') ? '#FF3B30' : Colors[colorScheme].text,
+                            borderColor: errors.includes('address') ? '#FF3B30' : Colors[colorScheme].border,
                             height: 100,
                             paddingTop: 15,
                         }
@@ -713,8 +732,8 @@ export default function ApplyScreen() {
                             styles.input,
                             {
                                 backgroundColor: Colors[colorScheme].surface,
-                                color: Colors[colorScheme].text,
-                                borderColor: Colors[colorScheme].border,
+                                color: errors.includes('permanentAddress') ? '#FF3B30' : Colors[colorScheme].text,
+                                borderColor: errors.includes('permanentAddress') ? '#FF3B30' : Colors[colorScheme].border,
                                 height: 100,
                                 paddingTop: 15,
                             }
