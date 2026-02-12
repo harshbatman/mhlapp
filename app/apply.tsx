@@ -114,7 +114,7 @@ export default function ApplyScreen() {
     const params = useLocalSearchParams<{ type?: string }>();
 
     const [step, setStep] = useState(1);
-    const totalSteps = 5;
+    const totalSteps = 6;
     const [loadingLocation, setLoadingLocation] = useState(false);
     const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
     const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
@@ -1358,6 +1358,195 @@ export default function ApplyScreen() {
         );
     };
 
+    const renderStep6 = () => (
+        <Animated.View entering={FadeInRight} exiting={FadeOutLeft} style={styles.stepContainer}>
+            <ThemedText style={styles.sectionTitle}>Review Your Application</ThemedText>
+            <ThemedText style={[styles.label, { marginBottom: 20, color: '#999' }]}>Please review all details before submitting</ThemedText>
+
+            <ScrollView style={{ maxHeight: 500 }} showsVerticalScrollIndicator={false}>
+                {/* Personal Details */}
+                <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    <View style={styles.reviewSectionHeader}>
+                        <ThemedText style={styles.reviewSectionTitle}>Personal Details</ThemedText>
+                        <TouchableOpacity onPress={() => setStep(1)}>
+                            <ThemedText style={[styles.editBtn, { color: Colors[colorScheme].tint }]}>Edit</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Name:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.name}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Date of Birth:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.dob}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Gender:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.gender}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>PAN:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.pan}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Aadhaar:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.aadhaar}</ThemedText>
+                    </View>
+                </View>
+
+                {/* Contact Information */}
+                <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    <View style={styles.reviewSectionHeader}>
+                        <ThemedText style={styles.reviewSectionTitle}>Contact Information</ThemedText>
+                        <TouchableOpacity onPress={() => setStep(2)}>
+                            <ThemedText style={[styles.editBtn, { color: Colors[colorScheme].tint }]}>Edit</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Email:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.email}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Phone:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.phone}</ThemedText>
+                    </View>
+                    {formData.altPhone && (
+                        <View style={styles.reviewItem}>
+                            <ThemedText style={styles.reviewLabel}>Alternate Phone:</ThemedText>
+                            <ThemedText style={styles.reviewValue}>{formData.altPhone}</ThemedText>
+                        </View>
+                    )}
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Address:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.address}</ThemedText>
+                    </View>
+                </View>
+
+                {/* Employment & Income */}
+                <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    <View style={styles.reviewSectionHeader}>
+                        <ThemedText style={styles.reviewSectionTitle}>Employment & Income</ThemedText>
+                        <TouchableOpacity onPress={() => setStep(3)}>
+                            <ThemedText style={[styles.editBtn, { color: Colors[colorScheme].tint }]}>Edit</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Occupation:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.occupation}</ThemedText>
+                    </View>
+                    {formData.occupation === 'Salaried' && (
+                        <>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Company:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.company === 'Other' ? formData.otherCompanyName : formData.company}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Industry:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.industry === 'Other' ? formData.otherIndustryName : formData.industry}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Experience:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.experience} years</ThemedText>
+                            </View>
+                        </>
+                    )}
+                    {formData.occupation === 'Self-Employed' && (
+                        <>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Profession:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.profession === 'Other' ? formData.otherProfessionName : formData.profession}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Experience:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.experience} years</ThemedText>
+                            </View>
+                        </>
+                    )}
+                    {formData.occupation === 'Business' && (
+                        <>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Business Name:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.company}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Nature of Business:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.businessNature === 'Other' ? formData.otherBusinessNature : formData.businessNature}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Annual Turnover:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>₹{formData.annualTurnover}</ThemedText>
+                            </View>
+                            <View style={styles.reviewItem}>
+                                <ThemedText style={styles.reviewLabel}>Years in Business:</ThemedText>
+                                <ThemedText style={styles.reviewValue}>{formData.yearsInBusiness} years</ThemedText>
+                            </View>
+                        </>
+                    )}
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Monthly Income:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>₹{formData.monthlyIncome}</ThemedText>
+                    </View>
+                </View>
+
+                {/* Loan Details */}
+                <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    <View style={styles.reviewSectionHeader}>
+                        <ThemedText style={styles.reviewSectionTitle}>Loan Details</ThemedText>
+                        <TouchableOpacity onPress={() => setStep(4)}>
+                            <ThemedText style={[styles.editBtn, { color: Colors[colorScheme].tint }]}>Edit</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Loan Type:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.loanType === 'flat-buying' ? 'Flat Buying' : formData.loanType}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Loan Amount:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>₹{formData.loanAmount}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Tenure:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.tenure} years</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Property Value:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>₹{formData.propertyValue}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Developer:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.developerName === 'Other' ? formData.otherDeveloperName : formData.developerName}</ThemedText>
+                    </View>
+                </View>
+
+                {/* Documents */}
+                <View style={[styles.reviewSection, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
+                    <View style={styles.reviewSectionHeader}>
+                        <ThemedText style={styles.reviewSectionTitle}>Documents Uploaded</ThemedText>
+                        <TouchableOpacity onPress={() => setStep(5)}>
+                            <ThemedText style={[styles.editBtn, { color: Colors[colorScheme].tint }]}>Edit</ThemedText>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>PAN Card:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.docs.panFront && formData.docs.panBack ? '✅ Uploaded' : '❌ Missing'}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Aadhaar Card:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.docs.aadhaarFront && formData.docs.aadhaarBack ? '✅ Uploaded' : '❌ Missing'}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Income Proof:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.docs.income ? '✅ Uploaded' : '⚠️ Optional'}</ThemedText>
+                    </View>
+                    <View style={styles.reviewItem}>
+                        <ThemedText style={styles.reviewLabel}>Property Docs:</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{formData.docs.property ? '✅ Uploaded' : '⚠️ Optional'}</ThemedText>
+                    </View>
+                </View>
+            </ScrollView>
+        </Animated.View>
+    );
+
     return (
         <ThemedView style={styles.container}>
             <KeyboardAvoidingView
@@ -1400,8 +1589,9 @@ export default function ApplyScreen() {
                             {step === 3 && renderStep3()}
                             {step === 4 && renderStep4()}
                             {step === 5 && renderStep5()}
+                            {step === 6 && renderStep6()}
 
-                            {step === totalSteps && (
+                            {step === 6 && (
                                 <ThemedText style={styles.disclaimer}>
                                     By submitting, you authorize MAHTO Home Loans to access your credit report and contact you for verification.
                                 </ThemedText>
@@ -1705,5 +1895,46 @@ const styles = StyleSheet.create({
         padding: 12,
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(0,0,0,0.05)',
+    },
+    reviewSection: {
+        marginBottom: 20,
+        padding: 16,
+        borderRadius: 12,
+        borderWidth: 1,
+    },
+    reviewSectionHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 12,
+        paddingBottom: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(0,0,0,0.1)',
+    },
+    reviewSectionTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+    },
+    editBtn: {
+        fontSize: 14,
+        fontWeight: '600',
+    },
+    reviewItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        paddingVertical: 8,
+    },
+    reviewLabel: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: '#666',
+        flex: 1,
+    },
+    reviewValue: {
+        fontSize: 14,
+        fontWeight: '600',
+        flex: 1.5,
+        textAlign: 'right',
     },
 });
