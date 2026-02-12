@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -804,122 +804,140 @@ export default function ApplyScreen() {
             )}
             {key === 'developerName' && developerSuggestions.length > 0 && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {developerSuggestions.map((dev) => (
+                    <FlatList
+                        data={developerSuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={dev}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, developerName: dev });
+                                    setFormData({ ...formData, developerName: item });
                                     setDeveloperSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: dev === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: dev === 'Other' ? '700' : '400' }}>
-                                    {dev}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
             {key === 'company' && companySuggestions.length > 0 && formData.occupation === 'Salaried' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {companySuggestions.map((comp) => (
+                    <FlatList
+                        data={companySuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={comp}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, company: comp });
+                                    setFormData({ ...formData, company: item });
                                     setCompanySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: comp === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: comp === 'Other' ? '700' : '400' }}>
-                                    {comp}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
             {key === 'industry' && industrySuggestions.length > 0 && formData.occupation === 'Salaried' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {industrySuggestions.map((ind) => (
+                    <FlatList
+                        data={industrySuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={ind}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, industry: ind });
+                                    setFormData({ ...formData, industry: item });
                                     setIndustrySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: ind === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: ind === 'Other' ? '700' : '400' }}>
-                                    {ind}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
             {key === 'profession' && professionSuggestions.length > 0 && formData.occupation === 'Self-Employed' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {professionSuggestions.map((prof) => (
+                    <FlatList
+                        data={professionSuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={prof}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, profession: prof });
+                                    setFormData({ ...formData, profession: item });
                                     setProfessionSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: prof === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: prof === 'Other' ? '700' : '400' }}>
-                                    {prof}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
             {key === 'businessNature' && businessNatureSuggestions.length > 0 && formData.occupation === 'Business' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {businessNatureSuggestions.map((biz) => (
+                    <FlatList
+                        data={businessNatureSuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={biz}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, businessNature: biz });
+                                    setFormData({ ...formData, businessNature: item });
                                     setBusinessNatureSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: biz === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: biz === 'Other' ? '700' : '400' }}>
-                                    {biz}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
             {key === 'societyName' && societySuggestions.length > 0 && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
-                        {societySuggestions.map((soc) => (
+                    <FlatList
+                        data={societySuggestions}
+                        keyExtractor={(item) => item}
+                        keyboardShouldPersistTaps="always"
+                        nestedScrollEnabled={true}
+                        renderItem={({ item }) => (
                             <TouchableOpacity
-                                key={soc}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
-                                    setFormData({ ...formData, societyName: soc });
+                                    setFormData({ ...formData, societyName: item });
                                     setSocietySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: soc === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: soc === 'Other' ? '700' : '400' }}>
-                                    {soc}
+                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                    {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        ))}
-                    </ScrollView>
+                        )}
+                    />
                 </View>
             )}
         </View>
