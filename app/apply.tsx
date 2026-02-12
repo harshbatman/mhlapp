@@ -919,9 +919,9 @@ export default function ApplyScreen() {
                 </View>
             </View>
 
-            {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 2500000', 'numeric')}
+            {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 25L or 2500000', 'default')}
             {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
-            {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'Approx value', 'numeric')}
+            {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'e.g. 50L or 5000000', 'default')}
 
             {(formData.loanType === 'Flat Buying' || formData.loanType === 'flat-buying') && (
                 <Animated.View entering={FadeInRight}>
