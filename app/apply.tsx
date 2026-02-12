@@ -113,6 +113,17 @@ export default function ApplyScreen() {
     const insets = useSafeAreaInsets();
     const params = useLocalSearchParams<{ type?: string }>();
 
+    // Helper function to normalize loan type display
+    const getLoanTypeDisplay = (loanType: string): string => {
+        const loanTypeMap: Record<string, string> = {
+            'construction': 'Construction',
+            'renovation': 'Renovation',
+            'flat-buying': 'Flat Buying',
+            'lap': 'LAP'
+        };
+        return loanTypeMap[loanType.toLowerCase()] || loanType;
+    };
+
     const [step, setStep] = useState(1);
     const totalSteps = 6;
     const [loadingLocation, setLoadingLocation] = useState(false);
@@ -1211,7 +1222,7 @@ export default function ApplyScreen() {
                         }
                     ]}>
                         <ThemedText style={{ fontSize: 16, fontWeight: '600', color: Colors[colorScheme].tint }}>
-                            {formData.loanType === 'flat-buying' ? 'Flat Buying' : formData.loanType}
+                            {getLoanTypeDisplay(formData.loanType)}
                         </ThemedText>
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                             <Ionicons name="checkmark-circle" size={20} color={Colors[colorScheme].tint} />
@@ -1498,7 +1509,7 @@ export default function ApplyScreen() {
                     </View>
                     <View style={styles.reviewItem}>
                         <ThemedText style={styles.reviewLabel}>Loan Type:</ThemedText>
-                        <ThemedText style={styles.reviewValue}>{formData.loanType === 'flat-buying' ? 'Flat Buying' : formData.loanType}</ThemedText>
+                        <ThemedText style={styles.reviewValue}>{getLoanTypeDisplay(formData.loanType)}</ThemedText>
                     </View>
                     <View style={styles.reviewItem}>
                         <ThemedText style={styles.reviewLabel}>Loan Amount:</ThemedText>

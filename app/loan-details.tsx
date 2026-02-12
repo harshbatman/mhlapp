@@ -108,7 +108,7 @@ export default function LoanDetailsScreen() {
                         style={styles.applyBtn}
                         onPress={() => router.push({
                             pathname: '/apply',
-                            params: { type: details.title }
+                            params: { type: id }
                         })}
                     >
                         <ThemedText style={styles.applyBtnText}>Apply for this Loan</ThemedText>
