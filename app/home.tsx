@@ -119,7 +119,7 @@ export default function HomeScreen() {
 
           <View style={styles.quickActionsGrid}>
             <TouchableOpacity
-              style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface }]}
+              style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
               onPress={() => router.push('/calculator')}
             >
               <Ionicons name="calculator-outline" size={32} color={Colors[colorScheme].tint} />
@@ -127,7 +127,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface }]}
+              style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
               onPress={() => router.push('/track-status')}
             >
               <Ionicons name="document-text-outline" size={32} color={Colors[colorScheme].tint} />
@@ -235,15 +235,16 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     width: (width - 50) / 2,
-    padding: 16,
-    borderRadius: 16,
+    padding: 20,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 3,
   },
   actionLabel: {
     marginTop: 8,
