@@ -15,6 +15,7 @@ export default function DeleteAccountScreen() {
 
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleDelete = () => {
         // Demo validation
@@ -77,14 +78,27 @@ export default function DeleteAccountScreen() {
 
                         <View style={styles.inputContainer}>
                             <ThemedText style={styles.label}>Password</ThemedText>
-                            <TextInput
-                                style={[styles.input, { backgroundColor: Colors[colorScheme].surface, color: Colors[colorScheme].text, borderColor: Colors[colorScheme].border }]}
-                                placeholder="Enter password"
-                                placeholderTextColor="#999"
-                                secureTextEntry
-                                value={password}
-                                onChangeText={setPassword}
-                            />
+                            <View style={[styles.passwordWrapper, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}>
+                                <TextInput
+                                    style={[styles.passwordInput, { color: Colors[colorScheme].text }]}
+                                    placeholder="Enter password"
+                                    placeholderTextColor="#999"
+                                    secureTextEntry={!showPassword}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    style={{ padding: 4 }}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                                        size={22}
+                                        color={Colors[colorScheme].text}
+                                        style={{ opacity: 0.5 }}
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         </View>
 
                         <TouchableOpacity style={styles.deleteBtn} onPress={handleDelete}>
@@ -161,6 +175,18 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         paddingHorizontal: 16,
         borderWidth: 1,
+        fontSize: 16,
+    },
+    passwordWrapper: {
+        height: 56,
+        borderRadius: 16,
+        paddingHorizontal: 16,
+        borderWidth: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    passwordInput: {
+        flex: 1,
         fontSize: 16,
     },
     deleteBtn: {

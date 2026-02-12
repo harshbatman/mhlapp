@@ -23,6 +23,7 @@ export default function LoginScreen() {
     const [callingCode, setCallingCode] = useState('91');
 
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = async () => {
         if (phone.length < 10) {
@@ -100,10 +101,21 @@ export default function LoginScreen() {
                                     style={[styles.passwordInput, { color: Colors[colorScheme].text }]}
                                     placeholder="Enter password"
                                     placeholderTextColor="#999"
-                                    secureTextEntry
+                                    secureTextEntry={!showPassword}
                                     value={password}
                                     onChangeText={setPassword}
                                 />
+                                <TouchableOpacity
+                                    style={styles.eyeIcon}
+                                    onPress={() => setShowPassword(!showPassword)}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                                        size={22}
+                                        color={Colors[colorScheme].text}
+                                        style={{ opacity: 0.5 }}
+                                    />
+                                </TouchableOpacity>
                             </View>
                         </View>
 
@@ -210,11 +222,16 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         height: 60,
         paddingHorizontal: 16,
-        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     passwordInput: {
+        flex: 1,
         fontSize: 16,
         fontWeight: '500',
+    },
+    eyeIcon: {
+        padding: 4,
     },
     loginBtn: {
         backgroundColor: '#000000',

@@ -23,6 +23,7 @@ export default function RegisterScreen() {
     const [callingCode, setCallingCode] = useState('91');
 
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleRegister = async () => {
         if (!name || phone.length < 10) {
@@ -124,13 +125,24 @@ export default function RegisterScreen() {
                             <ThemedText style={styles.label}>Create Password</ThemedText>
                             <View style={[styles.inputWrapper, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface }]}>
                                 <TextInput
-                                    style={[styles.input, { color: Colors[colorScheme].text }]}
+                                    style={[styles.input, { color: Colors[colorScheme].text, flex: 1 }]}
                                     placeholder="Enter password"
                                     placeholderTextColor="#999"
-                                    secureTextEntry
+                                    secureTextEntry={!showPassword}
                                     value={password}
                                     onChangeText={setPassword}
                                 />
+                                <TouchableOpacity
+                                    onPress={() => setShowPassword(!showPassword)}
+                                    style={{ padding: 4 }}
+                                >
+                                    <Ionicons
+                                        name={showPassword ? "eye-off-outline" : "eye-outline"}
+                                        size={22}
+                                        color={Colors[colorScheme].text}
+                                        style={{ opacity: 0.5 }}
+                                    />
+                                </TouchableOpacity>
                             </View>
                         </View>
 
@@ -223,7 +235,8 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         height: 56,
         paddingHorizontal: 16,
-        justifyContent: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     input: {
         fontSize: 16,
