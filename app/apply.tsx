@@ -124,6 +124,9 @@ export default function ApplyScreen() {
         return loanTypeMap[loanType.toLowerCase()] || loanType;
     };
 
+    // Normalize the loan type from params
+    const normalizedLoanType = params.type ? getLoanTypeDisplay(params.type) : 'Construction';
+
     const [step, setStep] = useState(1);
     const totalSteps = 6;
     const [loadingLocation, setLoadingLocation] = useState(false);
@@ -168,7 +171,7 @@ export default function ApplyScreen() {
         existingLoanTypes: [] as string[],
         totalExistingEMI: '',
         // Step 4: Loan
-        loanType: params.type || 'Construction',
+        loanType: normalizedLoanType,
         loanAmount: '',
         tenure: '',
         propertyValue: '',
@@ -230,7 +233,7 @@ export default function ApplyScreen() {
         loadInitialData();
 
         if (params.type) {
-            setFormData(prev => ({ ...prev, loanType: params.type as string }));
+            setFormData(prev => ({ ...prev, loanType: getLoanTypeDisplay(params.type as string) }));
         }
 
         const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -390,19 +393,81 @@ export default function ApplyScreen() {
 
         setErrors([]);
         if (step < totalSteps) {
-            // Save as draft when moving to next step
-            try {
-                const { email, ...draftData } = formData;
-                await AsyncStorage.setItem('loan_application_draft', JSON.stringify(draftData));
-            } catch (err) {
-                console.error('Failed to save draft:', err);
-            }
-
             setStep(step + 1);
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
         } else {
             handleSubmit();
         }
+    };
+
+    const handleClearForm = () => {
+        Alert.alert(
+            'Clear Application',
+            'Are you sure you want to clear all details and start fresh? This action cannot be undone.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                {
+                    text: 'Clear All',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await AsyncStorage.removeItem('loan_application_draft');
+                        } catch (err) {
+                            console.error('Failed to clear draft:', err);
+                        }
+
+                        setFormData({
+                            name: '',
+                            dob: '',
+                            gender: '',
+                            pan: '',
+                            aadhaar: '',
+                            email: '',
+                            phone: '',
+                            address: '',
+                            permanentAddress: '',
+                            isSameAddress: true,
+                            altPhone: '',
+                            occupation: 'Salaried',
+                            monthlyIncome: '',
+                            company: '',
+                            otherCompanyName: '',
+                            experience: '',
+                            industry: '',
+                            otherIndustryName: '',
+                            profession: '',
+                            otherProfessionName: '',
+                            businessNature: '',
+                            otherBusinessNature: '',
+                            annualTurnover: '',
+                            gstNumber: '',
+                            yearsInBusiness: '',
+                            hasExistingLoan: false,
+                            existingLoanTypes: [],
+                            totalExistingEMI: '',
+                            loanType: normalizedLoanType,
+                            loanAmount: '',
+                            tenure: '',
+                            propertyValue: '',
+                            developerName: '',
+                            otherDeveloperName: '',
+                            societyName: '',
+                            docs: {
+                                panFront: null,
+                                panBack: null,
+                                aadhaarFront: null,
+                                aadhaarBack: null,
+                                income: null,
+                                property: null
+                            }
+                        });
+                        setStep(1);
+                        setErrors([]);
+                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                    }
+                }
+            ]
+        );
     };
 
     const handleBack = () => {
@@ -1237,14 +1302,14 @@ export default function ApplyScreen() {
                                 key={type}
                                 style={[
                                     styles.chip,
-                                    (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipSelected,
+                                    formData.loanType === type && styles.chipSelected,
                                     { borderColor: Colors[colorScheme].border }
                                 ]}
                                 onPress={() => setFormData({ ...formData, loanType: type })}
                             >
                                 <ThemedText style={[
                                     styles.chipText,
-                                    (formData.loanType === type || (type === 'Flat Buying' && formData.loanType === 'flat-buying')) && styles.chipTextSelected
+                                    formData.loanType === type && styles.chipTextSelected
                                 ]}>{type}</ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -1289,7 +1354,7 @@ export default function ApplyScreen() {
                 ))}
             </View>
 
-            {(formData.loanType === 'Flat Buying' || formData.loanType === 'flat-buying') && (
+            {formData.loanType === 'Flat Buying' && (
                 <Animated.View entering={FadeInRight}>
                     {renderInput('Developer Name', formData.developerName, 'developerName', 'Select developer')}
                     {formData.developerName === 'Other' && (
@@ -1577,7 +1642,10 @@ export default function ApplyScreen() {
                             <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
                                 <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                             </TouchableOpacity>
-                            <ThemedText style={styles.headerTitle}>Apply for Loan</ThemedText>
+                            <ThemedText style={[styles.headerTitle, { flex: 1 }]}>Apply for Loan</ThemedText>
+                            <TouchableOpacity style={[styles.backBtn, { backgroundColor: 'rgba(255,59,48,0.2)' }]} onPress={handleClearForm}>
+                                <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles.progressContainer}>
