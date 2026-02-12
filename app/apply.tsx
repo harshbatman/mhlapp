@@ -740,6 +740,23 @@ export default function ApplyScreen() {
                         </Animated.View>
                     )}
                     {renderInput('Monthly Net Salary (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter net take-home salary', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                        {[
+                            { label: '< 25k', value: '20000' },
+                            { label: '25k+', value: '25000' },
+                            { label: '50k+', value: '50000' },
+                            { label: '1L+', value: '100000' },
+                            { label: '5L+', value: '500000' }
+                        ].map((s) => (
+                            <TouchableOpacity
+                                key={s.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                                onPress={() => setFormData({ ...formData, monthlyIncome: s.value })}
+                            >
+                                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{s.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                     {renderInput('Total Work Experience (Years)', formData.experience, 'experience', 'e.g. 5', 'numeric')}
                 </Animated.View>
             )}
@@ -748,6 +765,23 @@ export default function ApplyScreen() {
                 <Animated.View entering={FadeInRight}>
                     {renderInput('Profession', formData.profession, 'profession', 'e.g. Doctor, CA, Architect')}
                     {renderInput('Monthly Average Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter average monthly income', 'numeric')}
+                    <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                        {[
+                            { label: '< 25k', value: '20000' },
+                            { label: '25k+', value: '25000' },
+                            { label: '50k+', value: '50000' },
+                            { label: '1L+', value: '100000' },
+                            { label: '5L+', value: '500000' }
+                        ].map((s) => (
+                            <TouchableOpacity
+                                key={s.label}
+                                style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                                onPress={() => setFormData({ ...formData, monthlyIncome: s.value })}
+                            >
+                                <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{s.label}</ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                     {renderInput('Years in Profession', formData.experience, 'experience', 'e.g. 10', 'numeric')}
                 </Animated.View>
             )}
