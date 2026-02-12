@@ -5,7 +5,8 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from 'firebase/auth';
-import { auth } from './firebase';
+import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 
 const AUTH_KEY = 'user_session';
 
@@ -48,16 +49,39 @@ export const AuthService = {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            const sessionData = {
-                uid: user.uid,
-                phone: phone,
-                email: user.email,
-            };
-
-            await this.setSession(sessionData);
-            return sessionData;
+            await this.syncProfile(user.uid, { phone, email: user.email });
+            return await this.getSession();
         } catch (error: any) {
             throw new Error(getFriendlyErrorMessage(error));
+        }
+    },
+
+    async syncProfile(uid: string, fallbackData: any = {}) {
+        try {
+            const userDoc = await getDoc(doc(db, 'users', uid));
+            const currentSession = await this.getSession() || {};
+
+            let updatedSession = {
+                ...currentSession,
+                ...fallbackData,
+                uid
+            };
+
+            if (userDoc.exists()) {
+                const userData = userDoc.data();
+                updatedSession = {
+                    ...updatedSession,
+                    ...userData,
+                    createdAt: undefined,
+                    updatedAt: undefined
+                };
+            }
+
+            await this.setSession(updatedSession);
+            return updatedSession;
+        } catch (error) {
+            console.error('Error syncing profile:', error);
+            return null;
         }
     },
 
@@ -72,6 +96,13 @@ export const AuthService = {
                 phone: phone,
                 ...additionalData
             };
+
+            // Save to Firestore
+            await setDoc(doc(db, 'users', user.uid), {
+                ...sessionData,
+                createdAt: serverTimestamp(),
+                updatedAt: serverTimestamp(),
+            }, { merge: true });
 
             await this.setSession(sessionData);
             return sessionData;

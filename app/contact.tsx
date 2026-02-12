@@ -39,7 +39,7 @@ export default function ContactScreen() {
 
                 <View style={[styles.infoCard, { backgroundColor: '#0F172A', marginTop: 20 }]}>
                     <Ionicons name="ribbon" size={40} color="#D4AF37" />
-                    <ThemedText style={styles.infoTitle}>CEO's Office</ThemedText>
+                    <ThemedText style={styles.infoTitle}>CEO&apos;s Office</ThemedText>
                     <ThemedText style={styles.infoSubtitle}>For critical escalations or leadership inquiries.</ThemedText>
 
                     <TouchableOpacity

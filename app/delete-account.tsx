@@ -51,7 +51,7 @@ export default function DeleteAccountScreen() {
                             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Delete Account</ThemedText>
-                        <ThemedText style={styles.headerSubtitle}>We're sorry to see you go. Please verify your credentials to continue.</ThemedText>
+                        <ThemedText style={styles.headerSubtitle}>We&apos;re sorry to see you go. Please verify your credentials to continue.</ThemedText>
                     </LinearGradient>
 
                     <View style={styles.formSection}>

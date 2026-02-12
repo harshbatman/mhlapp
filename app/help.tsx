@@ -46,7 +46,7 @@ export default function HelpScreen() {
                 <View style={styles.banner}>
                     <Ionicons name="help-buoy-outline" size={48} color="#D4AF37" />
                     <ThemedText style={styles.bannerTitle}>Facing any issue while using MAHTO Home Loans?</ThemedText>
-                    <ThemedText style={styles.bannerSubtitle}>We're here to help you bridge the gap between your problems and solutions.</ThemedText>
+                    <ThemedText style={styles.bannerSubtitle}>We&apos;re here to help you bridge the gap between your problems and solutions.</ThemedText>
                 </View>
 
                 <View style={styles.instructionBox}>
@@ -77,7 +77,7 @@ export default function HelpScreen() {
                 <View style={[styles.ceoSection, { backgroundColor: '#002D62' }]}>
                     <Ionicons name="ribbon-outline" size={32} color="#D4AF37" />
                     <View style={styles.ceoTextWrapper}>
-                        <ThemedText style={styles.ceoTitle}>CEO's Office</ThemedText>
+                        <ThemedText style={styles.ceoTitle}>CEO&apos;s Office</ThemedText>
                         <ThemedText style={styles.ceoDesc}>For critical escalations or partnership inquiries directly to the leadership.</ThemedText>
                         <TouchableOpacity
                             style={[styles.helpBtn, { backgroundColor: '#D4AF37', marginTop: 8 }]}

@@ -7,6 +7,10 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
+import { auth, db, storage } from '@/utils/firebase';
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
@@ -26,7 +30,12 @@ export default function EditProfileScreen() {
 
     useEffect(() => {
         const loadProfile = async () => {
-            const session = await AuthService.getSession();
+            const user = auth.currentUser;
+            let session = await AuthService.getSession();
+            if (user) {
+                const synced = await AuthService.syncProfile(user.uid);
+                if (synced) session = synced;
+            }
             if (session) {
                 if (session.profileImage) setProfileImage(session.profileImage);
                 if (session.name) setName(session.name);
@@ -86,16 +95,55 @@ export default function EditProfileScreen() {
     };
 
     const handleSave = async () => {
-        const session = await AuthService.getSession() || {};
-        await AuthService.setSession({
-            ...session,
-            name,
-            email,
-            address,
-            profileImage
-        });
-        Alert.alert('Success', 'Profile updated successfully!');
-        router.back();
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert('Authentication Required', 'Please log in to update your profile.');
+            return;
+        }
+
+        setLoadingLocation(true);
+        try {
+            let finalImageUrl = profileImage;
+
+            // If profileImage is a local URI, upload it
+            if (profileImage && profileImage.startsWith('file://')) {
+                const response = await fetch(profileImage);
+                const blob = await response.blob();
+                const storageRef = ref(storage, `profiles/${user.uid}/avatar`);
+                await uploadBytes(storageRef, blob);
+                finalImageUrl = await getDownloadURL(storageRef);
+            }
+
+            const userData = {
+                uid: user.uid,
+                name,
+                email,
+                address,
+                phone, // Already set from session or state
+                profileImage: finalImageUrl,
+                updatedAt: serverTimestamp(),
+            };
+
+            // Save to Firestore
+            await setDoc(doc(db, 'users', user.uid), userData, { merge: true });
+
+            // Save to Local Session
+            const session = await AuthService.getSession() || {};
+            await AuthService.setSession({
+                ...session,
+                ...userData,
+                createdAt: undefined,
+                updatedAt: undefined
+            });
+
+            Alert.alert('Success', 'Profile updated successfully!');
+            router.back();
+        } catch (error) {
+            console.error('Profile update error:', error);
+            Alert.alert('Error', 'Failed to update profile. Please try again.');
+        } finally {
+            setLoadingLocation(false);
+        }
     };
 
     return (
@@ -110,8 +158,12 @@ export default function EditProfileScreen() {
                             <Ionicons name="close" size={24} color="#FFFFFF" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Edit Profile</ThemedText>
-                        <TouchableOpacity style={styles.okBtn} onPress={handleSave}>
-                            <ThemedText style={styles.okBtnText}>OK</ThemedText>
+                        <TouchableOpacity style={styles.okBtn} onPress={handleSave} disabled={loadingLocation}>
+                            {loadingLocation ? (
+                                <ActivityIndicator size="small" color="#002D62" />
+                            ) : (
+                                <ThemedText style={styles.okBtnText}>OK</ThemedText>
+                            )}
                         </TouchableOpacity>
                     </View>
 

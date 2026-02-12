@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     content: {
         flex: 1,
         paddingHorizontal: 30,
-        paddingTop: 40,
+        paddingTop: 50,
         alignItems: 'center',
     },
     brandName: {
@@ -127,6 +127,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
         marginTop: 10,
+        lineHeight: 40,
+        paddingTop: 5,
     },
     subtitle: {
         color: '#E0E0E0',

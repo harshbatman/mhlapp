@@ -1,19 +1,93 @@
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import React from 'react';
-import { Dimensions, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Dimensions, FlatList, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { auth, db } from '@/utils/firebase';
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore';
 
 const { width } = Dimensions.get('window');
 
 export default function TrackStatusScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
+    const [applications, setApplications] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetchApplications();
+    }, []);
+
+    const fetchApplications = async () => {
+        const user = auth.currentUser;
+        if (!user) {
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const q = query(
+                collection(db, 'applications'),
+                where('userId', '==', user.uid),
+                orderBy('submittedAt', 'desc')
+            );
+            const querySnapshot = await getDocs(q);
+            const apps = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setApplications(apps);
+        } catch (error) {
+            console.error('Error fetching applications:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const renderApplicationItem = ({ item }: { item: any }) => {
+        const statusColors: any = {
+            'Pending': '#F59E0B',
+            'Approved': '#10B981',
+            'Rejected': '#EF4444',
+            'In Review': '#3B82F6'
+        };
+
+        return (
+            <TouchableOpacity
+                style={[styles.appCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                onPress={() => router.push({ pathname: '/loan-details', params: { id: item.id } })}
+            >
+                <View style={styles.cardHeader}>
+                    <View>
+                        <ThemedText style={styles.loanType}>{item.loanType}</ThemedText>
+                        <ThemedText style={styles.loanId}>ID: {item.id.slice(0, 8).toUpperCase()}</ThemedText>
+                    </View>
+                    <View style={[styles.statusBadge, { backgroundColor: (statusColors[item.status] || '#94A3B8') + '20' }]}>
+                        <ThemedText style={[styles.statusText, { color: statusColors[item.status] || '#94A3B8' }]}>
+                            {item.status}
+                        </ThemedText>
+                    </View>
+                </View>
+
+                <View style={styles.cardFooter}>
+                    <View>
+                        <ThemedText style={styles.footerLabel}>Amount</ThemedText>
+                        <ThemedText style={styles.footerValue}>₹{item.loanAmount}</ThemedText>
+                    </View>
+                    <View>
+                        <ThemedText style={styles.footerLabel}>Tenure</ThemedText>
+                        <ThemedText style={styles.footerValue}>{item.tenure} Years</ThemedText>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color={Colors[colorScheme].tint} opacity={0.5} />
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <ThemedView style={styles.container}>
@@ -26,30 +100,47 @@ export default function TrackStatusScreen() {
                         <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                     </TouchableOpacity>
                     <ThemedText style={styles.headerTitle}>Track Status</ThemedText>
-                    <View style={{ width: 40 }} />
+                    <TouchableOpacity style={styles.backBtn} onPress={fetchApplications}>
+                        <Ionicons name="refresh" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
                 </View>
             </LinearGradient>
 
-            <View style={styles.emptyContainer}>
-                <View style={styles.iconCircle}>
-                    <Ionicons name="document-text-outline" size={80} color={Colors[colorScheme].tint} style={{ opacity: 0.2 }} />
-                    <View style={styles.badge}>
-                        <Ionicons name="search" size={20} color="#FFFFFF" />
-                    </View>
+            {loading ? (
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#D4AF37" />
+                    <ThemedText style={{ marginTop: 15, opacity: 0.6 }}>Loading your applications...</ThemedText>
                 </View>
+            ) : applications.length > 0 ? (
+                <FlatList
+                    data={applications}
+                    renderItem={renderApplicationItem}
+                    keyExtractor={(item) => item.id}
+                    contentContainerStyle={styles.listContent}
+                    showsVerticalScrollIndicator={false}
+                />
+            ) : (
+                <View style={styles.emptyContainer}>
+                    <View style={styles.iconCircle}>
+                        <Ionicons name="document-text-outline" size={80} color={Colors[colorScheme].tint} style={{ opacity: 0.2 }} />
+                        <View style={styles.badge}>
+                            <Ionicons name="search" size={20} color="#FFFFFF" />
+                        </View>
+                    </View>
 
-                <ThemedText style={styles.emptyTitle}>No Applications Found</ThemedText>
-                <ThemedText style={styles.emptySubtitle}>
-                    You haven't applied for any loans yet. Start your journey today!
-                </ThemedText>
+                    <ThemedText style={styles.emptyTitle}>No Applications Found</ThemedText>
+                    <ThemedText style={styles.emptySubtitle}>
+                        You haven&apos;t applied for any loans yet. Start your journey today!
+                    </ThemedText>
 
-                <TouchableOpacity
-                    style={styles.applyBtn}
-                    onPress={() => router.push('/(tabs)/apply')}
-                >
-                    <ThemedText style={styles.applyBtnText}>Apply Now</ThemedText>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity
+                        style={styles.applyBtn}
+                        onPress={() => router.push('/apply')}
+                    >
+                        <ThemedText style={styles.applyBtnText}>Apply Now</ThemedText>
+                    </TouchableOpacity>
+                </View>
+            )}
         </ThemedView>
     );
 }
@@ -82,6 +173,69 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontSize: 20,
         fontWeight: '700',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    listContent: {
+        padding: 20,
+        gap: 16,
+    },
+    appCard: {
+        borderRadius: 20,
+        padding: 20,
+        borderWidth: 1,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.05,
+        shadowRadius: 10,
+        elevation: 2,
+    },
+    cardHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        borderBottomWidth: 1,
+        borderBottomColor: '#00000010',
+        paddingBottom: 15,
+        marginBottom: 15,
+    },
+    loanType: {
+        fontSize: 18,
+        fontWeight: '800',
+        color: '#D4AF37',
+    },
+    loanId: {
+        fontSize: 12,
+        opacity: 0.5,
+        marginTop: 4,
+    },
+    statusBadge: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        borderRadius: 10,
+    },
+    statusText: {
+        fontSize: 12,
+        fontWeight: '800',
+    },
+    cardFooter: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    footerLabel: {
+        fontSize: 11,
+        opacity: 0.5,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
+    },
+    footerValue: {
+        fontSize: 15,
+        fontWeight: '700',
+        marginTop: 2,
     },
     emptyContainer: {
         flex: 1,

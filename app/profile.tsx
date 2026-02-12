@@ -10,6 +10,7 @@ import { Colors, ThemeType } from '@/constants/theme';
 import { useTranslation } from '@/context/LanguageContext';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { AuthService } from '@/utils/auth';
+import { auth } from '@/utils/firebase';
 
 const { width } = Dimensions.get('window');
 
@@ -37,6 +38,14 @@ export default function ProfileScreen() {
     useFocusEffect(
         useCallback(() => {
             const loadProfile = async () => {
+                const user = auth.currentUser;
+                if (user) {
+                    const synced = await AuthService.syncProfile(user.uid);
+                    if (synced) {
+                        setUserData(synced);
+                        return;
+                    }
+                }
                 const session = await AuthService.getSession();
                 setUserData(session);
             };

@@ -13,6 +13,10 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AuthService } from '@/utils/auth';
+import { auth, db, storage } from '@/utils/firebase';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
@@ -88,6 +92,20 @@ export default function ApplyScreen() {
     });
 
     useEffect(() => {
+        const loadInitialData = async () => {
+            const session = await AuthService.getSession();
+            if (session) {
+                setFormData(prev => ({
+                    ...prev,
+                    name: session.name || prev.name,
+                    phone: session.phone || prev.phone,
+                    email: session.email || prev.email,
+                    address: session.address || prev.address,
+                }));
+            }
+        };
+        loadInitialData();
+
         if (params.type) {
             setFormData(prev => ({ ...prev, loanType: params.type as string }));
         }
@@ -122,20 +140,71 @@ export default function ApplyScreen() {
         }
     };
 
-    const handleSubmit = () => {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    const uploadFile = async (uri: string, path: string) => {
+        try {
+            const response = await fetch(uri);
+            const blob = await response.blob();
+            const storageRef = ref(storage, path);
+            await uploadBytes(storageRef, blob);
+            return await getDownloadURL(storageRef);
+        } catch (error) {
+            console.error('Error uploading file:', error);
+            throw error;
+        }
+    };
 
+    const handleSubmit = async () => {
         const { docs } = formData;
         if (!docs.panFront || !docs.panBack || !docs.aadhaarFront || !docs.aadhaarBack) {
             Alert.alert('Missing Documents', 'Please upload both Front and Back sides of your PAN and Aadhaar cards.');
             return;
         }
 
-        Alert.alert(
-            'Application Submitted!',
-            'Our verification team will review your details and contact you within 24 hours.',
-            [{ text: 'Great!', onPress: () => router.replace('/home') }]
-        );
+        const user = auth.currentUser;
+        if (!user) {
+            Alert.alert('Authentication Required', 'Please log in to submit your application.');
+            router.replace('/auth/login');
+            return;
+        }
+
+        setLoadingLocation(true); // Using this as a general loading state for submission
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
+
+        try {
+            const uploadedUrls: any = {};
+            const docKeys = Object.keys(formData.docs) as Array<keyof typeof formData.docs>;
+
+            for (const key of docKeys) {
+                const uri = formData.docs[key];
+                if (uri) {
+                    const fileName = `${user.uid}_${key}_${Date.now()}`;
+                    const path = `applications/${user.uid}/${fileName}`;
+                    uploadedUrls[key] = await uploadFile(uri, path);
+                }
+            }
+
+            const applicationData = {
+                ...formData,
+                docs: uploadedUrls,
+                userId: user.uid,
+                status: 'Pending',
+                submittedAt: serverTimestamp(),
+            };
+
+            await addDoc(collection(db, 'applications'), applicationData);
+
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            Alert.alert(
+                'Application Submitted!',
+                'Our verification team will review your details and contact you within 24 hours.',
+                [{ text: 'Great!', onPress: () => router.replace('/home') }]
+            );
+        } catch (error: any) {
+            console.error('Submission error:', error);
+            Alert.alert('Submission Failed', 'Something went wrong while saving your application. Please try again.');
+        } finally {
+            setLoadingLocation(false);
+        }
     };
 
     const pickDocument = async (key: keyof typeof formData.docs) => {
@@ -677,9 +746,13 @@ export default function ApplyScreen() {
                                     onPress={handleNext}
                                 >
                                     <ThemedText style={styles.primaryBtnText}>
-                                        {step === totalSteps ? 'Submit Application' : 'Next Step'}
+                                        {loadingLocation && step === totalSteps ? 'Submitting...' : step === totalSteps ? 'Submit Application' : 'Next Step'}
                                     </ThemedText>
-                                    <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                                    {loadingLocation && step === totalSteps ? (
+                                        <ActivityIndicator size="small" color="#002D62" />
+                                    ) : (
+                                        <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                                    )}
                                 </TouchableOpacity>
                             </View>
                         </View>
