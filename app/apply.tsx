@@ -83,6 +83,30 @@ const INDIAN_PROFESSIONS = [
 ].sort();
 INDIAN_PROFESSIONS.push('Other');
 
+const BUSINESS_NATURE_TYPES = [
+    'Trading', 'Manufacturing', 'Wholesale Trading', 'Retail Trading',
+    'Import & Export', 'E-commerce', 'Distribution & Supply',
+    'Food & Beverage', 'Restaurant & Catering', 'FMCG Distribution',
+    'Textile & Garment Manufacturing', 'Textile Trading', 'Garment Export',
+    'Electronics Manufacturing', 'Electronics Trading', 'Mobile & Accessories',
+    'Construction & Contracting', 'Real Estate Development', 'Interior Design & Fit-outs',
+    'IT Services & Consulting', 'Software Development', 'Web Development',
+    'Digital Marketing Agency', 'Advertising & Branding', 'Event Management',
+    'Logistics & Transportation', 'Courier & Cargo Services', 'Warehousing',
+    'Healthcare Services', 'Pharmacy', 'Medical Equipment Supply',
+    'Education & Training', 'Coaching Centre', 'Skill Development',
+    'Hospitality & Hotels', 'Travel & Tourism', 'Tour Operator',
+    'Automobile Sales & Service', 'Spare Parts Trading', 'Two-Wheeler Dealership',
+    'Printing & Publishing', 'Packaging Solutions', 'Paper Products',
+    'Jewellery Manufacturing', 'Jewellery Retail', 'Gold & Silver Trading',
+    'Agriculture & Farming', 'Agri Products Trading', 'Fertilizers & Seeds',
+    'Chemical Manufacturing', 'Pharmaceutical Manufacturing', 'Cosmetics & Beauty Products',
+    'Furniture Manufacturing', 'Home Décor & Furnishings', 'Hardware & Sanitary',
+    'Beauty & Salon Services', 'Spa & Wellness', 'Gym & Fitness Centre',
+    'Security Services', 'Manpower & Staffing', 'Consultancy Services'
+].sort();
+BUSINESS_NATURE_TYPES.push('Other');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -96,6 +120,7 @@ export default function ApplyScreen() {
     const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
     const [industrySuggestions, setIndustrySuggestions] = useState<string[]>([]);
     const [professionSuggestions, setProfessionSuggestions] = useState<string[]>([]);
+    const [businessNatureSuggestions, setBusinessNatureSuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
 
@@ -124,6 +149,7 @@ export default function ApplyScreen() {
         profession: '',
         otherProfessionName: '',
         businessNature: '',
+        otherBusinessNature: '',
         annualTurnover: '',
         gstNumber: '',
         yearsInBusiness: '',
@@ -512,6 +538,16 @@ export default function ApplyScreen() {
                             setProfessionSuggestions(INDIAN_PROFESSIONS);
                         }
                     }
+                    if (key === 'businessNature' && formData.occupation === 'Business') {
+                        if (text.length > 0) {
+                            const filtered = BUSINESS_NATURE_TYPES.filter(b =>
+                                b.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setBusinessNatureSuggestions(filtered);
+                        } else {
+                            setBusinessNatureSuggestions(BUSINESS_NATURE_TYPES);
+                        }
+                    }
                 }}
                 onFocus={() => {
                     if (key === 'developerName') {
@@ -525,6 +561,9 @@ export default function ApplyScreen() {
                     }
                     if (key === 'profession' && formData.occupation === 'Self-Employed') {
                         setProfessionSuggestions(INDIAN_PROFESSIONS);
+                    }
+                    if (key === 'businessNature' && formData.occupation === 'Business') {
+                        setBusinessNatureSuggestions(BUSINESS_NATURE_TYPES);
                     }
                 }}
                 placeholder={placeholder}
@@ -617,6 +656,26 @@ export default function ApplyScreen() {
                             >
                                 <ThemedText style={{ color: prof === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: prof === 'Other' ? '700' : '400' }}>
                                     {prof}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            {key === 'businessNature' && businessNatureSuggestions.length > 0 && formData.occupation === 'Business' && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+                        {businessNatureSuggestions.map((biz) => (
+                            <TouchableOpacity
+                                key={biz}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, businessNature: biz });
+                                    setBusinessNatureSuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: biz === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: biz === 'Other' ? '700' : '400' }}>
+                                    {biz}
                                 </ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -924,7 +983,12 @@ export default function ApplyScreen() {
             {formData.occupation === 'Business' && (
                 <Animated.View entering={FadeInRight}>
                     {renderInput('Business Name', formData.company, 'company', 'Enter registered business name')}
-                    {renderInput('Nature of Business', formData.businessNature, 'businessNature', 'e.g. Trading, Manufacturing')}
+                    {renderInput('Nature of Business', formData.businessNature, 'businessNature', 'Search or select business type')}
+                    {formData.businessNature === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Business Nature', formData.otherBusinessNature, 'otherBusinessNature', 'Type your business nature')}
+                        </Animated.View>
+                    )}
                     {renderInput('Annual Turnover (₹)', formData.annualTurnover, 'annualTurnover', 'Enter yearly turnover', 'numeric')}
                     {renderInput('Years in Business', formData.yearsInBusiness, 'yearsInBusiness', 'e.g. 3', 'numeric')}
                     <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 10 }]}>
