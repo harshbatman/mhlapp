@@ -65,6 +65,24 @@ const INDIAN_INDUSTRIES = [
 ].sort();
 INDIAN_INDUSTRIES.push('Other');
 
+const INDIAN_PROFESSIONS = [
+    'Doctor (General Physician)', 'Surgeon', 'Dentist', 'Psychologist', 'Physiotherapist',
+    'Chartered Accountant (CA)', 'Company Secretary (CS)', 'Cost Accountant (CMA)',
+    'Lawyer / Advocate', 'Civil Lawyer', 'Criminal Lawyer', 'Corporate Lawyer',
+    'Architect', 'Interior Designer', 'Civil Engineer', 'Mechanical Engineer',
+    'Electrical Engineer', 'Software Engineer', 'Data Scientist', 'AI/ML Engineer',
+    'Consultant (Management)', 'Consultant (IT)', 'Consultant (Finance)', 'Consultant (HR)',
+    'Financial Advisor', 'Tax Consultant', 'Auditor', 'Actuary',
+    'Photographer', 'Videographer', 'Graphic Designer', 'UI/UX Designer',
+    'Content Writer', 'Copywriter', 'Journalist', 'Editor',
+    'Real Estate Agent', 'Insurance Agent', 'Stock Broker', 'Investment Advisor',
+    'Tutor / Teacher', 'Professor', 'Training Consultant', 'Career Counselor',
+    'Yoga Instructor', 'Fitness Trainer', 'Nutritionist / Dietitian', 'Life Coach',
+    'Chef', 'Caterer', 'Event Planner', 'Wedding Planner',
+    'Freelance Developer', 'Freelance Designer', 'Social Media Manager', 'Digital Marketer'
+].sort();
+INDIAN_PROFESSIONS.push('Other');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -77,6 +95,7 @@ export default function ApplyScreen() {
     const [developerSuggestions, setDeveloperSuggestions] = useState<string[]>([]);
     const [companySuggestions, setCompanySuggestions] = useState<string[]>([]);
     const [industrySuggestions, setIndustrySuggestions] = useState<string[]>([]);
+    const [professionSuggestions, setProfessionSuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
 
@@ -103,6 +122,7 @@ export default function ApplyScreen() {
         industry: '',
         otherIndustryName: '',
         profession: '',
+        otherProfessionName: '',
         businessNature: '',
         annualTurnover: '',
         gstNumber: '',
@@ -482,6 +502,16 @@ export default function ApplyScreen() {
                             setIndustrySuggestions(INDIAN_INDUSTRIES);
                         }
                     }
+                    if (key === 'profession' && formData.occupation === 'Self-Employed') {
+                        if (text.length > 0) {
+                            const filtered = INDIAN_PROFESSIONS.filter(p =>
+                                p.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setProfessionSuggestions(filtered);
+                        } else {
+                            setProfessionSuggestions(INDIAN_PROFESSIONS);
+                        }
+                    }
                 }}
                 onFocus={() => {
                     if (key === 'developerName') {
@@ -492,6 +522,9 @@ export default function ApplyScreen() {
                     }
                     if (key === 'industry' && formData.occupation === 'Salaried') {
                         setIndustrySuggestions(INDIAN_INDUSTRIES);
+                    }
+                    if (key === 'profession' && formData.occupation === 'Self-Employed') {
+                        setProfessionSuggestions(INDIAN_PROFESSIONS);
                     }
                 }}
                 placeholder={placeholder}
@@ -564,6 +597,26 @@ export default function ApplyScreen() {
                             >
                                 <ThemedText style={{ color: ind === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: ind === 'Other' ? '700' : '400' }}>
                                     {ind}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            {key === 'profession' && professionSuggestions.length > 0 && formData.occupation === 'Self-Employed' && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+                        {professionSuggestions.map((prof) => (
+                            <TouchableOpacity
+                                key={prof}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, profession: prof });
+                                    setProfessionSuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: prof === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: prof === 'Other' ? '700' : '400' }}>
+                                    {prof}
                                 </ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -823,7 +876,12 @@ export default function ApplyScreen() {
 
             {formData.occupation === 'Self-Employed' && (
                 <Animated.View entering={FadeInRight}>
-                    {renderInput('Profession', formData.profession, 'profession', 'e.g. Doctor, CA, Architect')}
+                    {renderInput('Profession', formData.profession, 'profession', 'Search or select profession')}
+                    {formData.profession === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Profession', formData.otherProfessionName, 'otherProfessionName', 'Type your profession')}
+                        </Animated.View>
+                    )}
                     {renderInput('Monthly Average Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter average monthly income', 'numeric')}
                     <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
                         {[
