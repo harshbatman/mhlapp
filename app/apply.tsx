@@ -107,6 +107,15 @@ const BUSINESS_NATURE_TYPES = [
 ].sort();
 BUSINESS_NATURE_TYPES.push('Other');
 
+const INDIAN_SOCIETIES = [
+    'Godrej Woods', 'ATS Village', 'Mahagun Modern', 'Cleo County', 'Prateek Edifice',
+    'Supertech Capetown', 'Amrapali Zodiac', 'Jaypee Wish Town', 'Gaur City', 'Cherry County',
+    'Ace City', 'Paramount Floraville', 'Exotica Fresco', 'Gulshan Vivante', 'Paras Tierea',
+    'Logix Blossom County', 'Sikka Karnam Greens', 'Eldeco Utopia', 'Omaxe Forest', 'Assotech Windsor Court',
+    'DLF Capital Greens', 'Prestige Shantiniketan', 'Lodha World Towers', 'Hiranandani Gardens'
+].sort();
+INDIAN_SOCIETIES.push('Other');
+
 export default function ApplyScreen() {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
     const router = useRouter();
@@ -135,6 +144,7 @@ export default function ApplyScreen() {
     const [industrySuggestions, setIndustrySuggestions] = useState<string[]>([]);
     const [professionSuggestions, setProfessionSuggestions] = useState<string[]>([]);
     const [businessNatureSuggestions, setBusinessNatureSuggestions] = useState<string[]>([]);
+    const [societySuggestions, setSocietySuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
 
@@ -178,6 +188,7 @@ export default function ApplyScreen() {
         developerName: '',
         otherDeveloperName: '',
         societyName: '',
+        otherSocietyName: '',
         // Step 5: Docs
         docs: {
             panFront: null as string | null,
@@ -382,6 +393,14 @@ export default function ApplyScreen() {
                 currentErrors.push('otherDeveloperName');
                 missingFields.push('Other Developer Name');
             }
+            if (!formData.societyName.trim()) {
+                currentErrors.push('societyName');
+                missingFields.push('Society Name');
+            }
+            if (formData.societyName === 'Other' && !formData.otherSocietyName.trim()) {
+                currentErrors.push('otherSocietyName');
+                missingFields.push('Other Society Name');
+            }
         }
 
         if (currentErrors.length > 0) {
@@ -452,6 +471,7 @@ export default function ApplyScreen() {
                             developerName: '',
                             otherDeveloperName: '',
                             societyName: '',
+                            otherSocietyName: '',
                             docs: {
                                 panFront: null,
                                 panBack: null,
@@ -735,6 +755,16 @@ export default function ApplyScreen() {
                             setBusinessNatureSuggestions(BUSINESS_NATURE_TYPES);
                         }
                     }
+                    if (key === 'societyName') {
+                        if (text.length > 0) {
+                            const filtered = INDIAN_SOCIETIES.filter(s =>
+                                s.toLowerCase().includes(text.toLowerCase())
+                            );
+                            setSocietySuggestions(filtered);
+                        } else {
+                            setSocietySuggestions(INDIAN_SOCIETIES);
+                        }
+                    }
                 }}
                 onFocus={() => {
                     if (key === 'developerName') {
@@ -751,6 +781,9 @@ export default function ApplyScreen() {
                     }
                     if (key === 'businessNature' && formData.occupation === 'Business') {
                         setBusinessNatureSuggestions(BUSINESS_NATURE_TYPES);
+                    }
+                    if (key === 'societyName') {
+                        setSocietySuggestions(INDIAN_SOCIETIES);
                     }
                 }}
                 placeholder={placeholder}
@@ -863,6 +896,26 @@ export default function ApplyScreen() {
                             >
                                 <ThemedText style={{ color: biz === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: biz === 'Other' ? '700' : '400' }}>
                                     {biz}
+                                </ThemedText>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
+            {key === 'societyName' && societySuggestions.length > 0 && (
+                <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true} contentContainerStyle={{ paddingBottom: 10 }}>
+                        {societySuggestions.map((soc) => (
+                            <TouchableOpacity
+                                key={soc}
+                                style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
+                                onPress={() => {
+                                    setFormData({ ...formData, societyName: soc });
+                                    setSocietySuggestions([]);
+                                }}
+                            >
+                                <ThemedText style={{ color: soc === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: soc === 'Other' ? '700' : '400' }}>
+                                    {soc}
                                 </ThemedText>
                             </TouchableOpacity>
                         ))}
@@ -1362,7 +1415,12 @@ export default function ApplyScreen() {
                             {renderInput('Specify Developer Name', formData.otherDeveloperName, 'otherDeveloperName', 'Enter developer name')}
                         </Animated.View>
                     )}
-                    {renderInput('Society Name', formData.societyName, 'societyName', 'e.g. Godrej Woods')}
+                    {renderInput('Society Name', formData.societyName, 'societyName', 'Select or search society')}
+                    {formData.societyName === 'Other' && (
+                        <Animated.View entering={FadeInRight}>
+                            {renderInput('Specify Society Name', formData.otherSocietyName, 'otherSocietyName', 'Enter society name')}
+                        </Animated.View>
+                    )}
                 </Animated.View>
             )}
         </Animated.View>
@@ -1592,6 +1650,12 @@ export default function ApplyScreen() {
                         <ThemedText style={styles.reviewLabel}>Developer:</ThemedText>
                         <ThemedText style={styles.reviewValue}>{formData.developerName === 'Other' ? formData.otherDeveloperName : formData.developerName}</ThemedText>
                     </View>
+                    {formData.loanType === 'Flat Buying' && (
+                        <View style={styles.reviewItem}>
+                            <ThemedText style={styles.reviewLabel}>Society:</ThemedText>
+                            <ThemedText style={styles.reviewValue}>{formData.societyName === 'Other' ? formData.otherSocietyName : formData.societyName}</ThemedText>
+                        </View>
+                    )}
                 </View>
 
                 {/* Documents */}
