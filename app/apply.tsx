@@ -469,13 +469,22 @@ export default function ApplyScreen() {
                     </TouchableOpacity>
                 </View>
                 {showDatePicker && (
-                    <DateTimePicker
-                        value={dateValue}
-                        mode="date"
-                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                        onChange={handleDateChange}
-                        maximumDate={new Date()} // DOB cannot be in future
-                    />
+                    <View style={Platform.OS === 'ios' && { backgroundColor: Colors[colorScheme].surface, borderRadius: 16, marginTop: 10, overflow: 'hidden', borderWidth: 1, borderColor: Colors[colorScheme].border }}>
+                        {Platform.OS === 'ios' && (
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', padding: 10, borderBottomWidth: 1, borderBottomColor: Colors[colorScheme].border }}>
+                                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                                    <ThemedText style={{ color: Colors[colorScheme].tint, fontWeight: '700' }}>Done</ThemedText>
+                                </TouchableOpacity>
+                            </View>
+                        )}
+                        <DateTimePicker
+                            value={dateValue}
+                            mode="date"
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            onChange={handleDateChange}
+                            maximumDate={new Date()} // DOB cannot be in future
+                        />
+                    </View>
                 )}
             </View>
 
