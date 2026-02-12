@@ -742,11 +742,11 @@ export default function ApplyScreen() {
                     {renderInput('Monthly Net Salary (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter net take-home salary', 'numeric')}
                     <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
                         {[
-                            { label: '< 25k', value: '20000' },
-                            { label: '25k+', value: '25000' },
-                            { label: '50k+', value: '50000' },
-                            { label: '1L+', value: '100000' },
-                            { label: '5L+', value: '500000' }
+                            { label: '< 25k', value: '< 25k' },
+                            { label: '25k+', value: '25k+' },
+                            { label: '50k+', value: '50k+' },
+                            { label: '1L+', value: '1 Lakh+' },
+                            { label: '5L+', value: '5 Lakh+' }
                         ].map((s) => (
                             <TouchableOpacity
                                 key={s.label}
@@ -784,11 +784,11 @@ export default function ApplyScreen() {
                     {renderInput('Monthly Average Income (₹)', formData.monthlyIncome, 'monthlyIncome', 'Enter average monthly income', 'numeric')}
                     <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
                         {[
-                            { label: '< 25k', value: '20000' },
-                            { label: '25k+', value: '25000' },
-                            { label: '50k+', value: '50000' },
-                            { label: '1L+', value: '100000' },
-                            { label: '5L+', value: '500000' }
+                            { label: '< 25k', value: '< 25k' },
+                            { label: '25k+', value: '25k+' },
+                            { label: '50k+', value: '50k+' },
+                            { label: '1L+', value: '1 Lakh+' },
+                            { label: '5L+', value: '5 Lakh+' }
                         ].map((s) => (
                             <TouchableOpacity
                                 key={s.label}
@@ -920,8 +920,30 @@ export default function ApplyScreen() {
             </View>
 
             {renderInput('Requested Amount (₹)', formData.loanAmount, 'loanAmount', 'e.g. 25L or 2500000', 'default')}
+            <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                {['10L', '25L', '50L', '1 Cr', '2 Cr+'].map((val) => (
+                    <TouchableOpacity
+                        key={val}
+                        style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                        onPress={() => setFormData({ ...formData, loanAmount: val })}
+                    >
+                        <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{val}</ThemedText>
+                    </TouchableOpacity>
+                ))}
+            </View>
             {renderInput('Desired Tenure (Years)', formData.tenure, 'tenure', 'Max 30 years', 'numeric')}
             {renderInput('Market Value of Property (₹)', formData.propertyValue, 'propertyValue', 'e.g. 50L or 5000000', 'default')}
+            <View style={[styles.rowWrap, { marginTop: -12, marginBottom: 20 }]}>
+                {['25L', '50L', '80L', '1.5 Cr', '3 Cr+'].map((val) => (
+                    <TouchableOpacity
+                        key={val}
+                        style={[styles.chip, { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 10, backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
+                        onPress={() => setFormData({ ...formData, propertyValue: val })}
+                    >
+                        <ThemedText style={{ fontSize: 11, fontWeight: '700', color: Colors[colorScheme].tint }}>{val}</ThemedText>
+                    </TouchableOpacity>
+                ))}
+            </View>
 
             {(formData.loanType === 'Flat Buying' || formData.loanType === 'flat-buying') && (
                 <Animated.View entering={FadeInRight}>
