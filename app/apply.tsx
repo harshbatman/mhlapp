@@ -322,10 +322,10 @@ export default function ApplyScreen() {
                     styles.input,
                     {
                         backgroundColor: Colors[colorScheme].surface,
-                        color: (key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                        color: (key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
                             ? '#FF3B30'
                             : Colors[colorScheme].text,
-                        borderColor: (key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
+                        borderColor: (key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value))
                             ? '#FF3B30'
                             : Colors[colorScheme].border
                     }
@@ -356,7 +356,7 @@ export default function ApplyScreen() {
                 maxLength={maxLength}
                 autoCapitalize={key === 'pan' ? 'characters' : 'none'}
             />
-            {key === 'pan' && value.length > 0 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
+            {key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
                 <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
                     Invalid PAN format (e.g. ABCDE1234F)
                 </ThemedText>
