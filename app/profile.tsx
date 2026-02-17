@@ -1,7 +1,8 @@
+import { CustomAlert } from '@/components/CustomAlert';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
-import { Alert, Dimensions, Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -33,6 +34,37 @@ export default function ProfileScreen() {
     const router = useRouter();
     const { t } = useTranslation();
     const [userData, setUserData] = useState<any>(null);
+    const [alertConfig, setAlertConfig] = useState({
+        visible: false,
+        title: '',
+        message: '',
+        type: 'info' as 'info' | 'error' | 'success' | 'warning',
+        primaryText: 'OK',
+        secondaryText: undefined as string | undefined,
+        onPrimary: () => { },
+        onSecondary: () => { }
+    });
+
+    const showAlert = (
+        title: string,
+        message: string,
+        type: 'info' | 'error' | 'success' | 'warning' = 'info',
+        primaryText: string = 'OK',
+        onPrimary: () => void = () => { },
+        secondaryText?: string,
+        onSecondary?: () => void
+    ) => {
+        setAlertConfig({
+            visible: true,
+            title,
+            message,
+            type,
+            primaryText,
+            secondaryText,
+            onPrimary,
+            onSecondary: onSecondary || (() => { })
+        });
+    };
 
     useFocusEffect(
         useCallback(() => {
@@ -53,37 +85,32 @@ export default function ProfileScreen() {
     );
 
     const handleLogout = () => {
-        Alert.alert(
+        showAlert(
             t('logout'),
             'Are you sure you want to logout?',
-            [
-                { text: 'No', style: 'cancel' },
-                {
-                    text: 'Yes',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            await AuthService.logout();
-                            router.replace('/');
-                        } catch (error: any) {
-                            alert('We encountered an issue during logout. Please try again.');
-                        }
-                    }
-                }
-            ]
+            'warning',
+            'No',
+            () => { },
+            'Logout',
+            async () => {
+                await AuthService.logout();
+                router.replace('/auth/login');
+            }
         );
     };
 
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={styles.header}>
+                <View style={[styles.header, { backgroundColor: '#F6F6F6' }]}>
                     <View style={styles.headerTop}>
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
                             <Ionicons name="arrow-back" size={24} color="#000000" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>{t('profile')}</ThemedText>
-                        <View style={{ width: 40 }} />
+                        <TouchableOpacity style={styles.backBtn} onPress={() => router.push('/edit-profile')}>
+                            <Ionicons name="create-outline" size={24} color="#000000" />
+                        </TouchableOpacity>
                     </View>
 
                     <View style={styles.profileInfo}>
@@ -114,7 +141,6 @@ export default function ProfileScreen() {
                         <ProfileOption icon="information-circle-outline" title="About Us" onPress={() => router.push('/about')} />
                         <ProfileOption icon="document-text-outline" title="Terms & Conditions" onPress={() => router.push('/terms')} />
                         <ProfileOption icon="shield-checkmark-outline" title="Privacy Policy" onPress={() => router.push('/privacy')} />
-                        <ProfileOption icon="refresh-circle-outline" title="Refund Policy" onPress={() => router.push('/refund')} />
                     </View>
                 </View>
 
@@ -137,6 +163,19 @@ export default function ProfileScreen() {
 
                 <View style={{ height: 40 }} />
             </ScrollView>
+            <CustomAlert
+                visible={alertConfig.visible}
+                title={alertConfig.title}
+                message={alertConfig.message}
+                type={alertConfig.type}
+                primaryButtonText={alertConfig.primaryText}
+                secondaryButtonText={alertConfig.secondaryText}
+                onSecondaryAction={alertConfig.onSecondary}
+                onClose={() => {
+                    alertConfig.onPrimary();
+                    setAlertConfig({ ...alertConfig, visible: false });
+                }}
+            />
         </ThemedView>
     );
 }
@@ -199,35 +238,31 @@ const styles = StyleSheet.create({
     userPhone: {
         color: '#545454',
         fontSize: 16,
-        marginTop: 4,
-        opacity: 0.9,
+        marginTop: 5,
     },
     section: {
         paddingHorizontal: 20,
         marginTop: 25,
     },
     sectionTitle: {
-        fontSize: 14,
-        fontWeight: '600',
+        fontSize: 16,
+        fontWeight: '700',
+        color: '#000000',
         marginBottom: 10,
         marginLeft: 5,
-        opacity: 0.6,
-        textTransform: 'uppercase',
     },
     card: {
         borderRadius: 20,
         overflow: 'hidden',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 10,
-        elevation: 2,
+        borderWidth: 1,
+        borderColor: '#EEEEEE',
     },
     optionItem: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 16,
+        paddingVertical: 15,
+        paddingHorizontal: 15,
         borderBottomWidth: 1,
     },
     optionLeft: {
@@ -235,15 +270,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     iconWrapper: {
-        width: 36,
-        height: 36,
-        borderRadius: 10,
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-        marginRight: 12,
+        marginRight: 15,
     },
     optionTitle: {
         fontSize: 16,
         fontWeight: '500',
+        color: '#000000',
     },
 });
