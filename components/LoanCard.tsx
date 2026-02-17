@@ -41,7 +41,9 @@ export function LoanCard({ title, description, icon, imageSource, onPress, varia
                 <View style={[styles.textContainer, isGrid && styles.gridTextContainer]}>
                     <View style={[styles.titleRow, isGrid && styles.gridTitleRow]}>
                         <ThemedText type="subtitle" style={[styles.title, isGrid && styles.gridTitle]} numberOfLines={1}>{title}</ThemedText>
-                        <Ionicons name="chevron-forward" size={14} color={Colors[colorScheme].icon} style={styles.inlineChevron} />
+                        <View style={styles.chevronCircle}>
+                            <Ionicons name="chevron-forward" size={10} color="#FFFFFF" />
+                        </View>
                     </View>
                     <ThemedText style={[styles.description, isGrid && styles.gridDescription]} numberOfLines={isGrid ? 2 : 3}>{description}</ThemedText>
                 </View>
@@ -144,8 +146,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginBottom: 8,
     },
-    inlineChevron: {
-        marginLeft: 4,
-        opacity: 0.4,
+    chevronCircle: {
+        width: 18,
+        height: 18,
+        borderRadius: 9,
+        backgroundColor: '#000000',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 6,
     },
 });
