@@ -26,24 +26,28 @@ export default function HomeScreen() {
       title: t('construction'),
       description: 'Build your dream home from ground up with easy installments.',
       icon: 'construct-outline' as const,
+      image: require('../assets/images/loans/construction.png'),
     },
     {
       id: 'renovation',
       title: t('renovation'),
       description: 'Give your home a fresh look with our flexible renovation plans.',
       icon: 'color-fill-outline' as const,
+      image: require('../assets/images/loans/renovation.png'),
     },
     {
       id: 'flat-buying',
       title: t('flatBuying'),
       description: 'Own your perfect apartment with competitive interest rates.',
       icon: 'home-outline' as const,
+      image: require('../assets/images/loans/flat_buying.png'),
     },
     {
       id: 'lap',
       title: t('lap'),
       description: 'Unlock the value of your property for your financial needs.',
       icon: 'business-outline' as const,
+      image: require('../assets/images/loans/lap.png'),
     },
   ];
 
@@ -109,6 +113,7 @@ export default function HomeScreen() {
               title={loan.title}
               description={loan.description}
               icon={loan.icon}
+              imageSource={loan.image}
               onPress={() => router.push({
                 pathname: '/loan-details',
                 params: { id: loan.id, title: loan.title }

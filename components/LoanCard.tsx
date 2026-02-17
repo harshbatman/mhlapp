@@ -2,25 +2,30 @@ import { Colors, ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 interface LoanCardProps {
     title: string;
     description: string;
-    icon: keyof typeof Ionicons.glyphMap;
+    icon?: keyof typeof Ionicons.glyphMap;
+    imageSource?: any;
     onPress: () => void;
 }
 
-export function LoanCard({ title, description, icon, onPress }: LoanCardProps) {
+export function LoanCard({ title, description, icon, imageSource, onPress }: LoanCardProps) {
     const colorScheme = (useColorScheme() ?? 'light') as ThemeType;
 
     return (
         <TouchableOpacity onPress={onPress} activeOpacity={0.7} style={styles.container}>
             <ThemedView style={[styles.card, { borderColor: Colors[colorScheme].border }]}>
-                <View style={[styles.iconContainer, { backgroundColor: Colors[colorScheme].tint + '15' }]}>
-                    <Ionicons name={icon} size={28} color={Colors[colorScheme].tint} />
+                <View style={[styles.iconContainer, { backgroundColor: imageSource ? '#FFFFFF' : Colors[colorScheme].tint + '15' }]}>
+                    {imageSource ? (
+                        <Image source={imageSource} style={styles.loanImage} resizeMode="contain" />
+                    ) : (
+                        <Ionicons name={icon as any} size={28} color={Colors[colorScheme].tint} />
+                    )}
                 </View>
                 <View style={styles.textContainer}>
                     <ThemedText type="subtitle" style={styles.title}>{title}</ThemedText>
@@ -66,5 +71,9 @@ const styles = StyleSheet.create({
     description: {
         fontSize: 12,
         color: '#545454',
+    },
+    loanImage: {
+        width: 40,
+        height: 40,
     },
 });
