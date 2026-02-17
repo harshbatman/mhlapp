@@ -9,6 +9,7 @@ import { EmailAuthProvider, reauthenticateWithCredential } from 'firebase/auth';
 import { deleteDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -21,6 +22,8 @@ export default function DeleteAccountScreen() {
 
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
+    const [countryCode, setCountryCode] = useState<CountryCode>('IN');
+    const [callingCode, setCallingCode] = useState('91');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -83,7 +86,8 @@ export default function DeleteAccountScreen() {
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning);
 
                     // 1. Re-authenticate
-                    const email = phoneToEmail(phone);
+                    const fullPhone = callingCode + phone;
+                    const email = phoneToEmail(fullPhone);
                     const credential = EmailAuthProvider.credential(email, password);
                     await reauthenticateWithCredential(user, credential);
 
@@ -148,15 +152,31 @@ export default function DeleteAccountScreen() {
 
                         <View style={styles.inputContainer}>
                             <ThemedText style={styles.label}>Confirm Phone Number</ThemedText>
-                            <TextInput
-                                style={[styles.input, { backgroundColor: '#F9F9F9', color: '#000000', borderColor: '#EEEEEE' }]}
-                                placeholder="Registered 10 digit number"
-                                placeholderTextColor="#999"
-                                keyboardType="numeric"
-                                value={phone}
-                                onChangeText={setPhone}
-                                maxLength={10}
-                            />
+                            <View style={[styles.phoneInputWrapper, { backgroundColor: '#F9F9F9', borderColor: '#EEEEEE' }]}>
+                                <View style={styles.countryPickerBtn}>
+                                    <CountryPicker
+                                        countryCode={countryCode}
+                                        withFilter
+                                        withFlag
+                                        withCallingCode
+                                        onSelect={(country: Country) => {
+                                            setCountryCode(country.cca2);
+                                            setCallingCode(country.callingCode[0]);
+                                        }}
+                                    />
+                                    <ThemedText style={styles.callingCodeText}>+{callingCode}</ThemedText>
+                                    <Ionicons name="chevron-down" size={14} color="#000000" style={{ marginLeft: 4, opacity: 0.5 }} />
+                                </View>
+                                <TextInput
+                                    style={[styles.phoneInput, { color: '#000000' }]}
+                                    placeholder="Registered 10 digits"
+                                    placeholderTextColor="#999"
+                                    keyboardType="numeric"
+                                    value={phone}
+                                    onChangeText={(text) => setPhone(text.replace(/[^0-9]/g, '').slice(0, 10))}
+                                    maxLength={10}
+                                />
+                            </View>
                         </View>
 
                         <View style={styles.inputContainer}>
@@ -297,11 +317,30 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginLeft: 4,
     },
-    input: {
-        height: 60,
-        borderRadius: 20,
-        paddingHorizontal: 20,
+    phoneInputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
         borderWidth: 1,
+        borderRadius: 20,
+        height: 60,
+        paddingHorizontal: 12,
+    },
+    countryPickerBtn: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRightWidth: 1,
+        borderRightColor: 'rgba(150,150,150,0.2)',
+        paddingRight: 10,
+        marginRight: 12,
+    },
+    callingCodeText: {
+        fontSize: 16,
+        fontWeight: '600',
+        marginLeft: 4,
+        color: '#000000',
+    },
+    phoneInput: {
+        flex: 1,
         fontSize: 16,
         fontWeight: '500',
     },
