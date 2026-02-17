@@ -28,7 +28,7 @@ export default function ContactScreen() {
 
             <View style={styles.content}>
                 <View style={styles.infoCard}>
-                    <Ionicons name="mail" size={40} color="#D4AF37" />
+                    <Ionicons name="mail" size={40} color="#D32F2F" />
                     <ThemedText style={styles.infoTitle}>General Support</ThemedText>
                     <ThemedText style={styles.infoSubtitle}>For bugs, feature requests, or general queries.</ThemedText>
 
@@ -37,16 +37,16 @@ export default function ContactScreen() {
                     </TouchableOpacity>
                 </View>
 
-                <View style={[styles.infoCard, { backgroundColor: '#0F172A', marginTop: 20 }]}>
-                    <Ionicons name="ribbon" size={40} color="#D4AF37" />
+                <View style={[styles.infoCard, { backgroundColor: '#000000', marginTop: 20 }]}>
+                    <Ionicons name="ribbon" size={40} color="#D32F2F" />
                     <ThemedText style={styles.infoTitle}>CEO&apos;s Office</ThemedText>
                     <ThemedText style={styles.infoSubtitle}>For critical escalations or leadership inquiries.</ThemedText>
 
                     <TouchableOpacity
-                        style={[styles.emailBtn, { borderColor: '#D4AF37' }]}
+                        style={[styles.emailBtn, { borderColor: '#D32F2F' }]}
                         onPress={() => Linking.openURL('mailto:harshkumarceo@mahtoji.tech')}
                     >
-                        <ThemedText style={[styles.emailText, { color: '#D4AF37' }]}>Contact CEO Office</ThemedText>
+                        <ThemedText style={[styles.emailText, { color: '#D32F2F' }]}>Contact CEO Office</ThemedText>
                     </TouchableOpacity>
                 </View>
 
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 30,
         borderRadius: 24,
-        backgroundColor: '#002D62',
+        backgroundColor: '#000000',
         alignItems: 'center',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 10 },
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         borderColor: 'rgba(255,255,255,0.2)',
     },
     emailText: {
-        color: '#D4AF37',
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '600',
     },

@@ -4,7 +4,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -681,12 +680,12 @@ export default function ApplyScreen() {
                         color: errors.includes(key) ||
                             ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
                                 (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
-                            ? '#FF3B30'
+                            ? '#000000'
                             : Colors[colorScheme].text,
                         borderColor: errors.includes(key) ||
                             ((key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value)) ||
                                 (key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, ''))))
-                            ? '#FF3B30'
+                            ? '#000000'
                             : Colors[colorScheme].border
                     }
                 ]}
@@ -801,12 +800,12 @@ export default function ApplyScreen() {
                 autoCapitalize={key === 'pan' ? 'characters' : 'none'}
             />
             {key === 'pan' && value.length === 10 && !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(value) && (
-                <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
+                <ThemedText style={{ color: '#000000', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
                     Invalid PAN format (e.g. ABCDE1234F)
                 </ThemedText>
             )}
             {key === 'aadhaar' && value.replace(/ /g, '').length === 12 && !/^\d{12}$/.test(value.replace(/ /g, '')) && (
-                <ThemedText style={{ color: '#FF3B30', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
+                <ThemedText style={{ color: '#000000', fontSize: 12, marginTop: 4, fontWeight: '600' }}>
                     Invalid Aadhaar format (12 digits required)
                 </ThemedText>
             )}
@@ -825,7 +824,7 @@ export default function ApplyScreen() {
                                     setDeveloperSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -848,7 +847,7 @@ export default function ApplyScreen() {
                                     setCompanySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -871,7 +870,7 @@ export default function ApplyScreen() {
                                     setIndustrySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -894,7 +893,7 @@ export default function ApplyScreen() {
                                     setProfessionSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -917,7 +916,7 @@ export default function ApplyScreen() {
                                     setBusinessNatureSuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -940,7 +939,7 @@ export default function ApplyScreen() {
                                     setSocietySuggestions([]);
                                 }}
                             >
-                                <ThemedText style={{ color: item === 'Other' ? '#D4AF37' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
+                                <ThemedText style={{ color: item === 'Other' ? '#000000' : Colors[colorScheme].text, fontWeight: item === 'Other' ? '700' : '400' }}>
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
@@ -958,7 +957,7 @@ export default function ApplyScreen() {
 
             <View style={styles.inputContainer}>
                 <ThemedText style={styles.label}>Date of Birth</ThemedText>
-                <View style={[styles.inputWrapper, { borderColor: errors.includes('dob') ? '#FF3B30' : Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, flexDirection: 'row', alignItems: 'center' }]}>
+                <View style={[styles.inputWrapper, { borderColor: errors.includes('dob') ? '#000000' : Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, flexDirection: 'row', alignItems: 'center' }]}>
                     <TextInput
                         style={[styles.input, { color: Colors[colorScheme].text, flex: 1, height: '100%' }]}
                         placeholder="DD/MM/YYYY"
@@ -1013,7 +1012,7 @@ export default function ApplyScreen() {
                     {['Male', 'Female', 'Other'].map((g) => (
                         <TouchableOpacity
                             key={g}
-                            style={[styles.chip, formData.gender === g && styles.chipSelected, { borderColor: errors.includes('gender') && !formData.gender ? '#FF3B30' : Colors[colorScheme].border }]}
+                            style={[styles.chip, formData.gender === g && styles.chipSelected, { borderColor: errors.includes('gender') && !formData.gender ? '#000000' : Colors[colorScheme].border }]}
                             onPress={() => {
                                 setFormData({ ...formData, gender: g });
                                 setErrors(errors.filter(e => e !== 'gender'));
@@ -1046,10 +1045,10 @@ export default function ApplyScreen() {
                         disabled={loadingLocation}
                     >
                         {loadingLocation ? (
-                            <ActivityIndicator size="small" color="#D4AF37" />
+                            <ActivityIndicator size="small" color="#000000" />
                         ) : (
                             <>
-                                <Ionicons name="location" size={14} color="#D4AF37" />
+                                <Ionicons name="location" size={14} color="#000000" />
                                 <ThemedText style={styles.locationBtnText}>Use Current</ThemedText>
                             </>
                         )}
@@ -1060,8 +1059,8 @@ export default function ApplyScreen() {
                         styles.input,
                         {
                             backgroundColor: Colors[colorScheme].surface,
-                            color: errors.includes('address') ? '#FF3B30' : Colors[colorScheme].text,
-                            borderColor: errors.includes('address') ? '#FF3B30' : Colors[colorScheme].border,
+                            color: errors.includes('address') ? '#000000' : Colors[colorScheme].text,
+                            borderColor: errors.includes('address') ? '#000000' : Colors[colorScheme].border,
                             height: 100,
                             paddingTop: 15,
                         }
@@ -1081,7 +1080,7 @@ export default function ApplyScreen() {
                 <Ionicons
                     name={formData.isSameAddress ? "checkbox" : "square-outline"}
                     size={24}
-                    color={formData.isSameAddress ? "#D4AF37" : "#999"}
+                    color={formData.isSameAddress ? "#000000" : "#999"}
                 />
                 <ThemedText style={styles.checkboxLabel}>Permanent address is same as current</ThemedText>
             </TouchableOpacity>
@@ -1096,10 +1095,10 @@ export default function ApplyScreen() {
                             disabled={loadingLocation}
                         >
                             {loadingLocation ? (
-                                <ActivityIndicator size="small" color="#D4AF37" />
+                                <ActivityIndicator size="small" color="#000000" />
                             ) : (
                                 <>
-                                    <Ionicons name="location" size={14} color="#D4AF37" />
+                                    <Ionicons name="location" size={14} color="#000000" />
                                     <ThemedText style={styles.locationBtnText}>Use Current</ThemedText>
                                 </>
                             )}
@@ -1307,7 +1306,7 @@ export default function ApplyScreen() {
                     <Ionicons
                         name={formData.hasExistingLoan ? "checkbox" : "square-outline"}
                         size={24}
-                        color={formData.hasExistingLoan ? "#D4AF37" : "#999"}
+                        color={formData.hasExistingLoan ? "#D32F2F" : "#999"}
                     />
                     <ThemedText style={styles.checkboxLabel}>Do you have any existing loans?</ThemedText>
                 </TouchableOpacity>
@@ -1483,7 +1482,7 @@ export default function ApplyScreen() {
                             {uri ? getFileName(uri) : subtitle}
                         </ThemedText>
                     </View>
-                    {uri && <Ionicons name="checkmark-circle" size={20} color="#D4AF37" />}
+                    {uri && <Ionicons name="checkmark-circle" size={20} color="#D32F2F" />}
                 </TouchableOpacity>
             );
         };
@@ -1725,13 +1724,10 @@ export default function ApplyScreen() {
                     keyboardShouldPersistTaps="always"
                     nestedScrollEnabled={true}
                 >
-                    <LinearGradient
-                        colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                        style={styles.header}
-                    >
+                    <View style={[styles.header, { paddingTop: 60, backgroundColor: '#FFFFFF' }]}>
                         <View style={styles.headerTopRow}>
                             <TouchableOpacity style={styles.backBtn} onPress={handleBack}>
-                                <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                                <Ionicons name="arrow-back" size={24} color="#000000" />
                             </TouchableOpacity>
                             <ThemedText style={[styles.headerTitle, { flex: 1 }]}>Apply for Loan</ThemedText>
                             <TouchableOpacity style={[styles.backBtn, { backgroundColor: 'rgba(255,59,48,0.2)' }]} onPress={handleClearForm}>
@@ -1750,7 +1746,7 @@ export default function ApplyScreen() {
                             </View>
                             <ThemedText style={styles.progressText}>Step {step} of {totalSteps}</ThemedText>
                         </View>
-                    </LinearGradient>
+                    </View>
 
                     <View style={styles.formContent}>
                         <View style={{ flex: 1 }}>
@@ -1783,9 +1779,9 @@ export default function ApplyScreen() {
                                         {loadingLocation && step === totalSteps ? 'Submitting...' : step === totalSteps ? 'Submit Application' : 'Save & Continue'}
                                     </ThemedText>
                                     {loadingLocation && step === totalSteps ? (
-                                        <ActivityIndicator size="small" color="#002D62" />
+                                        <ActivityIndicator size="small" color="#FFFFFF" />
                                     ) : (
-                                        <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#002D62" />
+                                        <Ionicons name={step === totalSteps ? "checkmark-circle" : "arrow-forward"} size={20} color="#FFFFFF" />
                                     )}
                                 </TouchableOpacity>
                             </View>
@@ -1823,7 +1819,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 24,
         fontWeight: '900',
     },
@@ -1838,10 +1834,10 @@ const styles = StyleSheet.create({
     },
     progressFill: {
         height: '100%',
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#D32F2F',
     },
     progressText: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 12,
         fontWeight: '700',
         opacity: 0.8,
@@ -1858,7 +1854,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: '800',
         marginBottom: 24,
-        color: '#D4AF37',
+        color: '#000000',
     },
     inputContainer: {
         marginBottom: 20,
@@ -1898,15 +1894,15 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
     },
     chipSelected: {
-        backgroundColor: '#D4AF37',
-        borderColor: '#D4AF37',
+        backgroundColor: '#000000',
+        borderColor: '#000000',
     },
     chipText: {
         fontSize: 14,
         fontWeight: '600',
     },
     chipTextSelected: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontWeight: '800',
     },
     checkboxRow: {
@@ -1940,8 +1936,8 @@ const styles = StyleSheet.create({
     },
     primaryBtn: {
         flex: 2,
-        backgroundColor: '#D4AF37',
-        shadowColor: '#D4AF37',
+        backgroundColor: '#000000',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -1954,7 +1950,7 @@ const styles = StyleSheet.create({
         borderColor: '#DDD',
     },
     primaryBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontSize: 18,
         fontWeight: '800',
     },
@@ -1987,8 +1983,8 @@ const styles = StyleSheet.create({
         marginBottom: 16,
     },
     uploadBoxActive: {
-        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-        borderColor: '#D4AF37',
+        backgroundColor: '#F9F9F9',
+        borderColor: '#D32F2F',
         borderStyle: 'solid',
     },
     uploadTitle: {
@@ -2012,13 +2008,13 @@ const styles = StyleSheet.create({
         gap: 6,
         paddingVertical: 4,
         paddingHorizontal: 10,
-        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        backgroundColor: '#F6F6F6',
         borderRadius: 8,
     },
     locationBtnText: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#D4AF37',
+        color: '#D32F2F',
     },
     docPreview: {
         width: 50,

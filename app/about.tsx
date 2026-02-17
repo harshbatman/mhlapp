@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -35,16 +34,13 @@ export default function AboutScreen() {
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <LinearGradient
-                    colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={[styles.header, { paddingTop: insets.top + 10 }]}
-                >
+                <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
                     <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                        <Ionicons name="arrow-back" size={24} color="#000000" />
                     </TouchableOpacity>
                     <ThemedText style={styles.headerTitle}>About MAHTO</ThemedText>
                     <ThemedText style={styles.headerSubtitle}>Home Building OS</ThemedText>
-                </LinearGradient>
+                </View>
 
                 <View style={styles.content}>
                     <View style={styles.introSection}>
@@ -81,7 +77,7 @@ export default function AboutScreen() {
                         />
 
                         <View style={styles.fullStackBox}>
-                            <Ionicons name="layers-outline" size={24} color="#D4AF37" />
+                            <Ionicons name="layers-outline" size={24} color="#D32F2F" />
                             <ThemedText style={styles.fullStackText}>
                                 “Full-stack” at MAHTO means from land to lending — not just design to construction.
                             </ThemedText>
@@ -89,15 +85,15 @@ export default function AboutScreen() {
                     </View>
 
                     <View style={styles.visionMission}>
-                        <View style={[styles.vmCard, { backgroundColor: '#002D62' }]}>
+                        <View style={[styles.vmCard, { backgroundColor: '#000000' }]}>
                             <ThemedText style={styles.vmLabel}>OUR MISSION</ThemedText>
                             <ThemedText style={styles.vmTitle}>A roof over every head — not just a roof, but own roof.</ThemedText>
                             <ThemedText style={styles.vmQuote}>“Sabka sar apni chhaat.”</ThemedText>
                         </View>
 
-                        <View style={[styles.vmCard, { backgroundColor: '#D4AF37' }]}>
-                            <ThemedText style={[styles.vmLabel, { color: '#002D62' }]}>OUR VISION</ThemedText>
-                            <ThemedText style={[styles.vmTitle, { color: '#002D62' }]}>To raise living standards by becoming the global operating system for home building.</ThemedText>
+                        <View style={[styles.vmCard, { backgroundColor: '#D32F2F' }]}>
+                            <ThemedText style={[styles.vmLabel, { color: '#FFFFFF' }]}>OUR VISION</ThemedText>
+                            <ThemedText style={[styles.vmTitle, { color: '#FFFFFF' }]}>To raise living standards by becoming the global operating system for home building.</ThemedText>
                         </View>
                     </View>
                 </View>
@@ -123,7 +119,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20,
@@ -134,7 +130,7 @@ const styles = StyleSheet.create({
         fontWeight: '900',
     },
     headerSubtitle: {
-        color: '#D4AF37',
+        color: '#000000',
         fontSize: 18,
         fontWeight: '700',
         letterSpacing: 1,
@@ -181,13 +177,13 @@ const styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderRadius: 14,
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#D32F2F',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
     },
     ecoNumberText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontWeight: '800',
         fontSize: 14,
     },
@@ -203,7 +199,7 @@ const styles = StyleSheet.create({
     fullStackBox: {
         flexDirection: 'row',
         padding: 20,
-        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        backgroundColor: '#F9F9F9',
         borderRadius: 20,
         alignItems: 'center',
         marginTop: 10,
@@ -243,7 +239,7 @@ const styles = StyleSheet.create({
         lineHeight: 26,
     },
     vmQuote: {
-        color: '#D4AF37',
+        color: '#D32F2F',
         fontSize: 18,
         fontWeight: '800',
         marginTop: 12,

@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
@@ -53,16 +52,13 @@ export default function RegisterScreen() {
         <ThemedView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                    <LinearGradient
-                        colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                        style={styles.header}
-                    >
+                    <View style={styles.header}>
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                            <Ionicons name="arrow-back" size={24} color="#000000" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Create Account</ThemedText>
                         <ThemedText style={styles.headerSubtitle}>Start your home loan journey today</ThemedText>
-                    </LinearGradient>
+                    </View>
 
                     <View style={styles.formSection}>
                         <View style={styles.inputContainer}>
@@ -152,7 +148,7 @@ export default function RegisterScreen() {
                             disabled={loading}
                         >
                             {loading ? (
-                                <ActivityIndicator color="#D4AF37" />
+                                <ActivityIndicator color="#FFFFFF" />
                             ) : (
                                 <ThemedText style={styles.registerBtnText}>Create Account</ThemedText>
                             )}
@@ -202,19 +198,19 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 32,
         fontWeight: '800',
         lineHeight: 40,
         paddingTop: 5,
     },
     headerSubtitle: {
-        color: '#E0E0E0',
+        color: '#545454',
         fontSize: 16,
         marginTop: 10,
         opacity: 0.9,
@@ -271,20 +267,20 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     registerBtn: {
-        backgroundColor: '#002D62',
+        backgroundColor: '#000000',
         height: 60,
         borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
-        shadowColor: '#002D62',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
     },
     registerBtnText: {
-        color: '#D4AF37',
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '700',
     },
@@ -300,7 +296,7 @@ const styles = StyleSheet.create({
     },
     linkText: {
         fontSize: 14,
-        color: '#002D62',
+        color: '#000000',
         fontWeight: '700',
     },
     googleBtn: {

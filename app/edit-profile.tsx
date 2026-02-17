@@ -1,7 +1,6 @@
 import { AuthService } from '@/utils/auth';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
-import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -149,18 +148,15 @@ export default function EditProfileScreen() {
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <LinearGradient
-                    colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={styles.header}
-                >
+                <View style={[styles.header, { paddingTop: Platform.OS === 'ios' ? 60 : 40 }]}>
                     <View style={styles.headerTop}>
                         <TouchableOpacity style={styles.iconBtn} onPress={() => router.back()}>
-                            <Ionicons name="close" size={24} color="#FFFFFF" />
+                            <Ionicons name="close" size={24} color="#000000" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Edit Profile</ThemedText>
                         <TouchableOpacity style={styles.okBtn} onPress={handleSave} disabled={loadingLocation}>
                             {loadingLocation ? (
-                                <ActivityIndicator size="small" color="#002D62" />
+                                <ActivityIndicator size="small" color="#FFFFFF" />
                             ) : (
                                 <ThemedText style={styles.okBtnText}>OK</ThemedText>
                             )}
@@ -173,7 +169,7 @@ export default function EditProfileScreen() {
                                 <Image source={{ uri: profileImage }} style={styles.avatar} />
                             ) : (
                                 <View style={styles.placeholderAvatar}>
-                                    <Ionicons name="person" size={50} color="#002D62" />
+                                    <Ionicons name="person" size={50} color="#000000" />
                                 </View>
                             )}
                             <View style={styles.editBadge}>
@@ -182,7 +178,7 @@ export default function EditProfileScreen() {
                         </TouchableOpacity>
                         <ThemedText style={styles.changePhotoText}>Tap to change photo</ThemedText>
                     </View>
-                </LinearGradient>
+                </View>
 
                 <View style={styles.form}>
                     <View style={styles.inputGroup}>
@@ -220,10 +216,10 @@ export default function EditProfileScreen() {
                             <ThemedText style={styles.label}>Address</ThemedText>
                             <TouchableOpacity onPress={getCurrentLocation} disabled={loadingLocation}>
                                 {loadingLocation ? (
-                                    <ActivityIndicator size="small" color="#D4AF37" />
+                                    <ActivityIndicator size="small" color="#D32F2F" />
                                 ) : (
                                     <View style={styles.locationLink}>
-                                        <Ionicons name="location" size={14} color="#D4AF37" />
+                                        <Ionicons name="location" size={14} color="#D32F2F" />
                                         <ThemedText style={styles.locationLinkText}>Use Current Location</ThemedText>
                                     </View>
                                 )}
@@ -267,7 +263,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -280,10 +276,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 12,
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#000000',
     },
     okBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontWeight: '700',
         fontSize: 14,
     },
@@ -298,7 +294,7 @@ const styles = StyleSheet.create({
         height: 120,
         borderRadius: 60,
         borderWidth: 4,
-        borderColor: '#D4AF37',
+        borderColor: '#D32F2F',
     },
     placeholderAvatar: {
         width: 120,
@@ -308,13 +304,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 4,
-        borderColor: '#D4AF37',
+        borderColor: '#D32F2F',
     },
     editBadge: {
         position: 'absolute',
         bottom: 5,
         right: 5,
-        backgroundColor: '#002D62',
+        backgroundColor: '#000000',
         width: 36,
         height: 36,
         borderRadius: 18,
@@ -352,7 +348,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     locationLinkText: {
-        color: '#D4AF37',
+        color: '#D32F2F',
         fontSize: 13,
         fontWeight: '600',
     },

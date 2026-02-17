@@ -1,10 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
-import { Dimensions, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
     runOnJS,
@@ -12,6 +10,7 @@ import Animated, {
     useSharedValue,
     withSpring
 } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -70,14 +69,14 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
                 { translateX: translateX.value - 12 },
                 { scale: withSpring(isPressed.value ? 1.4 : 1) }
             ],
-            backgroundColor: withSpring(isPressed.value ? '#D4AF37' : '#FFFFFF'),
+            backgroundColor: withSpring(isPressed.value ? '#D32F2F' : '#FFFFFF'),
         };
     });
 
     const progressStyle = useAnimatedStyle(() => {
         return {
             width: translateX.value,
-            backgroundColor: '#D4AF37',
+            backgroundColor: '#D32F2F',
         };
     });
 
@@ -86,7 +85,7 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
             transform: [
                 { scale: withSpring(isPressed.value ? 1.2 : 1) }
             ],
-            color: withSpring(isPressed.value ? '#D4AF37' : Colors[colorScheme].text),
+            color: withSpring(isPressed.value ? '#D32F2F' : Colors[colorScheme].text),
         };
     });
 
@@ -167,26 +166,23 @@ export default function CalculatorScreen() {
         <GestureHandlerRootView style={{ flex: 1 }}>
             <ThemedView style={styles.container}>
                 <ScrollView showsVerticalScrollIndicator={false}>
-                    <LinearGradient
-                        colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                        style={[styles.header, { paddingTop: insets.top + 10 }]}
-                    >
+                    <View style={[styles.header, { paddingTop: insets.top + 10 }]}>
                         <View style={styles.headerTopRow}>
                             {router.canGoBack() && (
                                 <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                                    <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                                    <Ionicons name="arrow-back" size={24} color="#000000" />
                                 </TouchableOpacity>
                             )}
                             <ThemedText style={styles.headerTitle}>EMI Calculator</ThemedText>
                         </View>
                         <ThemedText style={styles.headerSubtitle}>Visualize your monthly commitment</ThemedText>
-                    </LinearGradient>
+                    </View>
 
                     <View style={styles.content}>
                         <View style={[styles.resultCard, { backgroundColor: Colors[colorScheme].surface }]}>
                             <View style={styles.emiHighlight}>
                                 <ThemedText style={styles.resultLabel}>Monthly EMI</ThemedText>
-                                <Animated.Text style={[styles.emiValue, { color: '#D4AF37' }]}>
+                                <Animated.Text style={[styles.emiValue, { color: '#D32F2F' }]}>
                                     ₹ {emi.toLocaleString('en-IN')}
                                 </Animated.Text>
                             </View>
@@ -249,7 +245,7 @@ export default function CalculatorScreen() {
                             })}
                         >
                             <ThemedText style={styles.applyBtnText}>Apply Now</ThemedText>
-                            <Ionicons name="arrow-forward" size={18} color="#002D62" />
+                            <Ionicons name="arrow-forward" size={18} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -270,7 +266,7 @@ const styles = StyleSheet.create({
         borderBottomRightRadius: 40,
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 28,
         fontWeight: '900',
     },
@@ -283,12 +279,12 @@ const styles = StyleSheet.create({
         width: 44,
         height: 44,
         borderRadius: 22,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerSubtitle: {
-        color: 'rgba(255,255,255,0.7)',
+        color: '#545454',
         fontSize: 16,
         marginTop: 8,
         fontWeight: '500',
@@ -412,7 +408,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     applyBtn: {
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#000000',
         height: 64,
         borderRadius: 24,
         flexDirection: 'row',
@@ -421,14 +417,14 @@ const styles = StyleSheet.create({
         marginTop: 40,
         marginBottom: 40,
         gap: 12,
-        shadowColor: '#D4AF37',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 10 },
         shadowOpacity: 0.3,
         shadowRadius: 20,
         elevation: 8,
     },
     applyBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontSize: 18,
         fontWeight: '800',
     },

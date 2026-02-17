@@ -13,7 +13,7 @@ const HelpCard = ({ icon, title, description, email, buttonText }: { icon: any, 
     return (
         <View style={[styles.helpCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}>
             <View style={styles.helpIconWrapper}>
-                <Ionicons name={icon} size={24} color="#D4AF37" />
+                <Ionicons name={icon} size={24} color="#D32F2F" />
             </View>
             <ThemedText style={styles.helpCardTitle}>{title}</ThemedText>
             <ThemedText style={styles.helpCardDesc}>{description}</ThemedText>
@@ -22,7 +22,7 @@ const HelpCard = ({ icon, title, description, email, buttonText }: { icon: any, 
                 onPress={() => Linking.openURL(`mailto:${email}`)}
             >
                 <ThemedText style={styles.helpBtnText}>{buttonText}</ThemedText>
-                <Ionicons name="mail-outline" size={18} color="#002D62" />
+                <Ionicons name="mail-outline" size={18} color="#FFFFFF" />
             </TouchableOpacity>
         </View>
     );
@@ -44,7 +44,7 @@ export default function HelpScreen() {
 
             <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.banner}>
-                    <Ionicons name="help-buoy-outline" size={48} color="#D4AF37" />
+                    <Ionicons name="help-buoy-outline" size={48} color="#D32F2F" />
                     <ThemedText style={styles.bannerTitle}>Facing any issue while using MAHTO Home Loans?</ThemedText>
                     <ThemedText style={styles.bannerSubtitle}>We&apos;re here to help you bridge the gap between your problems and solutions.</ThemedText>
                 </View>
@@ -74,17 +74,17 @@ export default function HelpScreen() {
                     />
                 </View>
 
-                <View style={[styles.ceoSection, { backgroundColor: '#002D62' }]}>
-                    <Ionicons name="ribbon-outline" size={32} color="#D4AF37" />
+                <View style={[styles.ceoSection, { backgroundColor: '#000000' }]}>
+                    <Ionicons name="ribbon-outline" size={32} color="#D32F2F" />
                     <View style={styles.ceoTextWrapper}>
                         <ThemedText style={styles.ceoTitle}>CEO&apos;s Office</ThemedText>
                         <ThemedText style={styles.ceoDesc}>For critical escalations or partnership inquiries directly to the leadership.</ThemedText>
                         <TouchableOpacity
-                            style={[styles.helpBtn, { backgroundColor: '#D4AF37', marginTop: 8 }]}
+                            style={[styles.helpBtn, { backgroundColor: '#D32F2F', marginTop: 8 }]}
                             onPress={() => Linking.openURL('mailto:harshkumarceo@mahtoji.tech')}
                         >
                             <ThemedText style={styles.helpBtnText}>Contact CEO Office</ThemedText>
-                            <Ionicons name="mail-outline" size={18} color="#002D62" />
+                            <Ionicons name="mail-outline" size={18} color="#FFFFFF" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -148,13 +148,13 @@ const styles = StyleSheet.create({
     instructionBox: {
         flexDirection: 'row',
         padding: 16,
-        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+        backgroundColor: '#F9F9F9',
         borderRadius: 16,
         alignItems: 'center',
         gap: 12,
         marginBottom: 24,
         borderWidth: 1,
-        borderColor: 'rgba(212, 175, 55, 0.2)',
+        borderColor: '#E0E0E0',
     },
     instructionText: {
         flex: 1,
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     helpBtn: {
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#000000',
         paddingVertical: 12,
         paddingHorizontal: 20,
         borderRadius: 12,
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
     },
     helpBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontWeight: '700',
         fontSize: 14,
     },
@@ -235,7 +235,7 @@ const styles = StyleSheet.create({
         opacity: 0.8,
     },
     ceoEmail: {
-        color: '#D4AF37',
+        color: '#D32F2F',
         fontSize: 14,
         fontWeight: '700',
         textDecorationLine: 'underline',

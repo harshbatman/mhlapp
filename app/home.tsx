@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -62,11 +61,7 @@ export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <LinearGradient
-          colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-          style={styles.header}
-        >
+        <View style={styles.header}>
           <View style={styles.headerContent}>
             <View>
               <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
@@ -93,7 +88,7 @@ export default function HomeScreen() {
               <ThemedText style={styles.applyNowText}>{t('applyNow')}</ThemedText>
             </TouchableOpacity>
           </View>
-        </LinearGradient>
+        </View>
 
         <View style={styles.content}>
           <View style={styles.sectionHeader}>
@@ -136,83 +131,86 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
-    </ThemedView>
+    </ThemedView >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFF',
   },
   header: {
     paddingTop: 60,
     paddingHorizontal: 20,
-    paddingBottom: 40,
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
+    paddingBottom: 20,
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F6F6F6',
   },
   headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: 0,
   },
   welcomeText: {
-    color: '#E0E0E0',
-    fontSize: 16,
+    color: '#545454',
+    fontSize: 14,
+    marginBottom: 4,
   },
   brandName: {
-    color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '800',
+    color: '#000000',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
   headerActions: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 12,
   },
   iconBtn: {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: 12,
+    backgroundColor: '#F6F6F6',
+    borderRadius: 50,
     width: 40,
     height: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    overflow: 'hidden',
   },
   profileImage: {
     width: 40,
     height: 40,
-    borderRadius: 12,
+    borderRadius: 20,
   },
   promoCard: {
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    padding: 20,
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: '#000000',
+    padding: 24,
+    borderRadius: 12,
+    marginTop: 20,
+    marginBottom: 10,
   },
   promoTitle: {
     color: '#FFFFFF',
     fontSize: 14,
-    opacity: 0.9,
+    opacity: 0.8,
+    marginBottom: 4,
   },
   promoRate: {
     color: '#FFFFFF',
-    fontSize: 24,
-    fontWeight: '700',
-    marginVertical: 4,
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
   },
   applyNowBtn: {
-    backgroundColor: '#D4AF37',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 30,
     alignSelf: 'flex-start',
-    marginTop: 10,
   },
   applyNowText: {
-    color: '#002D62',
-    fontWeight: '700',
+    color: '#000000',
+    fontWeight: '600',
+    fontSize: 14,
   },
   content: {
     padding: 20,
@@ -226,29 +224,30 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: 'bold',
+    color: '#000000',
   },
   quickActionsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 30,
+    gap: 16,
   },
   actionCard: {
-    width: (width - 50) / 2,
+    flex: 1,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 12,
+    backgroundColor: '#F6F6F6',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 3,
+    borderWidth: 0,
   },
   actionLabel: {
-    marginTop: 8,
-    fontSize: 12,
-    fontWeight: '600',
+    marginTop: 12,
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#000000',
   },
 });
+
+

@@ -34,24 +34,22 @@ export function LoanCard({ title, description, icon, onPress }: LoanCardProps) {
 
 const styles = StyleSheet.create({
     container: {
-        marginBottom: 16,
+        marginBottom: 12,
     },
     card: {
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        borderRadius: 16,
-        borderWidth: 1,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.05,
-        shadowRadius: 8,
-        elevation: 2,
+        borderRadius: 12,
+        backgroundColor: '#FFFFFF',
+        borderBottomWidth: 1, // List item style
+        borderBottomColor: '#F6F6F6',
+        // Removing shadow for a flatter, cleaner look usually found in Uber lists
     },
     iconContainer: {
-        width: 56,
-        height: 56,
-        borderRadius: 14,
+        width: 48,
+        height: 48,
+        borderRadius: 24, // Circular icon background
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 16,
@@ -60,12 +58,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     title: {
-        fontSize: 18,
-        fontWeight: '700',
-        marginBottom: 4,
+        fontSize: 16,
+        fontWeight: '600',
+        marginBottom: 2,
+        color: '#000000',
     },
     description: {
-        fontSize: 14,
-        opacity: 0.7,
+        fontSize: 12,
+        color: '#545454',
     },
 });

@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Dimensions, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
@@ -53,16 +52,13 @@ export default function LoginScreen() {
         <ThemedView style={styles.container}>
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-                    <LinearGradient
-                        colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                        style={styles.header}
-                    >
+                    <View style={styles.header}>
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                            <Ionicons name="arrow-back" size={24} color="#000000" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Welcome Back</ThemedText>
                         <ThemedText style={styles.headerSubtitle}>Login to manage your home loans</ThemedText>
-                    </LinearGradient>
+                    </View>
 
                     <View style={styles.formSection}>
                         <View style={styles.inputContainer}>
@@ -125,7 +121,7 @@ export default function LoginScreen() {
                             disabled={loading}
                         >
                             {loading ? (
-                                <ActivityIndicator color="#D4AF37" />
+                                <ActivityIndicator color="#FFFFFF" />
                             ) : (
                                 <ThemedText style={styles.loginBtnText}>Continue with MAHTO ID</ThemedText>
                             )}
@@ -163,19 +159,19 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 32,
         fontWeight: '800',
         lineHeight: 40,
         paddingTop: 5,
     },
     headerSubtitle: {
-        color: '#E0E0E0',
+        color: '#545454',
         fontSize: 16,
         marginTop: 10,
         opacity: 0.9,
@@ -299,7 +295,7 @@ const styles = StyleSheet.create({
     },
     linkText: {
         fontSize: 14,
-        color: '#002D62',
+        color: '#000000',
         fontWeight: '700',
     },
 });

@@ -56,7 +56,7 @@ export default function WelcomeScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            <StatusBar style="light" />
+            <StatusBar style="dark" />
 
             <View style={styles.imageContainer}>
                 <Image
@@ -92,16 +92,13 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#002D62',
+        backgroundColor: '#FFFFFF',
     },
     imageContainer: {
         flex: 1.2,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderBottomLeftRadius: 50,
-        borderBottomRightRadius: 50,
-        overflow: 'hidden',
+        backgroundColor: '#F6F6F6',
     },
     heroImage: {
         width: width * 0.9,
@@ -109,34 +106,33 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        paddingHorizontal: 30,
-        paddingTop: 50,
+        paddingHorizontal: 24,
+        paddingTop: 40,
         alignItems: 'center',
     },
     brandName: {
-        color: '#D4AF37',
-        fontSize: 20,
-        fontWeight: '700',
-        letterSpacing: 4,
-        marginBottom: 5,
+        color: '#000000',
+        fontSize: 24,
+        fontWeight: 'bold',
+        letterSpacing: -0.5,
+        marginBottom: 8,
     },
     title: {
-        color: '#FFFFFF',
-        fontSize: 32,
-        fontWeight: '800',
+        color: '#000000',
+        fontSize: 36,
+        fontWeight: 'bold',
         textAlign: 'center',
-        marginBottom: 15,
+        marginBottom: 12,
         marginTop: 10,
-        lineHeight: 40,
-        paddingTop: 5,
+        lineHeight: 44,
+        letterSpacing: -1,
     },
     subtitle: {
-        color: '#E0E0E0',
+        color: '#545454',
         fontSize: 16,
         textAlign: 'center',
         lineHeight: 24,
-        opacity: 0.8,
-        marginBottom: 10,
+        marginBottom: 24,
     },
     marqueeContainer: {
         width: '100%',
@@ -151,42 +147,34 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     marqueeText: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 14,
-        fontWeight: '600',
-        fontStyle: 'italic',
-        opacity: 0.9,
+        fontWeight: '500',
     },
     buttonContainer: {
         width: '100%',
-        gap: 15,
+        gap: 16,
     },
     primaryBtn: {
-        backgroundColor: '#D4AF37',
-        height: 60,
-        borderRadius: 18,
+        backgroundColor: '#000000',
+        height: 56,
         justifyContent: 'center',
         alignItems: 'center',
-        shadowColor: '#D4AF37',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 8,
-        elevation: 5,
+        borderRadius: 8,
     },
     primaryBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontSize: 18,
-        fontWeight: '700',
+        fontWeight: '600',
     },
     secondaryBtn: {
-        height: 60,
+        height: 56,
         justifyContent: 'center',
         alignItems: 'center',
     },
     secondaryBtnText: {
-        color: '#FFFFFF',
-        fontSize: 15,
-        fontWeight: '600',
-        opacity: 0.9,
+        color: '#000000',
+        fontSize: 16,
+        fontWeight: '500',
     },
 });

@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import React from 'react';
 import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -68,15 +67,12 @@ export default function LoanDetailsScreen() {
             <Stack.Screen options={{ title: details.title, headerShown: false }} />
 
             <ScrollView showsVerticalScrollIndicator={false}>
-                <LinearGradient
-                    colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={styles.header}
-                >
+                <View style={styles.header}>
                     <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                        <Ionicons name="arrow-back" size={24} color="#000000" />
                     </TouchableOpacity>
                     <ThemedText style={styles.headerTitle}>{details.title}</ThemedText>
-                </LinearGradient>
+                </View>
 
                 <View style={styles.content}>
                     <View style={[styles.section, { backgroundColor: Colors[colorScheme].surface }]}>
@@ -135,12 +131,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 28,
         fontWeight: '800',
     },
@@ -180,21 +176,21 @@ const styles = StyleSheet.create({
         lineHeight: 22,
     },
     applyBtn: {
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#000000',
         height: 60,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
         marginBottom: 40,
-        shadowColor: '#D4AF37',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
         elevation: 4,
     },
     applyBtnText: {
-        color: '#002D62',
+        color: '#FFFFFF',
         fontSize: 18,
         fontWeight: '700',
     },

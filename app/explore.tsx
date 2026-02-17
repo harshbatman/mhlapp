@@ -57,10 +57,10 @@ const styles = StyleSheet.create({
   infoCard: {
     padding: 24,
     borderRadius: 20,
-    backgroundColor: '#002D6208',
+    backgroundColor: '#F6F6F6',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: '#002D6210',
+    borderColor: '#E0E0E0',
   },
   cardTitle: {
     fontSize: 18,

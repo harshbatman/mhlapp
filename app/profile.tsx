@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useFocusEffect, useRouter } from 'expo-router';
 import React, { useCallback, useState } from 'react';
 import { Alert, Dimensions, Image, Platform, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -19,8 +18,8 @@ const ProfileOption = ({ icon, title, onPress, color, showArrow = true }: { icon
     return (
         <TouchableOpacity style={[styles.optionItem, { borderBottomColor: Colors[colorScheme].border }]} onPress={onPress}>
             <View style={styles.optionLeft}>
-                <View style={[styles.iconWrapper, { backgroundColor: color ? `${color}15` : '#002D6215' }]}>
-                    <Ionicons name={icon} size={22} color={color || '#002D62'} />
+                <View style={[styles.iconWrapper, { backgroundColor: color ? `${color}15` : '#D32F2F15' }]}>
+                    <Ionicons name={icon} size={22} color={color || '#D32F2F'} />
                 </View>
                 <ThemedText style={styles.optionTitle}>{title}</ThemedText>
             </View>
@@ -78,13 +77,10 @@ export default function ProfileScreen() {
     return (
         <ThemedView style={styles.container}>
             <ScrollView showsVerticalScrollIndicator={false}>
-                <LinearGradient
-                    colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                    style={styles.header}
-                >
+                <View style={styles.header}>
                     <View style={styles.headerTop}>
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                            <Ionicons name="arrow-back" size={24} color="#000000" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>{t('profile')}</ThemedText>
                         <View style={{ width: 40 }} />
@@ -95,13 +91,13 @@ export default function ProfileScreen() {
                             {userData?.profileImage ? (
                                 <Image source={{ uri: userData.profileImage }} style={styles.profileImageLarge} />
                             ) : (
-                                <Ionicons name="person" size={50} color="#002D62" />
+                                <Ionicons name="person" size={50} color="#000000" />
                             )}
                         </View>
                         <ThemedText style={styles.userName}>{userData?.name || 'Harsh Mahto'}</ThemedText>
                         <ThemedText style={styles.userPhone}>{userData?.phone || '+91 9876543210'}</ThemedText>
                     </View>
-                </LinearGradient>
+                </View>
 
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Account Settings</ThemedText>
@@ -166,12 +162,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 20,
         fontWeight: '700',
     },
@@ -187,7 +183,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
         borderWidth: 4,
-        borderColor: '#D4AF37',
+        borderColor: '#D32F2F',
         overflow: 'hidden',
     },
     profileImageLarge: {
@@ -196,12 +192,12 @@ const styles = StyleSheet.create({
         borderRadius: 50,
     },
     userName: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 24,
         fontWeight: '800',
     },
     userPhone: {
-        color: '#E0E0E0',
+        color: '#545454',
         fontSize: 16,
         marginTop: 4,
         opacity: 0.9,

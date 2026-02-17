@@ -10,32 +10,32 @@ const tintColorDark = '#D4AF37';
 
 export const Colors = {
   light: {
-    text: '#1A1A1A',
+    text: '#000000',
     background: '#FFFFFF',
-    tint: tintColorLight,
-    icon: '#4A4A4A',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorLight,
-    surface: '#F8F9FA',
-    border: '#E9ECEF',
-    primary: '#002D62',
-    secondary: '#D4AF37',
-    success: '#28A745',
-    error: '#DC3545',
+    tint: '#000000', // Black for icons/accents
+    icon: '#000000', // Black for icons
+    tabIconDefault: '#9E9E9E',
+    tabIconSelected: '#000000',
+    surface: '#FFFFFF',
+    border: '#E0E0E0',
+    primary: '#000000',
+    secondary: '#757575',
+    success: '#000000', // Success as black
+    error: '#000000', // Error as black (or maybe dark grey if needed for distinction, but user said strict)
   },
   dark: {
-    text: '#F8F9FA',
-    background: '#0F172A',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#4A5568',
-    tabIconSelected: tintColorDark,
-    surface: '#1E293B',
-    border: '#334155',
-    primary: '#38BDF8',
-    secondary: '#FACC15',
-    success: '#4ADE80',
-    error: '#F87171',
+    text: '#FFFFFF',
+    background: '#000000',
+    tint: '#FFFFFF', // White for dark mode
+    icon: '#FFFFFF',
+    tabIconDefault: '#9E9E9E',
+    tabIconSelected: '#FFFFFF',
+    surface: '#121212',
+    border: '#424242',
+    primary: '#FFFFFF',
+    secondary: '#BDBDBD',
+    success: '#FFFFFF',
+    error: '#FFFFFF',
   },
 };
 

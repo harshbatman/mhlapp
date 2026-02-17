@@ -1,5 +1,4 @@
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, FlatList, Platform, StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -59,7 +58,7 @@ export default function TrackStatusScreen() {
             'Pending': '#F59E0B',
             'Approved': '#10B981',
             'Rejected': '#EF4444',
-            'In Review': '#3B82F6'
+            'In Review': '#9E9E9E'
         };
 
         return (
@@ -96,24 +95,21 @@ export default function TrackStatusScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            <LinearGradient
-                colors={colorScheme === 'light' ? ['#002D62', '#0056b3'] : ['#0F172A', '#1E293B']}
-                style={styles.header}
-            >
+            <View style={styles.header}>
                 <View style={styles.headerTop}>
                     <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-                        <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+                        <Ionicons name="arrow-back" size={24} color="#000000" />
                     </TouchableOpacity>
                     <ThemedText style={styles.headerTitle}>Track Status</ThemedText>
                     <TouchableOpacity style={styles.backBtn} onPress={fetchApplications}>
-                        <Ionicons name="refresh" size={20} color="#FFFFFF" />
+                        <Ionicons name="refresh" size={20} color="#000000" />
                     </TouchableOpacity>
                 </View>
-            </LinearGradient>
+            </View>
 
             {loading ? (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#D4AF37" />
+                    <ActivityIndicator size="large" color="#D32F2F" />
                     <ThemedText style={{ marginTop: 15, opacity: 0.6 }}>Loading your applications...</ThemedText>
                 </View>
             ) : applications.length > 0 ? (
@@ -170,12 +166,12 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 20,
         fontWeight: '700',
     },
@@ -210,7 +206,7 @@ const styles = StyleSheet.create({
     loanType: {
         fontSize: 18,
         fontWeight: '800',
-        color: '#D4AF37',
+        color: '#000000',
     },
     loanId: {
         fontSize: 12,
@@ -252,7 +248,7 @@ const styles = StyleSheet.create({
         width: 160,
         height: 160,
         borderRadius: 80,
-        backgroundColor: '#002D6208',
+        backgroundColor: '#F6F6F6',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 24,
@@ -261,7 +257,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 35,
         right: 35,
-        backgroundColor: '#D4AF37',
+        backgroundColor: '#D32F2F',
         width: 40,
         height: 40,
         borderRadius: 20,
@@ -284,18 +280,18 @@ const styles = StyleSheet.create({
         marginBottom: 32,
     },
     applyBtn: {
-        backgroundColor: '#002D62',
+        backgroundColor: '#000000',
         paddingVertical: 16,
         paddingHorizontal: 40,
         borderRadius: 16,
-        shadowColor: '#002D62',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,
         elevation: 4,
     },
     applyBtnText: {
-        color: '#D4AF37',
+        color: '#FFFFFF',
         fontSize: 16,
         fontWeight: '700',
     },
