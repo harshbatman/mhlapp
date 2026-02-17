@@ -107,19 +107,22 @@ export default function HomeScreen() {
             <ThemedText type="subtitle" style={styles.sectionTitle}>{t('loanProducts')}</ThemedText>
           </View>
 
-          {LOAN_TYPES.map((loan) => (
-            <LoanCard
-              key={loan.id}
-              title={loan.title}
-              description={loan.description}
-              icon={loan.icon}
-              imageSource={loan.image}
-              onPress={() => router.push({
-                pathname: '/loan-details',
-                params: { id: loan.id, title: loan.title }
-              })}
-            />
-          ))}
+          <View style={styles.loanGrid}>
+            {LOAN_TYPES.map((loan) => (
+              <LoanCard
+                key={loan.id}
+                title={loan.title}
+                description={loan.description}
+                icon={loan.icon}
+                imageSource={loan.image}
+                variant="grid"
+                onPress={() => router.push({
+                  pathname: '/loan-details',
+                  params: { id: loan.id, title: loan.title }
+                })}
+              />
+            ))}
+          </View>
 
           <View style={styles.sectionHeader}>
             <ThemedText type="subtitle" style={styles.sectionTitle}>{t('quickActions')}</ThemedText>
@@ -260,6 +263,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     color: '#000000',
+  },
+  loanGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 0, // Gap handled by card width %
   },
 });
 
