@@ -42,7 +42,7 @@ export function LoanCard({ title, description, icon, imageSource, onPress, varia
                     <ThemedText type="subtitle" style={[styles.title, isGrid && styles.gridTitle]} numberOfLines={isGrid ? 1 : 2}>{title}</ThemedText>
                     <ThemedText style={[styles.description, isGrid && styles.gridDescription]} numberOfLines={isGrid ? 2 : 3}>{description}</ThemedText>
                 </View>
-                {!isGrid && <Ionicons name="chevron-forward" size={20} color={Colors[colorScheme].icon} />}
+                <Ionicons name="chevron-forward" size={isGrid ? 16 : 20} color={Colors[colorScheme].icon} style={isGrid && styles.gridChevron} />
             </ThemedView>
         </TouchableOpacity>
     );
@@ -132,5 +132,11 @@ const styles = StyleSheet.create({
     gridLoanImage: {
         width: 70,
         height: 70,
+    },
+    gridChevron: {
+        position: 'absolute',
+        bottom: 12,
+        right: 12,
+        opacity: 0.3,
     },
 });
