@@ -18,6 +18,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const { t } = useTranslation();
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   const LOAN_TYPES = [
     {
@@ -50,8 +51,13 @@ export default function HomeScreen() {
     useCallback(() => {
       const loadSession = async () => {
         const session = await AuthService.getSession();
-        if (session && session.profileImage) {
-          setUserPhoto(session.profileImage);
+        if (session) {
+          if (session.profileImage) {
+            setUserPhoto(session.profileImage);
+          }
+          if (session.name) {
+            setUserName(session.name);
+          }
         }
       };
       loadSession();
@@ -73,7 +79,9 @@ export default function HomeScreen() {
               </TouchableOpacity>
             </View>
             <View>
-              <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
+              <ThemedText style={styles.welcomeText}>
+                {userName ? `Hi, ${userName}` : t('welcome')}
+              </ThemedText>
               <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
             </View>
           </View>

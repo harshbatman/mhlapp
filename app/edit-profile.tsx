@@ -216,10 +216,10 @@ export default function EditProfileScreen() {
                             <ThemedText style={styles.label}>Address</ThemedText>
                             <TouchableOpacity onPress={getCurrentLocation} disabled={loadingLocation}>
                                 {loadingLocation ? (
-                                    <ActivityIndicator size="small" color="#D32F2F" />
+                                    <ActivityIndicator size="small" color="#000000" />
                                 ) : (
                                     <View style={styles.locationLink}>
-                                        <Ionicons name="location" size={14} color="#D32F2F" />
+                                        <Ionicons name="location" size={14} color="#000000" />
                                         <ThemedText style={styles.locationLinkText}>Use Current Location</ThemedText>
                                     </View>
                                 )}
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 20,
         fontWeight: '700',
     },
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
         height: 120,
         borderRadius: 60,
         borderWidth: 4,
-        borderColor: '#D32F2F',
+        borderColor: '#000000',
     },
     placeholderAvatar: {
         width: 120,
@@ -304,7 +304,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 4,
-        borderColor: '#D32F2F',
+        borderColor: '#000000',
     },
     editBadge: {
         position: 'absolute',
@@ -320,7 +320,7 @@ const styles = StyleSheet.create({
         borderColor: '#FFFFFF',
     },
     changePhotoText: {
-        color: '#FFFFFF',
+        color: '#000000',
         marginTop: 12,
         fontSize: 14,
         opacity: 0.8,
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     locationLinkText: {
-        color: '#D32F2F',
+        color: '#000000',
         fontSize: 13,
         fontWeight: '600',
     },
