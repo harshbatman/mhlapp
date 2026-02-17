@@ -1109,8 +1109,8 @@ export default function ApplyScreen() {
                             styles.input,
                             {
                                 backgroundColor: Colors[colorScheme].surface,
-                                color: errors.includes('permanentAddress') ? '#FF3B30' : Colors[colorScheme].text,
-                                borderColor: errors.includes('permanentAddress') ? '#FF3B30' : Colors[colorScheme].border,
+                                color: errors.includes('permanentAddress') ? '#000000' : Colors[colorScheme].text,
+                                borderColor: errors.includes('permanentAddress') ? '#000000' : Colors[colorScheme].border,
                                 height: 100,
                                 paddingTop: 15,
                             }
@@ -1306,7 +1306,7 @@ export default function ApplyScreen() {
                     <Ionicons
                         name={formData.hasExistingLoan ? "checkbox" : "square-outline"}
                         size={24}
-                        color={formData.hasExistingLoan ? "#D32F2F" : "#999"}
+                        color={formData.hasExistingLoan ? "#000000" : "#999"}
                     />
                     <ThemedText style={styles.checkboxLabel}>Do you have any existing loans?</ThemedText>
                 </TouchableOpacity>
@@ -1467,8 +1467,8 @@ export default function ApplyScreen() {
                 >
                     {uri ? (
                         isPdf ? (
-                            <View style={[styles.docPreview, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#FEE2E2' }]}>
-                                <Ionicons name="document-text" size={30} color="#DC2626" />
+                            <View style={[styles.docPreview, { justifyContent: 'center', alignItems: 'center', backgroundColor: '#F5F5F5' }]}>
+                                <Ionicons name="document-text" size={30} color="#000000" />
                             </View>
                         ) : (
                             <Image source={{ uri }} style={styles.docPreview} />
@@ -1482,7 +1482,7 @@ export default function ApplyScreen() {
                             {uri ? getFileName(uri) : subtitle}
                         </ThemedText>
                     </View>
-                    {uri && <Ionicons name="checkmark-circle" size={20} color="#D32F2F" />}
+                    {uri && <Ionicons name="checkmark-circle" size={20} color="#000000" />}
                 </TouchableOpacity>
             );
         };
@@ -1730,8 +1730,8 @@ export default function ApplyScreen() {
                                 <Ionicons name="arrow-back" size={24} color="#000000" />
                             </TouchableOpacity>
                             <ThemedText style={[styles.headerTitle, { flex: 1 }]}>Apply for Loan</ThemedText>
-                            <TouchableOpacity style={[styles.backBtn, { backgroundColor: 'rgba(255,59,48,0.2)' }]} onPress={handleClearForm}>
-                                <Ionicons name="trash-outline" size={22} color="#FF3B30" />
+                            <TouchableOpacity style={[styles.backBtn, { backgroundColor: 'rgba(0,0,0,0.05)' }]} onPress={handleClearForm}>
+                                <Ionicons name="trash-outline" size={22} color="#000000" />
                             </TouchableOpacity>
                         </View>
 
@@ -1834,7 +1834,7 @@ const styles = StyleSheet.create({
     },
     progressFill: {
         height: '100%',
-        backgroundColor: '#D32F2F',
+        backgroundColor: '#000000',
     },
     progressText: {
         color: '#000000',
@@ -1984,7 +1984,7 @@ const styles = StyleSheet.create({
     },
     uploadBoxActive: {
         backgroundColor: '#F9F9F9',
-        borderColor: '#D32F2F',
+        borderColor: '#000000',
         borderStyle: 'solid',
     },
     uploadTitle: {
@@ -2014,7 +2014,7 @@ const styles = StyleSheet.create({
     locationBtnText: {
         fontSize: 12,
         fontWeight: '700',
-        color: '#D32F2F',
+        color: '#000000',
     },
     docPreview: {
         width: 50,

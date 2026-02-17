@@ -18,8 +18,8 @@ const ProfileOption = ({ icon, title, onPress, color, showArrow = true }: { icon
     return (
         <TouchableOpacity style={[styles.optionItem, { borderBottomColor: Colors[colorScheme].border }]} onPress={onPress}>
             <View style={styles.optionLeft}>
-                <View style={[styles.iconWrapper, { backgroundColor: color ? `${color}15` : '#D32F2F15' }]}>
-                    <Ionicons name={icon} size={22} color={color || '#D32F2F'} />
+                <View style={[styles.iconWrapper, { backgroundColor: color ? `${color}15` : '#00000015' }]}>
+                    <Ionicons name={icon} size={22} color={color || '#000000'} />
                 </View>
                 <ThemedText style={styles.optionTitle}>{title}</ThemedText>
             </View>
@@ -130,8 +130,8 @@ export default function ProfileScreen() {
                 <View style={styles.section}>
                     <ThemedText style={styles.sectionTitle}>Actions</ThemedText>
                     <View style={[styles.card, { backgroundColor: Colors[colorScheme].surface }]}>
-                        <ProfileOption icon="log-out-outline" title="Logout" color="#FF3B30" onPress={handleLogout} />
-                        <ProfileOption icon="trash-outline" title="Delete Account" color="#FF3B30" onPress={() => router.push('/delete-account')} />
+                        <ProfileOption icon="log-out-outline" title="Logout" color="#000000" onPress={handleLogout} />
+                        <ProfileOption icon="trash-outline" title="Delete Account" color="#000000" onPress={() => router.push('/delete-account')} />
                     </View>
                 </View>
 
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
         borderWidth: 4,
-        borderColor: '#D32F2F',
+        borderColor: '#000000',
         overflow: 'hidden',
     },
     profileImageLarge: {

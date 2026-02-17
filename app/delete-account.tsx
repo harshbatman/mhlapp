@@ -45,7 +45,7 @@ export default function DeleteAccountScreen() {
             <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={{ flex: 1 }}>
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <LinearGradient
-                        colors={['#FF3B30', '#FF8E8E']}
+                        colors={['#000000', '#1c1c1e']}
                         style={styles.header}
                     >
                         <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
@@ -57,7 +57,7 @@ export default function DeleteAccountScreen() {
 
                     <View style={styles.formSection}>
                         <View style={styles.warningCard}>
-                            <Ionicons name="warning" size={24} color="#FF3B30" />
+                            <Ionicons name="warning" size={24} color="#000000" />
                             <ThemedText style={styles.warningText}>
                                 Deleting your account will remove all your loan applications and personal data permanently.
                             </ThemedText>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     },
     warningCard: {
         flexDirection: 'row',
-        backgroundColor: '#FF3B3010',
+        backgroundColor: '#F5F5F5',
         padding: 16,
         borderRadius: 16,
         marginBottom: 24,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     },
     warningText: {
         flex: 1,
-        color: '#FF3B30',
+        color: '#000000',
         fontSize: 14,
         lineHeight: 20,
         fontWeight: '500',
@@ -190,13 +190,13 @@ const styles = StyleSheet.create({
         fontSize: 16,
     },
     deleteBtn: {
-        backgroundColor: '#FF3B30',
+        backgroundColor: '#000000',
         height: 56,
         borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 20,
-        shadowColor: '#FF3B30',
+        shadowColor: '#000000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.2,
         shadowRadius: 8,

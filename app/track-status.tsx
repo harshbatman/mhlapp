@@ -55,9 +55,9 @@ export default function TrackStatusScreen() {
 
     const renderApplicationItem = ({ item }: { item: any }) => {
         const statusColors: any = {
-            'Pending': '#F59E0B',
-            'Approved': '#10B981',
-            'Rejected': '#EF4444',
+            'Pending': '#757575',
+            'Approved': '#000000',
+            'Rejected': '#000000',
             'In Review': '#9E9E9E'
         };
 
@@ -109,7 +109,7 @@ export default function TrackStatusScreen() {
 
             {loading ? (
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#D32F2F" />
+                    <ActivityIndicator size="large" color="#000000" />
                     <ThemedText style={{ marginTop: 15, opacity: 0.6 }}>Loading your applications...</ThemedText>
                 </View>
             ) : applications.length > 0 ? (
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 35,
         right: 35,
-        backgroundColor: '#D32F2F',
+        backgroundColor: '#000000',
         width: 40,
         height: 40,
         borderRadius: 20,

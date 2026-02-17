@@ -5,8 +5,7 @@
 
 import { Platform } from 'react-native';
 
-const tintColorLight = '#002D62';
-const tintColorDark = '#D4AF37';
+
 
 export const Colors = {
   light: {
@@ -21,7 +20,7 @@ export const Colors = {
     primary: '#000000',
     secondary: '#757575',
     success: '#000000', // Success as black
-    error: '#000000', // Error as black (or maybe dark grey if needed for distinction, but user said strict)
+    error: '#000000', // Error as black
   },
   dark: {
     text: '#FFFFFF',

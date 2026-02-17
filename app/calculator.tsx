@@ -69,14 +69,14 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
                 { translateX: translateX.value - 12 },
                 { scale: withSpring(isPressed.value ? 1.4 : 1) }
             ],
-            backgroundColor: withSpring(isPressed.value ? '#D32F2F' : '#FFFFFF'),
+            backgroundColor: withSpring(isPressed.value ? '#000000' : '#FFFFFF'),
         };
     });
 
     const progressStyle = useAnimatedStyle(() => {
         return {
             width: translateX.value,
-            backgroundColor: '#D32F2F',
+            backgroundColor: '#000000',
         };
     });
 
@@ -85,7 +85,7 @@ const AnimatedSlider = ({ label, value, min, max, step, onChange, formatValue, s
             transform: [
                 { scale: withSpring(isPressed.value ? 1.2 : 1) }
             ],
-            color: withSpring(isPressed.value ? '#D32F2F' : Colors[colorScheme].text),
+            color: withSpring(isPressed.value ? '#000000' : Colors[colorScheme].text),
         };
     });
 
@@ -182,7 +182,7 @@ export default function CalculatorScreen() {
                         <View style={[styles.resultCard, { backgroundColor: Colors[colorScheme].surface }]}>
                             <View style={styles.emiHighlight}>
                                 <ThemedText style={styles.resultLabel}>Monthly EMI</ThemedText>
-                                <Animated.Text style={[styles.emiValue, { color: '#D32F2F' }]}>
+                                <Animated.Text style={[styles.emiValue, { color: '#000000' }]}>
                                     ₹ {emi.toLocaleString('en-IN')}
                                 </Animated.Text>
                             </View>
