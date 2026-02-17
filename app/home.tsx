@@ -95,7 +95,7 @@ export default function HomeScreen() {
             <ThemedText style={styles.promoRate}>{t('startingAt')}</ThemedText>
             <TouchableOpacity
               style={styles.applyNowBtn}
-              onPress={() => router.push('/apply')}
+              onPress={() => router.push('/select-loan')}
             >
               <ThemedText style={styles.applyNowText}>{t('applyNow')}</ThemedText>
             </TouchableOpacity>
