@@ -69,8 +69,8 @@ export default function SelectLoanScreen() {
                                 imageSource={loan.image}
                                 variant="grid"
                                 onPress={() => router.push({
-                                    pathname: '/apply',
-                                    params: { type: loan.id }
+                                    pathname: '/loan-details',
+                                    params: { id: loan.id, title: loan.title }
                                 })}
                             />
                         ))}
