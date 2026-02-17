@@ -77,7 +77,7 @@ export default function AboutScreen() {
                         />
 
                         <View style={styles.fullStackBox}>
-                            <Ionicons name="layers-outline" size={24} color="#D32F2F" />
+                            <Ionicons name="layers-outline" size={24} color="#000000" />
                             <ThemedText style={styles.fullStackText}>
                                 “Full-stack” at MAHTO means from land to lending — not just design to construction.
                             </ThemedText>
@@ -91,7 +91,7 @@ export default function AboutScreen() {
                             <ThemedText style={styles.vmQuote}>“Sabka sar apni chhaat.”</ThemedText>
                         </View>
 
-                        <View style={[styles.vmCard, { backgroundColor: '#D32F2F' }]}>
+                        <View style={[styles.vmCard, { backgroundColor: '#333333' }]}>
                             <ThemedText style={[styles.vmLabel, { color: '#FFFFFF' }]}>OUR VISION</ThemedText>
                             <ThemedText style={[styles.vmTitle, { color: '#FFFFFF' }]}>To raise living standards by becoming the global operating system for home building.</ThemedText>
                         </View>
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     headerTitle: {
-        color: '#FFFFFF',
+        color: '#000000',
         fontSize: 32,
         fontWeight: '900',
     },
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
         width: 28,
         height: 28,
         borderRadius: 14,
-        backgroundColor: '#D32F2F',
+        backgroundColor: '#000000',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 12,
@@ -239,7 +239,7 @@ const styles = StyleSheet.create({
         lineHeight: 26,
     },
     vmQuote: {
-        color: '#D32F2F',
+        color: '#757575',
         fontSize: 18,
         fontWeight: '800',
         marginTop: 12,

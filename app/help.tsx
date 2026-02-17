@@ -13,7 +13,7 @@ const HelpCard = ({ icon, title, description, email, buttonText }: { icon: any, 
     return (
         <View style={[styles.helpCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}>
             <View style={styles.helpIconWrapper}>
-                <Ionicons name={icon} size={24} color="#D32F2F" />
+                <Ionicons name={icon} size={24} color="#000000" />
             </View>
             <ThemedText style={styles.helpCardTitle}>{title}</ThemedText>
             <ThemedText style={styles.helpCardDesc}>{description}</ThemedText>
@@ -44,7 +44,7 @@ export default function HelpScreen() {
 
             <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.banner}>
-                    <Ionicons name="help-buoy-outline" size={48} color="#D32F2F" />
+                    <Ionicons name="help-buoy-outline" size={48} color="#000000" />
                     <ThemedText style={styles.bannerTitle}>Facing any issue while using MAHTO Home Loans?</ThemedText>
                     <ThemedText style={styles.bannerSubtitle}>We&apos;re here to help you bridge the gap between your problems and solutions.</ThemedText>
                 </View>
@@ -75,16 +75,16 @@ export default function HelpScreen() {
                 </View>
 
                 <View style={[styles.ceoSection, { backgroundColor: '#000000' }]}>
-                    <Ionicons name="ribbon-outline" size={32} color="#D32F2F" />
+                    <Ionicons name="ribbon-outline" size={32} color="#FFFFFF" />
                     <View style={styles.ceoTextWrapper}>
                         <ThemedText style={styles.ceoTitle}>CEO&apos;s Office</ThemedText>
                         <ThemedText style={styles.ceoDesc}>For critical escalations or partnership inquiries directly to the leadership.</ThemedText>
                         <TouchableOpacity
-                            style={[styles.helpBtn, { backgroundColor: '#D32F2F', marginTop: 8 }]}
+                            style={[styles.helpBtn, { backgroundColor: '#FFFFFF', marginTop: 8 }]}
                             onPress={() => Linking.openURL('mailto:harshkumarceo@mahtoji.tech')}
                         >
-                            <ThemedText style={styles.helpBtnText}>Contact CEO Office</ThemedText>
-                            <Ionicons name="mail-outline" size={18} color="#FFFFFF" />
+                            <ThemedText style={[styles.helpBtnText, { color: '#000000' }]}>Contact CEO Office</ThemedText>
+                            <Ionicons name="mail-outline" size={18} color="#000000" />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
         width: 48,
         height: 48,
         borderRadius: 16,
-        backgroundColor: '#FDFCF0',
+        backgroundColor: '#F5F5F5',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 16,

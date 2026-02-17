@@ -71,8 +71,8 @@ export default function TrackStatusScreen() {
                         <ThemedText style={styles.loanType}>{item.loanType}</ThemedText>
                         <ThemedText style={styles.loanId}>ID: {item.id.slice(0, 8).toUpperCase()}</ThemedText>
                     </View>
-                    <View style={[styles.statusBadge, { backgroundColor: (statusColors[item.status] || '#94A3B8') + '20' }]}>
-                        <ThemedText style={[styles.statusText, { color: statusColors[item.status] || '#94A3B8' }]}>
+                    <View style={[styles.statusBadge, { backgroundColor: (statusColors[item.status] || '#757575') + '20' }]}>
+                        <ThemedText style={[styles.statusText, { color: statusColors[item.status] || '#757575' }]}>
                             {item.status}
                         </ThemedText>
                     </View>

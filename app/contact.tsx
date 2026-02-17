@@ -28,7 +28,7 @@ export default function ContactScreen() {
 
             <View style={styles.content}>
                 <View style={styles.infoCard}>
-                    <Ionicons name="mail" size={40} color="#D32F2F" />
+                    <Ionicons name="mail" size={40} color="#FFFFFF" />
                     <ThemedText style={styles.infoTitle}>General Support</ThemedText>
                     <ThemedText style={styles.infoSubtitle}>For bugs, feature requests, or general queries.</ThemedText>
 
@@ -38,15 +38,15 @@ export default function ContactScreen() {
                 </View>
 
                 <View style={[styles.infoCard, { backgroundColor: '#000000', marginTop: 20 }]}>
-                    <Ionicons name="ribbon" size={40} color="#D32F2F" />
+                    <Ionicons name="ribbon" size={40} color="#FFFFFF" />
                     <ThemedText style={styles.infoTitle}>CEO&apos;s Office</ThemedText>
                     <ThemedText style={styles.infoSubtitle}>For critical escalations or leadership inquiries.</ThemedText>
 
                     <TouchableOpacity
-                        style={[styles.emailBtn, { borderColor: '#D32F2F' }]}
+                        style={[styles.emailBtn, { borderColor: '#FFFFFF' }]}
                         onPress={() => Linking.openURL('mailto:harshkumarceo@mahtoji.tech')}
                     >
-                        <ThemedText style={[styles.emailText, { color: '#D32F2F' }]}>Contact CEO Office</ThemedText>
+                        <ThemedText style={[styles.emailText, { color: '#FFFFFF' }]}>Contact CEO Office</ThemedText>
                     </TouchableOpacity>
                 </View>
 

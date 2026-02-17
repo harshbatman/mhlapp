@@ -82,7 +82,7 @@ export default function HomeScreen() {
               <ThemedText style={styles.welcomeText}>
                 {userName ? `Hi, ${userName}` : t('welcome')}
               </ThemedText>
-              <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
+              <ThemedText style={styles.brandName}>Welcome to MAHTO Home Loans</ThemedText>
             </View>
           </View>
 
