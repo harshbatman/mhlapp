@@ -55,27 +55,28 @@ const styles = StyleSheet.create({
     card: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 20,
-        borderRadius: 20,
-        backgroundColor: '#FFFFFF',
+        padding: 24,
+        borderRadius: 24,
+        backgroundColor: '#F9F9F9', // Slightly off-white for the outer card
         borderWidth: 1,
         borderColor: '#EEEEEE',
-        // Shadow for iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 12,
-        // Elevation for Android
-        elevation: 4,
     },
     iconContainer: {
-        width: 64,
-        height: 64,
-        borderRadius: 16, // Squircle-ish
+        width: 80,
+        height: 80,
+        borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: 20,
-        backgroundColor: '#F9F9F9',
+        backgroundColor: '#FFFFFF', // Pure white for the inner card
+        // Inner card shadow/border
+        borderWidth: 1,
+        borderColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 8,
+        elevation: 3,
     },
     textContainer: {
         flex: 1,
@@ -104,15 +105,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         padding: 16,
-        height: 200,
+        paddingTop: 24,
+        height: 230,
         textAlign: 'center',
     },
     gridIconContainer: {
         marginRight: 0,
-        marginBottom: 12,
-        width: 80,
-        height: 80,
-        borderRadius: 20,
+        marginBottom: 16,
+        width: 110, // Larger inner card
+        height: 110,
+        borderRadius: 30, // More rounded/circular
     },
     gridTextContainer: {
         alignItems: 'center',
@@ -120,14 +122,15 @@ const styles = StyleSheet.create({
     gridTitle: {
         fontSize: 15,
         textAlign: 'center',
-        marginBottom: 6,
+        marginBottom: 8,
     },
     gridDescription: {
         fontSize: 11,
         textAlign: 'center',
+        opacity: 0.7,
     },
     gridLoanImage: {
-        width: 60,
-        height: 60,
+        width: 70,
+        height: 70,
     },
 });
