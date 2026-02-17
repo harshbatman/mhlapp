@@ -133,7 +133,11 @@ export default function HomeScreen() {
               style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
               onPress={() => router.push('/calculator')}
             >
-              <Ionicons name="calculator-outline" size={32} color={Colors[colorScheme].tint} />
+              <Image
+                source={require('../assets/images/actions/emi_calc.png')}
+                style={styles.actionImage}
+                resizeMode="contain"
+              />
               <ThemedText style={styles.actionLabel}>{t('emiCalc')}</ThemedText>
             </TouchableOpacity>
 
@@ -141,7 +145,11 @@ export default function HomeScreen() {
               style={[styles.actionCard, { backgroundColor: Colors[colorScheme].surface, borderColor: Colors[colorScheme].border }]}
               onPress={() => router.push('/track-status')}
             >
-              <Ionicons name="document-text-outline" size={32} color={Colors[colorScheme].tint} />
+              <Image
+                source={require('../assets/images/actions/track_status.png')}
+                style={styles.actionImage}
+                resizeMode="contain"
+              />
               <ThemedText style={styles.actionLabel}>{t('trackStatus')}</ThemedText>
             </TouchableOpacity>
           </View>
@@ -251,12 +259,18 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     flex: 1,
-    padding: 20,
-    borderRadius: 12,
-    backgroundColor: '#F6F6F6',
+    padding: 24,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 0,
+    borderWidth: 1,
+    borderColor: '#EEEEEE',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+    elevation: 3,
   },
   actionLabel: {
     marginTop: 12,
@@ -269,6 +283,10 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     gap: 0, // Gap handled by card width %
+  },
+  actionImage: {
+    width: 60,
+    height: 60,
   },
 });
 
