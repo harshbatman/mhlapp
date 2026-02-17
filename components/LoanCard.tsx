@@ -39,10 +39,12 @@ export function LoanCard({ title, description, icon, imageSource, onPress, varia
                     ) : null}
                 </View>
                 <View style={[styles.textContainer, isGrid && styles.gridTextContainer]}>
-                    <ThemedText type="subtitle" style={[styles.title, isGrid && styles.gridTitle]} numberOfLines={isGrid ? 1 : 2}>{title}</ThemedText>
+                    <View style={[styles.titleRow, isGrid && styles.gridTitleRow]}>
+                        <ThemedText type="subtitle" style={[styles.title, isGrid && styles.gridTitle]} numberOfLines={1}>{title}</ThemedText>
+                        <Ionicons name="chevron-forward" size={14} color={Colors[colorScheme].icon} style={styles.inlineChevron} />
+                    </View>
                     <ThemedText style={[styles.description, isGrid && styles.gridDescription]} numberOfLines={isGrid ? 2 : 3}>{description}</ThemedText>
                 </View>
-                <Ionicons name="chevron-forward" size={isGrid ? 16 : 20} color={Colors[colorScheme].icon} style={isGrid && styles.gridChevron} />
             </ThemedView>
         </TouchableOpacity>
     );
@@ -133,10 +135,17 @@ const styles = StyleSheet.create({
         width: 70,
         height: 70,
     },
-    gridChevron: {
-        position: 'absolute',
-        bottom: 12,
-        right: 12,
-        opacity: 0.3,
+    titleRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+    gridTitleRow: {
+        justifyContent: 'center',
+        marginBottom: 8,
+    },
+    inlineChevron: {
+        marginLeft: 4,
+        opacity: 0.4,
     },
 });
