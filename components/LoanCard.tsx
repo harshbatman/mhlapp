@@ -27,14 +27,17 @@ export function LoanCard({ title, description, icon, imageSource, onPress, varia
                 { borderColor: Colors[colorScheme].border },
                 isGrid && styles.gridCard
             ]}>
+                {icon && <Ionicons name={icon as any} size={18} color="#000000" style={styles.cornerIcon} />}
+
                 <View style={[
                     styles.iconContainer,
                     { backgroundColor: imageSource ? '#FFFFFF' : Colors[colorScheme].tint + '15' },
                     isGrid && styles.gridIconContainer
                 ]}>
-                    {imageSource ? (
+                    {imageSource && (
                         <Image source={imageSource} style={[styles.loanImage, isGrid && styles.gridLoanImage]} resizeMode="contain" />
-                    ) : (
+                    )}
+                    {!imageSource && icon && (
                         <Ionicons name={icon as any} size={isGrid ? 32 : 28} color={Colors[colorScheme].tint} />
                     )}
                 </View>
@@ -67,6 +70,13 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
         // Elevation for Android
         elevation: 4,
+        position: 'relative',
+    },
+    cornerIcon: {
+        position: 'absolute',
+        top: 16,
+        right: 16,
+        opacity: 0.15,
     },
     iconContainer: {
         width: 64,
