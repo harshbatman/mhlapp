@@ -10,6 +10,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import React, { useState } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import CountryPicker, { Country, CountryCode } from 'react-native-country-picker-modal';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
@@ -26,6 +27,8 @@ export default function DeleteAccountScreen() {
     const [callingCode, setCallingCode] = useState('91');
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [pickerVisible, setPickerVisible] = useState(false);
+    const insets = useSafeAreaInsets();
 
     const [alertConfig, setAlertConfig] = useState({
         visible: false,
@@ -131,9 +134,13 @@ export default function DeleteAccountScreen() {
                 <ScrollView showsVerticalScrollIndicator={false}>
                     <LinearGradient
                         colors={['#000000', '#1c1c1e']}
-                        style={styles.header}
+                        style={[styles.header, { paddingTop: Math.max(insets.top, 40) }]}
                     >
-                        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+                        <TouchableOpacity
+                            style={styles.backBtn}
+                            onPress={() => router.back()}
+                            hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
+                        >
                             <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
                         </TouchableOpacity>
                         <ThemedText style={styles.headerTitle}>Delete Account</ThemedText>
@@ -153,20 +160,27 @@ export default function DeleteAccountScreen() {
                         <View style={styles.inputContainer}>
                             <ThemedText style={styles.label}>Confirm Phone Number</ThemedText>
                             <View style={[styles.phoneInputWrapper, { backgroundColor: '#F9F9F9', borderColor: '#EEEEEE' }]}>
-                                <View style={styles.countryPickerBtn}>
+                                <TouchableOpacity
+                                    style={styles.countryPickerBtn}
+                                    onPress={() => setPickerVisible(true)}
+                                    activeOpacity={0.7}
+                                >
                                     <CountryPicker
                                         countryCode={countryCode}
+                                        visible={pickerVisible}
+                                        onClose={() => setPickerVisible(false)}
                                         withFilter
                                         withFlag
                                         withCallingCode
                                         onSelect={(country: Country) => {
                                             setCountryCode(country.cca2);
                                             setCallingCode(country.callingCode[0]);
+                                            setPickerVisible(false);
                                         }}
                                     />
                                     <ThemedText style={styles.callingCodeText}>+{callingCode}</ThemedText>
                                     <Ionicons name="chevron-down" size={14} color="#000000" style={{ marginLeft: 4, opacity: 0.5 }} />
-                                </View>
+                                </TouchableOpacity>
                                 <TextInput
                                     style={[styles.phoneInput, { color: '#000000' }]}
                                     placeholder="Registered 10 digits"
