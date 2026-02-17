@@ -1,3 +1,4 @@
+import { CustomAlert } from '@/components/CustomAlert';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -7,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, Dimensions, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Dimensions, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -146,6 +147,43 @@ export default function ApplyScreen() {
     const [societySuggestions, setSocietySuggestions] = useState<string[]>([]);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
+    const [customAlert, setCustomAlert] = useState({
+        visible: false,
+        title: '',
+        message: '',
+        type: 'info' as 'info' | 'error' | 'success' | 'warning',
+        primaryText: 'OK',
+        secondaryText: undefined as string | undefined,
+        ternaryText: undefined as string | undefined,
+        onPrimary: () => { },
+        onSecondary: () => { },
+        onTernary: () => { }
+    });
+
+    const showAlert = (
+        title: string,
+        message: string,
+        type: 'info' | 'error' | 'success' | 'warning' = 'info',
+        primaryText: string = 'OK',
+        onPrimary: () => void = () => { },
+        secondaryText?: string,
+        onSecondary?: () => void,
+        ternaryText?: string,
+        onTernary?: () => void
+    ) => {
+        setCustomAlert({
+            visible: true,
+            title,
+            message,
+            type,
+            primaryText,
+            secondaryText,
+            ternaryText,
+            onPrimary,
+            onSecondary: onSecondary || (() => { }),
+            onTernary: onTernary || (() => { })
+        });
+    };
 
     const [formData, setFormData] = useState({
         // Step 1: Personal
@@ -406,7 +444,7 @@ export default function ApplyScreen() {
             setErrors(currentErrors);
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
             const fieldsList = missingFields.join(', ');
-            return Alert.alert('Missing Information', `Please fill the following required field${missingFields.length > 1 ? 's' : ''}:\n\n${fieldsList}`);
+            return showAlert('Missing Information', `Please fill the following required field${missingFields.length > 1 ? 's' : ''}:\n\n${fieldsList}`, 'warning');
         }
 
         setErrors([]);
@@ -419,73 +457,69 @@ export default function ApplyScreen() {
     };
 
     const handleClearForm = () => {
-        Alert.alert(
+        showAlert(
             'Clear Application',
             'Are you sure you want to clear all details and start fresh? This action cannot be undone.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                    text: 'Clear All',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            await AsyncStorage.removeItem('loan_application_draft');
-                        } catch (err) {
-                            console.error('Failed to clear draft:', err);
-                        }
-
-                        setFormData({
-                            name: '',
-                            dob: '',
-                            gender: '',
-                            pan: '',
-                            aadhaar: '',
-                            email: '',
-                            phone: '',
-                            address: '',
-                            permanentAddress: '',
-                            isSameAddress: true,
-                            altPhone: '',
-                            occupation: 'Salaried',
-                            monthlyIncome: '',
-                            company: '',
-                            otherCompanyName: '',
-                            experience: '',
-                            industry: '',
-                            otherIndustryName: '',
-                            profession: '',
-                            otherProfessionName: '',
-                            businessNature: '',
-                            otherBusinessNature: '',
-                            annualTurnover: '',
-                            gstNumber: '',
-                            yearsInBusiness: '',
-                            hasExistingLoan: false,
-                            existingLoanTypes: [],
-                            totalExistingEMI: '',
-                            loanType: normalizedLoanType,
-                            loanAmount: '',
-                            tenure: '',
-                            propertyValue: '',
-                            developerName: '',
-                            otherDeveloperName: '',
-                            societyName: '',
-                            otherSocietyName: '',
-                            docs: {
-                                panFront: null,
-                                panBack: null,
-                                aadhaarFront: null,
-                                aadhaarBack: null,
-                                income: null,
-                                property: null
-                            }
-                        });
-                        setStep(1);
-                        setErrors([]);
-                        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                    }
+            'warning',
+            'Clear All',
+            async () => {
+                try {
+                    await AsyncStorage.removeItem('loan_application_draft');
+                } catch (err) {
+                    console.error('Failed to clear draft:', err);
                 }
-            ]
+
+                setFormData({
+                    name: '',
+                    dob: '',
+                    gender: '',
+                    pan: '',
+                    aadhaar: '',
+                    email: '',
+                    phone: '',
+                    address: '',
+                    permanentAddress: '',
+                    isSameAddress: true,
+                    altPhone: '',
+                    occupation: 'Salaried',
+                    monthlyIncome: '',
+                    company: '',
+                    otherCompanyName: '',
+                    experience: '',
+                    industry: '',
+                    otherIndustryName: '',
+                    profession: '',
+                    otherProfessionName: '',
+                    businessNature: '',
+                    otherBusinessNature: '',
+                    annualTurnover: '',
+                    gstNumber: '',
+                    yearsInBusiness: '',
+                    hasExistingLoan: false,
+                    existingLoanTypes: [],
+                    totalExistingEMI: '',
+                    loanType: normalizedLoanType,
+                    loanAmount: '',
+                    tenure: '',
+                    propertyValue: '',
+                    developerName: '',
+                    otherDeveloperName: '',
+                    societyName: '',
+                    otherSocietyName: '',
+                    docs: {
+                        panFront: null,
+                        panBack: null,
+                        aadhaarFront: null,
+                        aadhaarBack: null,
+                        income: null,
+                        property: null
+                    }
+                });
+                setStep(1);
+                setErrors([]);
+                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+            },
+            'Cancel'
         );
     };
 
@@ -514,13 +548,13 @@ export default function ApplyScreen() {
     const handleSubmit = async () => {
         const { docs } = formData;
         if (!docs.panFront || !docs.panBack || !docs.aadhaarFront || !docs.aadhaarBack) {
-            Alert.alert('Missing Documents', 'Please upload both Front and Back sides of your PAN and Aadhaar cards.');
+            showAlert('Missing Documents', 'Please upload both Front and Back sides of your PAN and Aadhaar cards.', 'warning');
             return;
         }
 
         const user = auth.currentUser;
         if (!user) {
-            Alert.alert('Authentication Required', 'Please log in to submit your application.');
+            showAlert('Authentication Required', 'Please log in to submit your application.', 'error');
             router.replace('/auth/login');
             return;
         }
@@ -563,69 +597,63 @@ export default function ApplyScreen() {
             await AsyncStorage.removeItem('loan_application_draft');
 
             Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-            Alert.alert(
+            showAlert(
                 'Application Submitted!',
                 'Our verification team will review your details and contact you within 24 hours.',
-                [{ text: 'Great!', onPress: () => router.replace('/home') }]
+                'success',
+                'Great!',
+                () => router.replace('/home')
             );
         } catch (error: any) {
             console.error('Submission error:', error);
-            Alert.alert('Submission Failed', 'Something went wrong while saving your application. Please try again.');
+            showAlert('Submission Failed', 'Something went wrong while saving your application. Please try again.', 'error');
         } finally {
             setLoadingLocation(false);
         }
     };
 
     const pickDocument = async (key: keyof typeof formData.docs) => {
-        try {
-            Alert.alert(
-                'Upload Document',
-                'Choose your upload method',
-                [
-                    {
-                        text: 'Camera / Gallery',
-                        onPress: async () => {
-                            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-                            if (status !== 'granted') {
-                                Alert.alert('Permission Needed', 'We need access to your gallery to upload documents.');
-                                return;
-                            }
-                            const result = await ImagePicker.launchImageLibraryAsync({
-                                mediaTypes: ImagePicker.MediaTypeOptions.Images,
-                                allowsEditing: true,
-                                quality: 0.5,
-                            });
-                            if (!result.canceled) {
-                                setFormData(prev => ({
-                                    ...prev,
-                                    docs: { ...prev.docs, [key]: result.assets[0].uri }
-                                }));
-                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                            }
-                        }
-                    },
-                    {
-                        text: 'PDF Document',
-                        onPress: async () => {
-                            const result = await DocumentPicker.getDocumentAsync({
-                                type: 'application/pdf',
-                                copyToCacheDirectory: true,
-                            });
-                            if (!result.canceled) {
-                                setFormData(prev => ({
-                                    ...prev,
-                                    docs: { ...prev.docs, [key]: result.assets[0].uri }
-                                }));
-                                Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-                            }
-                        }
-                    },
-                    { text: 'Cancel', style: 'cancel' }
-                ]
-            );
-        } catch (error) {
-            Alert.alert('Error', 'Failed to pick document. Please try again.');
-        }
+        showAlert(
+            'Upload Document',
+            'Choose your upload method',
+            'info',
+            'Cancel',
+            () => { },
+            'Camera / Gallery',
+            async () => {
+                const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+                if (status !== 'granted') {
+                    showAlert('Permission Needed', 'We need access to your gallery to upload documents.', 'warning');
+                    return;
+                }
+                const result = await ImagePicker.launchImageLibraryAsync({
+                    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                    allowsEditing: true,
+                    quality: 0.5,
+                });
+                if (!result.canceled) {
+                    setFormData(prev => ({
+                        ...prev,
+                        docs: { ...prev.docs, [key]: result.assets[0].uri }
+                    }));
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                }
+            },
+            'PDF Document',
+            async () => {
+                const result = await DocumentPicker.getDocumentAsync({
+                    type: 'application/pdf',
+                    copyToCacheDirectory: true,
+                });
+                if (!result.canceled) {
+                    setFormData(prev => ({
+                        ...prev,
+                        docs: { ...prev.docs, [key]: result.assets[0].uri }
+                    }));
+                    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+                }
+            }
+        );
     };
 
     const getFileName = (uri: string | null) => {
@@ -639,7 +667,7 @@ export default function ApplyScreen() {
             setLoadingLocation(true);
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
-                Alert.alert('Permission Denied', 'Please allow location access to use this feature.');
+                showAlert('Permission Denied', 'Please allow location access to use this feature.', 'warning');
                 return;
             }
 
@@ -663,7 +691,7 @@ export default function ApplyScreen() {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
             }
         } catch (error) {
-            Alert.alert('Error', 'Could not fetch your location. Please type manually.');
+            showAlert('Error', 'Could not fetch your location. Please type manually.', 'error');
         } finally {
             setLoadingLocation(false);
         }
@@ -1789,6 +1817,21 @@ export default function ApplyScreen() {
                     </View>
                 </ScrollView>
             </KeyboardAvoidingView>
+            <CustomAlert
+                visible={customAlert.visible}
+                title={customAlert.title}
+                message={customAlert.message}
+                type={customAlert.type}
+                primaryButtonText={customAlert.primaryText}
+                secondaryButtonText={customAlert.secondaryText}
+                ternaryButtonText={customAlert.ternaryText}
+                onSecondaryAction={customAlert.onSecondary}
+                onTernaryAction={customAlert.onTernary}
+                onClose={() => {
+                    customAlert.onPrimary();
+                    setCustomAlert({ ...customAlert, visible: false });
+                }}
+            />
         </ThemedView>
     );
 }
