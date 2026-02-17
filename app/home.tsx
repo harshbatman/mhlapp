@@ -62,11 +62,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <View style={styles.headerContent}>
-            <View>
-              <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
-              <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
-            </View>
+          <View style={[styles.headerContent, { justifyContent: 'flex-start', gap: 16 }]}>
             <View style={styles.headerActions}>
               <TouchableOpacity style={styles.iconBtn} onPress={() => router.push('/profile')}>
                 {userPhoto ? (
@@ -75,6 +71,10 @@ export default function HomeScreen() {
                   <Ionicons name="person-outline" size={24} color="#000000" />
                 )}
               </TouchableOpacity>
+            </View>
+            <View>
+              <ThemedText style={styles.welcomeText}>{t('welcome')}</ThemedText>
+              <ThemedText style={styles.brandName}>MAHTO Home Loans</ThemedText>
             </View>
           </View>
 
