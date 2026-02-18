@@ -8,7 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import * as Location from 'expo-location';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Dimensions, Image, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, { FadeInRight, FadeOutLeft } from 'react-native-reanimated';
 
 import { ThemedText } from '@/components/themed-text';
@@ -422,21 +422,23 @@ export default function ApplyScreen() {
                 currentErrors.push('propertyValue');
                 missingFields.push('Property Value');
             }
-            if (!formData.developerName.trim()) {
-                currentErrors.push('developerName');
-                missingFields.push('Developer Name');
-            }
-            if (formData.developerName === 'Other' && !formData.otherDeveloperName.trim()) {
-                currentErrors.push('otherDeveloperName');
-                missingFields.push('Other Developer Name');
-            }
-            if (!formData.societyName.trim()) {
-                currentErrors.push('societyName');
-                missingFields.push('Society Name');
-            }
-            if (formData.societyName === 'Other' && !formData.otherSocietyName.trim()) {
-                currentErrors.push('otherSocietyName');
-                missingFields.push('Other Society Name');
+            if (formData.loanType === 'Flat Buying') {
+                if (!formData.developerName.trim()) {
+                    currentErrors.push('developerName');
+                    missingFields.push('Developer Name');
+                }
+                if (formData.developerName === 'Other' && !formData.otherDeveloperName.trim()) {
+                    currentErrors.push('otherDeveloperName');
+                    missingFields.push('Other Developer Name');
+                }
+                if (!formData.societyName.trim()) {
+                    currentErrors.push('societyName');
+                    missingFields.push('Society Name');
+                }
+                if (formData.societyName === 'Other' && !formData.otherSocietyName.trim()) {
+                    currentErrors.push('otherSocietyName');
+                    missingFields.push('Other Society Name');
+                }
             }
         }
 
@@ -839,13 +841,10 @@ export default function ApplyScreen() {
             )}
             {key === 'developerName' && developerSuggestions.length > 0 && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={developerSuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {developerSuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, developerName: item });
@@ -856,19 +855,16 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
             {key === 'company' && companySuggestions.length > 0 && formData.occupation === 'Salaried' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={companySuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {companySuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, company: item });
@@ -879,19 +875,16 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
             {key === 'industry' && industrySuggestions.length > 0 && formData.occupation === 'Salaried' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={industrySuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {industrySuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, industry: item });
@@ -902,19 +895,16 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
             {key === 'profession' && professionSuggestions.length > 0 && formData.occupation === 'Self-Employed' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={professionSuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {professionSuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, profession: item });
@@ -925,19 +915,16 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
             {key === 'businessNature' && businessNatureSuggestions.length > 0 && formData.occupation === 'Business' && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={businessNatureSuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {businessNatureSuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, businessNature: item });
@@ -948,19 +935,16 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
             {key === 'societyName' && societySuggestions.length > 0 && (
                 <View style={[styles.suggestionsContainer, { borderColor: Colors[colorScheme].border, backgroundColor: Colors[colorScheme].surface, maxHeight: 200, zIndex: 9999 }]}>
-                    <FlatList
-                        data={societySuggestions}
-                        keyExtractor={(item) => item}
-                        keyboardShouldPersistTaps="always"
-                        nestedScrollEnabled={true}
-                        renderItem={({ item }) => (
+                    <ScrollView keyboardShouldPersistTaps="always" nestedScrollEnabled={true}>
+                        {societySuggestions.map((item) => (
                             <TouchableOpacity
+                                key={item}
                                 style={[styles.suggestionItem, { borderBottomColor: Colors[colorScheme].border + '20', borderBottomWidth: 1 }]}
                                 onPress={() => {
                                     setFormData({ ...formData, societyName: item });
@@ -971,8 +955,8 @@ export default function ApplyScreen() {
                                     {item}
                                 </ThemedText>
                             </TouchableOpacity>
-                        )}
-                    />
+                        ))}
+                    </ScrollView>
                 </View>
             )}
         </View>
@@ -1699,10 +1683,12 @@ export default function ApplyScreen() {
                         <ThemedText style={styles.reviewLabel}>Property Value:</ThemedText>
                         <ThemedText style={styles.reviewValue}>₹{formData.propertyValue}</ThemedText>
                     </View>
-                    <View style={styles.reviewItem}>
-                        <ThemedText style={styles.reviewLabel}>Developer:</ThemedText>
-                        <ThemedText style={styles.reviewValue}>{formData.developerName === 'Other' ? formData.otherDeveloperName : formData.developerName}</ThemedText>
-                    </View>
+                    {formData.loanType === 'Flat Buying' && (
+                        <View style={styles.reviewItem}>
+                            <ThemedText style={styles.reviewLabel}>Developer:</ThemedText>
+                            <ThemedText style={styles.reviewValue}>{formData.developerName === 'Other' ? formData.otherDeveloperName : formData.developerName}</ThemedText>
+                        </View>
+                    )}
                     {formData.loanType === 'Flat Buying' && (
                         <View style={styles.reviewItem}>
                             <ThemedText style={styles.reviewLabel}>Society:</ThemedText>
