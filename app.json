@@ -3,7 +3,7 @@
     "name": "MAHTO Home Loans",
     "slug": "mahto-home-loans",
     "owner": "mahtobuild",
-    "version": "1.1.7",
+    "version": "1.1.23",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "mahto-home-loans",
@@ -11,14 +11,14 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "7",
+      "buildNumber": "23",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Your location is used to recommend the nearest bank branches and to easily auto-fill your address details in the application form."
       }
     },
     "android": {
       "package": "com.mahto.homeloans",
-      "versionCode": 7,
+      "versionCode": 23,
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
