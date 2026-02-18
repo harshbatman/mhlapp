@@ -13,7 +13,9 @@ interface CustomAlertProps {
     type?: 'info' | 'error' | 'success' | 'warning';
     primaryButtonText?: string;
     secondaryButtonText?: string;
+    secondaryButtonDetail?: string;
     ternaryButtonText?: string;
+    ternaryButtonDetail?: string;
     onSecondaryAction?: () => void;
     onTernaryAction?: () => void;
 }
@@ -28,7 +30,9 @@ export function CustomAlert({
     type = 'info',
     primaryButtonText = 'OK',
     secondaryButtonText,
+    secondaryButtonDetail,
     ternaryButtonText,
+    ternaryButtonDetail,
     onSecondaryAction,
     onTernaryAction
 }: CustomAlertProps) {
@@ -66,26 +70,32 @@ export function CustomAlert({
                     <View style={[styles.buttonContainer, isStacked && styles.stackedButtons]}>
                         {ternaryButtonText && (
                             <TouchableOpacity
-                                style={[styles.button, styles.secondaryButton, isStacked && { width: '100%' }]}
+                                style={[styles.secondaryButton, isStacked && styles.fullWidthButton]}
                                 onPress={() => {
                                     onTernaryAction?.();
                                     onClose();
                                 }}
                                 activeOpacity={0.8}
                             >
-                                <Text style={styles.secondaryButtonText}>{ternaryButtonText}</Text>
+                                <View style={{ alignItems: 'center' }}>
+                                    <Text style={styles.secondaryButtonText}>{ternaryButtonText}</Text>
+                                    {ternaryButtonDetail && <Text style={styles.buttonDetailText}>{ternaryButtonDetail}</Text>}
+                                </View>
                             </TouchableOpacity>
                         )}
                         {secondaryButtonText && (
                             <TouchableOpacity
-                                style={[styles.button, styles.secondaryButton, isStacked && { width: '100%' }]}
+                                style={[styles.secondaryButton, isStacked && styles.fullWidthButton]}
                                 onPress={() => {
                                     onSecondaryAction?.();
                                     onClose();
                                 }}
                                 activeOpacity={0.8}
                             >
-                                <Text style={styles.secondaryButtonText}>{secondaryButtonText}</Text>
+                                <View style={{ alignItems: 'center' }}>
+                                    <Text style={styles.secondaryButtonText}>{secondaryButtonText}</Text>
+                                    {secondaryButtonDetail && <Text style={styles.buttonDetailText}>{secondaryButtonDetail}</Text>}
+                                </View>
                             </TouchableOpacity>
                         )}
                         <TouchableOpacity
@@ -123,6 +133,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 20,
         elevation: 10,
+        backgroundColor: '#FFFFFF',
     },
     header: {
         alignItems: 'center',
@@ -164,21 +175,39 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 30,
         alignItems: 'center',
+        justifyContent: 'center',
     },
     secondaryButton: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: '#FFFFFF',
         borderWidth: 1,
-        borderColor: '#EEEEEE',
+        borderColor: '#E0E0E0',
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        borderRadius: 30,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fullWidthButton: {
+        width: '100%',
+        flex: 0,
+        height: 'auto',
+        marginBottom: 12,
     },
     buttonText: {
         color: '#FFFFFF',
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '700',
     },
     secondaryButtonText: {
-        color: '#666666',
+        color: '#000000',
         fontSize: 16,
-        fontWeight: '600',
+        fontWeight: '700',
+    },
+    buttonDetailText: {
+        color: '#666666',
+        fontSize: 12,
+        fontWeight: '500',
+        marginTop: 2,
     },
 });

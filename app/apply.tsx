@@ -125,16 +125,16 @@ export default function ApplyScreen() {
     // Helper function to normalize loan type display
     const getLoanTypeDisplay = (loanType: string): string => {
         const loanTypeMap: Record<string, string> = {
-            'construction': 'Construction',
-            'renovation': 'Renovation',
-            'flat-buying': 'Flat Buying',
-            'lap': 'LAP'
+            'construction': 'Construction Loan',
+            'renovation': 'Renovation Loan',
+            'flat-buying': 'Flat Buying Loan',
+            'lap': 'Loan Against Property'
         };
         return loanTypeMap[loanType.toLowerCase()] || loanType;
     };
 
     // Normalize the loan type from params
-    const normalizedLoanType = params.type ? getLoanTypeDisplay(params.type) : 'Construction';
+    const normalizedLoanType = params.type ? getLoanTypeDisplay(params.type) : 'Construction Loan';
 
     const [step, setStep] = useState(1);
     const totalSteps = 6;
@@ -154,7 +154,9 @@ export default function ApplyScreen() {
         type: 'info' as 'info' | 'error' | 'success' | 'warning',
         primaryText: 'OK',
         secondaryText: undefined as string | undefined,
+        secondaryDetail: undefined as string | undefined,
         ternaryText: undefined as string | undefined,
+        ternaryDetail: undefined as string | undefined,
         onPrimary: () => { },
         onSecondary: () => { },
         onTernary: () => { }
@@ -167,8 +169,10 @@ export default function ApplyScreen() {
         primaryText: string = 'OK',
         onPrimary: () => void = () => { },
         secondaryText?: string,
+        secondaryDetail?: string,
         onSecondary?: () => void,
         ternaryText?: string,
+        ternaryDetail?: string,
         onTernary?: () => void
     ) => {
         setCustomAlert({
@@ -178,7 +182,9 @@ export default function ApplyScreen() {
             type,
             primaryText,
             secondaryText,
+            secondaryDetail,
             ternaryText,
+            ternaryDetail,
             onPrimary,
             onSecondary: onSecondary || (() => { }),
             onTernary: onTernary || (() => { })
@@ -228,12 +234,12 @@ export default function ApplyScreen() {
         otherSocietyName: '',
         // Step 5: Docs
         docs: {
-            panFront: null as string | null,
-            panBack: null as string | null,
-            aadhaarFront: null as string | null,
-            aadhaarBack: null as string | null,
-            income: null as string | null,
-            property: null as string | null
+            panFront: null as { uri: string, type: 'image' | 'pdf', name: string } | null,
+            panBack: null as { uri: string, type: 'image' | 'pdf', name: string } | null,
+            aadhaarFront: null as { uri: string, type: 'image' | 'pdf', name: string } | null,
+            aadhaarBack: null as { uri: string, type: 'image' | 'pdf', name: string } | null,
+            income: null as { uri: string, type: 'image' | 'pdf', name: string } | null,
+            property: null as { uri: string, type: 'image' | 'pdf', name: string } | null
         }
     });
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -264,12 +270,14 @@ export default function ApplyScreen() {
                         setFormData(prev => ({
                             ...prev,
                             ...parsedDraft.formData,
+                            ...(params.type ? { loanType: getLoanTypeDisplay(params.type as string) } : {})
                         }));
                     } else {
                         // Fallback for old draft format
                         setFormData(prev => ({
                             ...prev,
                             ...parsedDraft,
+                            ...(params.type ? { loanType: getLoanTypeDisplay(params.type as string) } : {})
                         }));
                     }
                 }
@@ -448,7 +456,7 @@ export default function ApplyScreen() {
                 currentErrors.push('propertyValue');
                 missingFields.push('Property Value');
             }
-            if (formData.loanType === 'Flat Buying') {
+            if (formData.loanType === 'Flat Buying Loan') {
                 if (!formData.developerName.trim()) {
                     currentErrors.push('developerName');
                     missingFields.push('Developer Name');
@@ -594,8 +602,18 @@ export default function ApplyScreen() {
             const docKeys = Object.keys(formData.docs) as Array<keyof typeof formData.docs>;
 
             const uploadPromises = docKeys.map(async (key) => {
-                const uri = formData.docs[key];
+                const file = formData.docs[key];
+                if (!file) return null;
+
+                let uri: string | undefined;
+                if (typeof file === 'string') {
+                    uri = file;
+                } else {
+                    uri = file.uri;
+                }
+
                 if (!uri) return null;
+
                 const fileName = `${user.uid}_${key}_${Date.now()}`;
                 const path = `applications/${user.uid}/${fileName}`;
                 const url = await uploadFile(uri, path);
@@ -647,6 +665,7 @@ export default function ApplyScreen() {
             'info',
             'Cancel',
             () => { },
+            'Upload Image',
             'Camera / Gallery',
             async () => {
                 const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -660,23 +679,40 @@ export default function ApplyScreen() {
                     quality: 0.5,
                 });
                 if (!result.canceled) {
+                    const asset = result.assets[0];
                     setFormData(prev => ({
                         ...prev,
-                        docs: { ...prev.docs, [key]: result.assets[0].uri }
+                        docs: {
+                            ...prev.docs,
+                            [key]: {
+                                uri: asset.uri,
+                                type: 'image',
+                                name: asset.fileName || 'image.jpg'
+                            }
+                        }
                     }));
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                 }
             },
-            'PDF Document',
+            'Upload PDF',
+            'Select Document',
             async () => {
                 const result = await DocumentPicker.getDocumentAsync({
                     type: 'application/pdf',
                     copyToCacheDirectory: true,
                 });
                 if (!result.canceled) {
+                    const asset = result.assets[0];
                     setFormData(prev => ({
                         ...prev,
-                        docs: { ...prev.docs, [key]: result.assets[0].uri }
+                        docs: {
+                            ...prev.docs,
+                            [key]: {
+                                uri: asset.uri,
+                                type: 'pdf',
+                                name: asset.name
+                            }
+                        }
                     }));
                     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
                 }
@@ -1491,8 +1527,12 @@ export default function ApplyScreen() {
 
     const renderStep5 = () => {
         const renderUploadButton = (key: keyof typeof formData.docs, title: string, subtitle: string, isFullWidth = true) => {
-            const uri = formData.docs[key];
-            const isPdf = uri?.toLowerCase().endsWith('.pdf');
+            const file = formData.docs[key];
+            // Backward compatibility check for old string format if any exist in storage
+            const isLegacyString = typeof file === 'string';
+            const uri = isLegacyString ? file : file?.uri;
+            const isPdf = isLegacyString ? (file as string).toLowerCase().endsWith('.pdf') : file?.type === 'pdf';
+            const fileName = isLegacyString ? getFileName(file as string) : file?.name;
 
             return (
                 <TouchableOpacity
@@ -1517,7 +1557,7 @@ export default function ApplyScreen() {
                     <View style={styles.uploadTextWrapper}>
                         <ThemedText style={styles.uploadTitle}>{title}</ThemedText>
                         <ThemedText style={styles.uploadDesc} numberOfLines={1}>
-                            {uri ? getFileName(uri) : subtitle}
+                            {uri ? fileName : subtitle}
                         </ThemedText>
                     </View>
                     {uri && <Ionicons name="checkmark-circle" size={20} color="#000000" />}
@@ -1709,13 +1749,13 @@ export default function ApplyScreen() {
                         <ThemedText style={styles.reviewLabel}>Property Value:</ThemedText>
                         <ThemedText style={styles.reviewValue}>₹{formData.propertyValue}</ThemedText>
                     </View>
-                    {formData.loanType === 'Flat Buying' && (
+                    {formData.loanType === 'Flat Buying Loan' && (
                         <View style={styles.reviewItem}>
                             <ThemedText style={styles.reviewLabel}>Developer:</ThemedText>
                             <ThemedText style={styles.reviewValue}>{formData.developerName === 'Other' ? formData.otherDeveloperName : formData.developerName}</ThemedText>
                         </View>
                     )}
-                    {formData.loanType === 'Flat Buying' && (
+                    {formData.loanType === 'Flat Buying Loan' && (
                         <View style={styles.reviewItem}>
                             <ThemedText style={styles.reviewLabel}>Society:</ThemedText>
                             <ThemedText style={styles.reviewValue}>{formData.societyName === 'Other' ? formData.otherSocietyName : formData.societyName}</ThemedText>
@@ -1836,7 +1876,9 @@ export default function ApplyScreen() {
                 type={customAlert.type}
                 primaryButtonText={customAlert.primaryText}
                 secondaryButtonText={customAlert.secondaryText}
+                secondaryButtonDetail={customAlert.secondaryDetail}
                 ternaryButtonText={customAlert.ternaryText}
+                ternaryButtonDetail={customAlert.ternaryDetail}
                 onSecondaryAction={customAlert.onSecondary}
                 onTernaryAction={customAlert.onTernary}
                 onClose={() => {
