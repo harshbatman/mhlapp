@@ -13,7 +13,7 @@ export default function ExploreScreen() {
     <ThemedView style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <ThemedText type="title" style={styles.title}>Learn More</ThemedText>
-        <ThemedText style={styles.subtitle}>Discover how HMAHTO Home Loans can help you build your future.</ThemedText>
+        <ThemedText style={styles.subtitle}>Discover how MAHTO Home Loans can help you build your future.</ThemedText>
 
         <View style={styles.infoCard}>
           <Ionicons name="shield-checkmark" size={32} color={Colors[colorScheme].tint} />
