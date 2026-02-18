@@ -257,12 +257,21 @@ export default function ApplyScreen() {
                 const draft = await AsyncStorage.getItem('loan_application_draft');
                 if (draft) {
                     const parsedDraft = JSON.parse(draft);
-                    setFormData(prev => ({
-                        ...prev,
-                        ...parsedDraft,
-                        // Don't override docs with nulls from draft if they were just selected? 
-                        // Actually better to load everything and let user edit.
-                    }));
+                    if (parsedDraft.step) {
+                        setStep(parsedDraft.step);
+                    }
+                    if (parsedDraft.formData) {
+                        setFormData(prev => ({
+                            ...prev,
+                            ...parsedDraft.formData,
+                        }));
+                    } else {
+                        // Fallback for old draft format
+                        setFormData(prev => ({
+                            ...prev,
+                            ...parsedDraft,
+                        }));
+                    }
                 }
             } catch (err) {
                 console.error('Failed to load draft:', err);
@@ -295,6 +304,23 @@ export default function ApplyScreen() {
             keyboardDidHideListener.remove();
         };
     }, [params.type]);
+
+    // Auto-save draft whenever formData or step changes
+    useEffect(() => {
+        const saveDraft = async () => {
+            try {
+                const draftData = {
+                    formData,
+                    step
+                };
+                await AsyncStorage.setItem('loan_application_draft', JSON.stringify(draftData));
+            } catch (err) {
+                console.error('Failed to save draft:', err);
+            }
+        };
+        const timeoutId = setTimeout(saveDraft, 1000);
+        return () => clearTimeout(timeoutId);
+    }, [formData, step]);
 
     const handleNext = async () => {
         let currentErrors: string[] = [];

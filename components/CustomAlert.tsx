@@ -2,7 +2,7 @@ import { ThemeType } from '@/constants/theme';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { Dimensions, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ThemedText } from './themed-text';
 
 interface CustomAlertProps {
@@ -73,7 +73,7 @@ export function CustomAlert({
                                 }}
                                 activeOpacity={0.8}
                             >
-                                <ThemedText style={styles.secondaryButtonText}>{ternaryButtonText}</ThemedText>
+                                <Text style={styles.secondaryButtonText}>{ternaryButtonText}</Text>
                             </TouchableOpacity>
                         )}
                         {secondaryButtonText && (
@@ -85,7 +85,7 @@ export function CustomAlert({
                                 }}
                                 activeOpacity={0.8}
                             >
-                                <ThemedText style={styles.secondaryButtonText}>{secondaryButtonText}</ThemedText>
+                                <Text style={styles.secondaryButtonText}>{secondaryButtonText}</Text>
                             </TouchableOpacity>
                         )}
                         <TouchableOpacity
@@ -96,7 +96,7 @@ export function CustomAlert({
                             onPress={onClose}
                             activeOpacity={0.8}
                         >
-                            <ThemedText style={styles.buttonText}>{primaryButtonText}</ThemedText>
+                            <Text style={styles.buttonText}>{primaryButtonText}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
